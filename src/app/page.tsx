@@ -6,7 +6,9 @@ export default function Home() {
   GET()
   return (
     <>
-      <h1>CRM 2024</h1>
+      <h1 className="text-4xl font-bold underline">
+      Hello world!
+    </h1>
     </>
   );
 }
