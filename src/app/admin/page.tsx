@@ -18,37 +18,42 @@ import ConfirmationModal from "@/app/components/ConfirmationModal"; // Import th
 const initialRequests = [
   {
     id: 1,
-    user: "John Doe",
-    email: "john@example.com",
-    request: "Account upgrade",
+    entity: "USJ",
+    companyName: "A",
+    industry: "NGO",
+    producttype: "IGTa",
     status: "pending",
   },
   {
     id: 2,
-    user: "Jane Smith",
-    email: "jane@example.com",
-    request: "Data export",
+    entity: "CN",
+    companyName: "A",
+    industry: "Tourism",
+    producttype: "IGTe",
     status: "pending",
   },
   {
     id: 3,
-    user: "Bob Johnson",
-    email: "bob@example.com",
-    request: "API access",
+    entity: "CS",
+    companyName: "A",
+    industry: "Construction",
+    producttype: "OGV",
     status: "pending",
   },
   {
     id: 4,
-    user: "Alice Brown",
-    email: "alice@example.com",
-    request: "Custom integration",
+    entity: "SLIIT",
+    companyName: "A",
+    industry: "Health Services",
+    producttype: "OGV",
     status: "pending",
   },
   {
     id: 5,
-    user: "Charlie Davis",
-    email: "charlie@example.com",
-    request: "Billing inquiry",
+    entity: "CS",
+    companyName: "A",
+    industry: "Cosmetics",
+    producttype: "IGTe",
     status: "pending",
   },
 ];
@@ -103,9 +108,9 @@ export default function AdminView() {
 
   const filteredRequests = requests.filter(
     (req) =>
-      req.user.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      req.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      req.request.toLowerCase().includes(searchTerm.toLowerCase())
+      req.entity.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      req.industry.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      req.producttype.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -126,9 +131,11 @@ export default function AdminView() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>User</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Request</TableHead>
+            <TableHead>Entity</TableHead>
+            <TableHead>Company Name</TableHead>
+            <TableHead>Industry</TableHead>
+            <TableHead>Product Type</TableHead>
+            <TableHead>Comments</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
@@ -136,9 +143,11 @@ export default function AdminView() {
         <TableBody>
           {filteredRequests.map((req) => (
             <TableRow key={req.id}>
-              <TableCell>{req.user}</TableCell>
-              <TableCell>{req.email}</TableCell>
-              <TableCell>{req.request}</TableCell>
+              <TableCell>{req.entity}</TableCell>
+              <TableCell>{req.companyName}</TableCell>
+              <TableCell>{req.industry}</TableCell>
+              <TableCell>{req.producttype}</TableCell>
+              <TableCell></TableCell>
               <TableCell>
                 <Badge
                   variant={
