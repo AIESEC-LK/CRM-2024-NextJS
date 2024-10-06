@@ -13,6 +13,7 @@ import {
 } from "@/app/components/ui/table";
 import { Badge } from "@/app/components/ui/badge";
 import { Search, CheckCircle, XCircle } from "lucide-react";
+import ConfirmationModal from "@/app/components/ConfirmationModal"; // Import the modal component
 
 const initialRequests = [
   {
@@ -55,31 +56,49 @@ const initialRequests = [
 export default function AdminView() {
   const [requests, setRequests] = useState(initialRequests);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentAction, setCurrentAction] = useState<
+    "approve" | "decline" | null
+  >(null);
+  const [currentRequestId, setCurrentRequestId] = useState<number | null>(null);
 
   const handleApprove = (id: number) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to approve this request?"
-    );
-    if (confirmed) {
-      setRequests(
-        requests.map((req) =>
-          req.id === id ? { ...req, status: "approved" } : req
-        )
-      );
-    }
+    setCurrentRequestId(id);
+    setCurrentAction("approve");
+    setIsModalOpen(true);
   };
 
   const handleDecline = (id: number) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to decline this request?"
-    );
-    if (confirmed) {
-      setRequests(
-        requests.map((req) =>
-          req.id === id ? { ...req, status: "declined" } : req
+    setCurrentRequestId(id);
+    setCurrentAction("decline");
+    setIsModalOpen(true);
+  };
+
+  const confirmAction = () => {
+    if (currentAction === "approve" && currentRequestId) {
+      setRequests((prevRequests) =>
+        prevRequests.map((req) =>
+          req.id === currentRequestId ? { ...req, status: "approved" } : req
+        )
+      );
+    } else if (currentAction === "decline" && currentRequestId) {
+      setRequests((prevRequests) =>
+        prevRequests.map((req) =>
+          req.id === currentRequestId ? { ...req, status: "declined" } : req
         )
       );
     }
+    setIsModalOpen(false);
+    setCurrentAction(null);
+    setCurrentRequestId(null);
+  };
+
+  const handleReset = (id: number) => {
+    setRequests(
+      requests.map((req) =>
+        req.id === id ? { ...req, status: "pending" } : req
+      )
+    );
   };
 
   const filteredRequests = requests.filter(
@@ -149,16 +168,34 @@ export default function AdminView() {
                     onClick={() => handleDecline(req.id)}
                     disabled={req.status !== "pending"}
                     variant="destructive"
+                    className="bg-red-500 hover:bg-red-600"
                   >
                     <XCircle className="h-4 w-4 mr-1" />
                     Decline
                   </Button>
+                  {req.status !== "pending" && (
+                    <Button
+                      size="sm"
+                      onClick={() => handleReset(req.id)}
+                      variant="outline"
+                    >
+                      Reset
+                    </Button>
+                  )}
                 </div>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={confirmAction}
+        action={currentAction!}
+      />
     </div>
   );
 }
