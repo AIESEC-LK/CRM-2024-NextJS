@@ -31,7 +31,7 @@ export async function odooRetrieve() {
         "search_read",              // Method to call
         [[]],                       // Search domain
         {
-          fields: ["name", "email_from", "contact_name", "phone"], // Fields to retrieve
+          fields: ["name", "email_from", "street", "street2", "city", "zip", "phone"], // Fields to retrieve
           limit: 100                 // Limit the results
         }
       ]
