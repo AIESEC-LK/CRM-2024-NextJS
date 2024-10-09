@@ -55,12 +55,12 @@ export default function UpdateLeads() {
             <p><strong>Street:</strong> {lead.street}</p>
             <p><strong>Street2:</strong> {lead.street2}</p>
             <p><strong>Zip:</strong>{lead.zip}</p>
-          </li>
+          </li>        
         ))}
       </ul>
     </div>
     <div>
-        <button onClick={upload_leads_to_mongo}>Copy Leads</button>
+        <button onClick={() => upload_leads_to_mongo(leads)}>Copy Leads</button>
     </div>
     </>
   );
