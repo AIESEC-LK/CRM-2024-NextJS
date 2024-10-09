@@ -11,6 +11,11 @@ const SideNav = () => {
           </Link>
         </li>
         <li>
+          <Link href="/dashboard/prospect" className="block p-2 hover:bg-gray-700 rounded">
+            Prospect Request
+          </Link>
+        </li>
+        <li>
           <Link href="/dashboard/update_leads" className="block p-2 hover:bg-gray-700 rounded">
             Update Leads
           </Link>
