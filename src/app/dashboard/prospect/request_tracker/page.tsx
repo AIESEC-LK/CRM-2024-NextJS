@@ -34,7 +34,7 @@ const page: React.FC = () => {
 
       {/* Shipment Tracking */}
       <div className="bg-gray-50 p-6 rounded-lg relative">
-        <h2 className="text-xl font-semibold mb-6">Shipment Tracking</h2>
+        <h2 className="text-xl font-semibold mb-6">Prospect Request Tracking</h2>
 
         {/* Connecting Line */}
         <div className="absolute top-1/2 transform -translate-y-1/2 left-16 right-16 h-1 bg-green-500"></div>

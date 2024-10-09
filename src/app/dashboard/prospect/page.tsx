@@ -81,9 +81,10 @@ export default function Page() {
     const [currentRequestId, setCurrentRequestId] = useState<number | null>(null);
 
     const handleApprove = (id: number) => {
-        setCurrentRequestId(id);
-        setCurrentAction("approve");
-        setIsModalOpen(true);
+        //setCurrentRequestId(id);
+        //setCurrentAction("approve");
+        //setIsModalOpen(true);
+        handleButtonTrack();
     };
 
     const handleDecline = (id: number) => {
@@ -100,7 +101,6 @@ export default function Page() {
             
                 )
             );
-            handleButtonTrack();
         } else if (currentAction === "decline" && currentRequestId) {
             setRequests((prevRequests) =>
                 prevRequests.map((req) =>
