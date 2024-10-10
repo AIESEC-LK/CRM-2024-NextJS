@@ -16,12 +16,12 @@ interface ICompany extends Document {
 
 const CompanySchema: Schema = new Schema({
     ID: { type: Number, required: false },
-    Name: { type: String, required: true },
-    Email: { type: String, required: true },
-    Phone: { type: String, required: true },
-    Street: { type: String, required: true },
+    Name: { type: String, required: false },
+    Email: { type: String, required: false },
+    Phone: { type: String, required: false },
+    Street: { type: String, required: false },
     Street2: { type: String, required: false },
-    Zip: { type: String, required: true },
+    Zip: { type: String, required: false },
     product_lc: { type: String, required: false },
     product: { type: String, required: false },
     event_lc: { type: String, required: false },
