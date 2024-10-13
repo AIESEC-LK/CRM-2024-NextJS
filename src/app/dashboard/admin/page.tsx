@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import {
@@ -13,97 +13,104 @@ import {
 } from "@/app/components/ui/table";
 import { Badge } from "@/app/components/ui/badge";
 import { Search, CheckCircle, XCircle } from "lucide-react";
-import ConfirmationModal from "@/app/components/ConfirmationModal"; // Import the modal component
+import ConfirmationModal from "@/app/components/ConfirmationModal";
 
-const initialRequests = [
-  {
-    id: 1,
-    entity: "USJ",
-    companyName: "A",
-    industry: "NGO",
-    producttype: "IGTa",
-    status: "pending",
-  },
-  {
-    id: 2,
-    entity: "CN",
-    companyName: "A",
-    industry: "Tourism",
-    producttype: "IGTe",
-    status: "pending",
-  },
-  {
-    id: 3,
-    entity: "CS",
-    companyName: "A",
-    industry: "Construction",
-    producttype: "OGV",
-    status: "pending",
-  },
-  {
-    id: 4,
-    entity: "SLIIT",
-    companyName: "A",
-    industry: "Health Services",
-    producttype: "OGV",
-    status: "pending",
-  },
-  {
-    id: 5,
-    entity: "CS",
-    companyName: "A",
-    industry: "Cosmetics",
-    producttype: "IGTe",
-    status: "pending",
-  },
-];
+interface Request {
+  _id: string;
+  entity: string;
+  companyName: string;
+  industry: string;
+  producttype: string;
+  status: "pending" | "approved" | "declined";
+}
 
 export default function AdminView() {
-  const [requests, setRequests] = useState(initialRequests);
+  const [requests, setRequests] = useState<Request[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentAction, setCurrentAction] = useState<
     "approve" | "decline" | null
   >(null);
-  const [currentRequestId, setCurrentRequestId] = useState<number | null>(null);
+  const [currentRequestId, setCurrentRequestId] = useState<string | null>(null);
 
-  const handleApprove = (id: number) => {
+  useEffect(() => {
+    fetchRequests();
+  }, []);
+
+  const fetchRequests = async () => {
+    try {
+      const response = await fetch("/api/admin");
+      if (!response.ok) {
+        throw new Error("Failed to fetch requests");
+      }
+      const data = await response.json();
+      setRequests(data);
+    } catch (error) {
+      console.error("Error fetching requests:", error);
+    }
+  };
+
+  const handleApprove = (id: string) => {
     setCurrentRequestId(id);
     setCurrentAction("approve");
     setIsModalOpen(true);
   };
 
-  const handleDecline = (id: number) => {
+  const handleDecline = (id: string) => {
     setCurrentRequestId(id);
     setCurrentAction("decline");
     setIsModalOpen(true);
   };
 
-  const confirmAction = () => {
-    if (currentAction === "approve" && currentRequestId) {
-      setRequests((prevRequests) =>
-        prevRequests.map((req) =>
-          req.id === currentRequestId ? { ...req, status: "approved" } : req
-        )
-      );
-    } else if (currentAction === "decline" && currentRequestId) {
-      setRequests((prevRequests) =>
-        prevRequests.map((req) =>
-          req.id === currentRequestId ? { ...req, status: "declined" } : req
-        )
-      );
+  const confirmAction = async () => {
+    if (currentAction && currentRequestId) {
+      try {
+        const response = await fetch("/api/requests", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: currentRequestId,
+            status: currentAction === "approve" ? "approved" : "declined",
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to update request");
+        }
+
+        await fetchRequests(); // Refresh the requests after update
+      } catch (error) {
+        console.error("Error updating request:", error);
+      }
     }
     setIsModalOpen(false);
     setCurrentAction(null);
     setCurrentRequestId(null);
   };
 
-  const handleReset = (id: number) => {
-    setRequests(
-      requests.map((req) =>
-        req.id === id ? { ...req, status: "pending" } : req
-      )
-    );
+  const handleReset = async (id: string) => {
+    try {
+      const response = await fetch("/api/requests", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: id,
+          status: "pending",
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to reset request");
+      }
+
+      await fetchRequests(); // Refresh the requests after update
+    } catch (error) {
+      console.error("Error resetting request:", error);
+    }
   };
 
   const filteredRequests = requests.filter(
@@ -114,10 +121,8 @@ export default function AdminView() {
   );
 
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">
-        CRM Admin View - User Requests
-      </h1>
+    <div className="container mx-auto pt-0">
+      <h1 className="text-2xl font-bold mb-6 ml-4">Prospect Requests</h1>
       <div className="mb-4 relative">
         <Input
           type="text"
@@ -142,7 +147,7 @@ export default function AdminView() {
         </TableHeader>
         <TableBody>
           {filteredRequests.map((req) => (
-            <TableRow key={req.id}>
+            <TableRow key={req._id}>
               <TableCell>{req.entity}</TableCell>
               <TableCell>{req.companyName}</TableCell>
               <TableCell>{req.industry}</TableCell>
@@ -161,44 +166,45 @@ export default function AdminView() {
                   {req.status}
                 </Badge>
               </TableCell>
-              <TableCell>
-                <div className="flex space-x-2">
-                  <Button
-                    size="sm"
-                    onClick={() => handleApprove(req.id)}
-                    disabled={req.status !== "pending"}
-                    className="bg-green-500 hover:bg-green-600"
-                  >
-                    <CheckCircle className="h-4 w-4 mr-1" />
-                    Approve
-                  </Button>
-                  <Button
-                    size="sm"
-                    onClick={() => handleDecline(req.id)}
-                    disabled={req.status !== "pending"}
-                    variant="destructive"
-                    className="bg-red-500 hover:bg-red-600"
-                  >
-                    <XCircle className="h-4 w-4 mr-1" />
-                    Decline
-                  </Button>
-                  {req.status !== "pending" && (
+              {
+                <TableCell>
+                  <div className="flex space-x-2">
                     <Button
                       size="sm"
-                      onClick={() => handleReset(req.id)}
-                      variant="outline"
+                      onClick={() => handleApprove(req._id)}
+                      disabled={req.status !== "pending"}
+                      className="bg-green-500 hover:bg-green-600"
                     >
-                      Reset
+                      <CheckCircle className="h-4 w-4 mr-1" />
+                      Approve
                     </Button>
-                  )}
-                </div>
-              </TableCell>
+                    <Button
+                      size="sm"
+                      onClick={() => handleDecline(req._id)}
+                      disabled={req.status !== "pending"}
+                      variant="destructive"
+                      className="bg-red-500 hover:bg-red-600"
+                    >
+                      <XCircle className="h-4 w-4 mr-1" />
+                      Decline
+                    </Button>
+                    {req.status !== "pending" && (
+                      <Button
+                        size="sm"
+                        onClick={() => handleReset(req._id)}
+                        variant="outline"
+                      >
+                        Reset
+                      </Button>
+                    )}
+                  </div>
+                </TableCell>
+              }
             </TableRow>
           ))}
         </TableBody>
       </Table>
 
-      {/* Confirmation Modal */}
       <ConfirmationModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

@@ -1,33 +1,66 @@
-import React from 'react';
-import Link from 'next/link';
+import React from "react";
+import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBell,
+  faBullhorn,
+  faQuestion,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 
 const SideNav = () => {
   return (
     <nav className="h-full bg-gray-800 text-white">
       <ul className="space-y-4 p-4">
         <li>
-          <Link href="/dashboard/admin" className="block p-2 hover:bg-gray-700 rounded">
-            Admin
-          </Link>
-        </li>
-        <li>
-          <Link href="/dashboard/prospect" className="block p-2 hover:bg-gray-700 rounded">
-            Prospect Request
+          <Link
+            href="/dashboard/admin"
+            className="flex items-center justify-center p-4 hover:bg-gray-700 rounded"
+          >
+            <FontAwesomeIcon
+              icon={faBell}
+              className="h-6 w-6"
+              title="Prospect Requests"
+            />
           </Link>
         </li>
         <li>
           <Link href="/dashboard/update_leads" className="block p-2 hover:bg-gray-700 rounded">
             Update Leads
+
+          <Link
+            href="/dashboard/update_leads"
+            className="flex items-center justify-center p-4 hover:bg-gray-700 rounded"
+          >
+            <FontAwesomeIcon
+              icon={faBullhorn}
+              className="h-6 w-6"
+              title="Update Leads"
+            />
           </Link>
         </li>
         <li>
-          <Link href="/dashboard/profile" className="block p-2 hover:bg-gray-700 rounded">
-            Profile
+          <Link
+            href="/dashboard/profile"
+            className="flex items-center justify-center p-4 hover:bg-gray-700 rounded"
+          >
+            <FontAwesomeIcon
+              icon={faUser}
+              className="h-6 w-6"
+              title="Update Leads"
+            />
           </Link>
         </li>
         <li>
-          <Link href="/dashboard/help" className="block p-2 hover:bg-gray-700 rounded">
-            Help
+          <Link
+            href="/dashboard/help"
+            className="flex items-center justify-center p-4 hover:bg-gray-700 rounded"
+          >
+            <FontAwesomeIcon
+              icon={faQuestion}
+              className="h-6 w-6"
+              title="Update Leads"
+            />
           </Link>
         </li>
       </ul>
