@@ -25,6 +25,9 @@ const SideNav = () => {
           </Link>
         </li>
         <li>
+          <Link href="/dashboard/update_leads" className="block p-2 hover:bg-gray-700 rounded">
+            Update Leads
+
           <Link
             href="/dashboard/update_leads"
             className="flex items-center justify-center p-4 hover:bg-gray-700 rounded"
