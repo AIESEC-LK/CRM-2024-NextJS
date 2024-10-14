@@ -20,17 +20,23 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
-    const { entity, companyName, industry,producttype } = await req.json();
+    const { entity, companyName,companyAddress,contactPersonName,contactPersonNumber,contactPersonEmail,comment,industry,producttype,} = await req.json();
     const client = await clientPromise;
     const db = client.db("CRM");
 
 
     const result = await db.collection("Users").insertOne({
-      entity: entity,
+      entity: 'CS',
       companyName: companyName,
+      companyAddress: companyAddress,
+      contactPersonName: contactPersonName,
+      contactPersonNumber: contactPersonNumber,
+      contactPersonEmail: contactPersonEmail,
+      comment: comment,
       industry: industry,
       producttype:producttype,
       status: "pending",
+
     });
 
     if (result.insertedId) {
