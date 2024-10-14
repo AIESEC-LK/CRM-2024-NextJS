@@ -1,15 +1,24 @@
-// src/app/api/prospects/route.jsx
-
+// src/app/api/prospects/route.tsx
 
 import { dbConnect } from "@/app/lib/db";
 import Prospect from "@/app/models/Prospect";
 import { NextResponse } from "next/server";
 
+// Define the structure of a Prospect
+interface ProspectType {
+  id: string; // Assuming this is a string; change to number if applicable
+  entity: string;
+  companyName: string;
+  industry: string;
+  producttype: string;
+  status: string;
+}
+
 export async function GET() {
   try {
-    await dbConnect();  
+    await dbConnect();
 
-    const prospectsFromDB = await Prospect.find(); // Retrieve all prospects from the database
+    const prospectsFromDB: ProspectType[] = await Prospect.find(); // Retrieve all prospects from the database
     console.log("Fetched prospects:", prospectsFromDB);
 
     // Return prospects or empty array if none found
@@ -20,6 +29,9 @@ export async function GET() {
     }
   } catch (error) {
     console.error("Error fetching prospects:", error);
-    return NextResponse.json({ error: "Error fetching prospects" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Error fetching prospects" },
+      { status: 500 }
+    );
   }
 }
