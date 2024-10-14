@@ -1,10 +1,9 @@
 //import { dbConnect } from "./lib/db"
 
-export default function Home(){
+import React from "react";
 
-  
+const HomePage = () => {
+  return <div> This is the HomePage </div>;
+};
 
-  return (
-    <><h1>Home</h1></>
-  )
-}
+export default HomePage;

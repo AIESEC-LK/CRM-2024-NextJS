@@ -13,8 +13,8 @@ import {
   TableRow,
 } from "@/app/components/ui/table";
 import { Badge } from "@/app/components/ui/badge";
-import { Search, CheckCircle, XCircle, XSquare, Pencil, ArrowUp01, ArrowUp } from "lucide-react";
-import ConfirmationModal from "@/app/components/ConfirmationModal"; // Import the modal component
+import { Search, CheckCircle, XCircle, XSquare, Pencil, ArrowUp01, ArrowUp, ArrowUpAz, FileIcon } from "lucide-react";
+import ConfirmationModalCompanies from "@/app/components/ConfirmationModalCompanies"; // Import the modal component
 
 // Define the shape of the data you expect to receive
 interface Lead {
@@ -31,37 +31,49 @@ export default function UpdateLeads() {
   const [leads, setLeads] = useState<Lead[]>([]); // State to store leads data
   const [loading, setLoading] = useState<boolean>(true); // State for loading status
 
-    const [requests, setRequests] = useState(leads);
+  const [requests, setRequests] = useState(leads);
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentAction, setCurrentAction] = useState<
-    "approve" | "decline" | null
+    "save" | "delete" | "edit" |null
   >(null);
   const [currentRequestId, setCurrentRequestId] = useState<number | null>(null);
 
   const handleApprove = (id: number) => {
     setCurrentRequestId(id);
-    setCurrentAction("approve");
+    setCurrentAction("save");
     setIsModalOpen(true);
   };
 
   const handleDecline = (id: number) => {
     setCurrentRequestId(id);
-    setCurrentAction("decline");
+    setCurrentAction("delete");
+    setIsModalOpen(true);
+  };
+
+  const handleEdit = (id: number) => {
+    setCurrentRequestId(id);
+    setCurrentAction("edit");
     setIsModalOpen(true);
   };
 
   const confirmAction = () => {
-    if (currentAction === "approve" && currentRequestId) {
+    if (currentAction === "save" && currentRequestId) {
       setRequests((prevRequests) =>
         prevRequests.map((req) =>
-          req.id === currentRequestId ? { ...req, status: "approved" } : req
+          req.id === currentRequestId ? { ...req, status: "Saved" } : req
         )
       );
-    } else if (currentAction === "decline" && currentRequestId) {
+    } else if (currentAction === "delete" && currentRequestId) {
       setRequests((prevRequests) =>
         prevRequests.map((req) =>
-          req.id === currentRequestId ? { ...req, status: "declined" } : req
+          req.id === currentRequestId ? { ...req, status: "Deleted" } : req
+        )
+      );
+    } else if (currentAction === "edit" && currentRequestId) {
+      setRequests((prevRequests) =>
+        prevRequests.map((req) =>
+          req.id === currentRequestId ? { ...req, status: "Edited" } : req
         )
       );
     }
@@ -78,14 +90,15 @@ export default function UpdateLeads() {
     );
   };
 
-  /*
+
 
   const filteredRequests = requests.filter(
     (req) =>
-      req.entity.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      req.industry.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      req.producttype.toLowerCase().includes(searchTerm.toLowerCase())
-  );*/
+      req.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      req.email_from.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      req.street.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      req.phone.toLowerCase().includes(searchTerm.toLowerCase()) 
+  );
 
   // Fetch the leads data from the API on component mount
   useEffect(() => {
@@ -109,16 +122,17 @@ export default function UpdateLeads() {
     return <p>Loading leads...</p>; // Show loading state
   }
 
+  
   return (
     <>
       <div className="container mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">
-        Company List
+        CRM Admin View - Odoo Company List
       </h1>
       <div className="mb-4 relative">
         <Input
           type="text"
-          placeholder="Search requests..."
+          placeholder="Search Leads ..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="pl-10"
@@ -128,6 +142,7 @@ export default function UpdateLeads() {
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead>#</TableHead>
             <TableHead>Company Name</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Phone</TableHead>
@@ -137,8 +152,9 @@ export default function UpdateLeads() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {leads.map((lead) => (
+          {leads.map((lead, index) => (
             <TableRow key={lead.id}>
+              <TableCell>{index + 1}</TableCell>
               <TableCell>{lead.name}</TableCell>
               <TableCell>{lead.email_from}</TableCell>
               <TableCell>{lead.phone}</TableCell>
@@ -147,9 +163,9 @@ export default function UpdateLeads() {
               <TableCell>
                 <Badge
                   variant={
-                    lead.status === "approved"
+                    lead.status === "saved"
                       ? "success"
-                      : lead.status === "declined"
+                      : lead.status === "deleted"
                       ? "destructive"
                       : "default"
                   }
@@ -165,12 +181,12 @@ export default function UpdateLeads() {
                     disabled={lead.status !== "pending"}
                     className="bg-green-500 hover:bg-green-600"
                   >
-                    <ArrowUp className="h-4 w-4 mr-1" />
-                    Upload
+                    <FileIcon className="h-4 w-4 mr-1" />
+                    Save
                   </Button>
                   <Button
                     size="sm"
-                    onClick={() => handleDecline(lead.id)}
+                    onClick={() => handleEdit(lead.id)}
                     disabled={lead.status !== "pending"}
                     variant="ghost"
                     className="bg-amber-500 hover:bg-amber-600"
@@ -198,14 +214,14 @@ export default function UpdateLeads() {
                     </Button>
                   )}
                 </div>
-              </TableCell>*
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
 
       {/* Confirmation Modal */}
-      <ConfirmationModal
+      <ConfirmationModalCompanies
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={confirmAction}
