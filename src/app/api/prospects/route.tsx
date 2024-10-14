@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 
 // Define the structure of a Prospect
 interface ProspectType {
-  id: string; // Assuming this is a string; change to number if applicable
+  id: string; 
   entity: string;
   companyName: string;
   industry: string;
@@ -29,9 +29,6 @@ export async function GET() {
     }
   } catch (error) {
     console.error("Error fetching prospects:", error);
-    return NextResponse.json(
-      { error: "Error fetching prospects" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Error fetching prospects" }, { status: 500 });
   }
 }
