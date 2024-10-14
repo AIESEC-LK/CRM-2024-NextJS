@@ -11,7 +11,7 @@ interface ProspectType {
   companyName: string;
   industry: string;
   producttype: string;
-  status: string; 
+  status: string;
 }
 
 export async function GET() {
