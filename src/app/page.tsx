@@ -1,5 +1,4 @@
-//import { dbConnect } from "./lib/db"
-
+// import { dbConnect } from "./lib/db";
 import React from "react";
 
 const HomePage = () => {
