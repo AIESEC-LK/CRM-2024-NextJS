@@ -12,13 +12,21 @@ import {
   TableRow,
 } from "@/app/components/ui/table";
 import { Badge } from "@/app/components/ui/badge";
-import { Search, CheckCircle, XCircle } from "lucide-react";
-import ConfirmationModal from "@/app/components/ConfirmationModal";
+import { Search, CheckCircle, XCircle, ChevronDown } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/app/components/ui/popover";
 
 interface Request {
   _id: string;
   entity: string;
   companyName: string;
+  companyAddress: string;
+  contactPersonName: string;
+  contactPersonNumber: string;
+  contactPersonEmail: string;
   industry: string;
   producttype: string;
   status: "pending" | "approved" | "declined";
@@ -27,11 +35,6 @@ interface Request {
 export default function AdminView() {
   const [requests, setRequests] = useState<Request[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentAction, setCurrentAction] = useState<
-    "approve" | "decline" | null
-  >(null);
-  const [currentRequestId, setCurrentRequestId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchRequests();
@@ -50,66 +53,39 @@ export default function AdminView() {
     }
   };
 
-  const handleApprove = (id: string) => {
-    setCurrentRequestId(id);
-    setCurrentAction("approve");
-    setIsModalOpen(true);
+  const handleApprove = async (id: string) => {
+    await updateRequestStatus(id, "approved");
   };
 
-  const handleDecline = (id: string) => {
-    setCurrentRequestId(id);
-    setCurrentAction("decline");
-    setIsModalOpen(true);
-  };
-
-  const confirmAction = async () => {
-    if (currentAction && currentRequestId) {
-      try {
-        const response = await fetch("/api/requests", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: currentRequestId,
-            status: currentAction === "approve" ? "approved" : "declined",
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to update request");
-        }
-
-        await fetchRequests(); // Refresh the requests after update
-      } catch (error) {
-        console.error("Error updating request:", error);
-      }
-    }
-    setIsModalOpen(false);
-    setCurrentAction(null);
-    setCurrentRequestId(null);
+  const handleDecline = async (id: string) => {
+    await updateRequestStatus(id, "declined");
   };
 
   const handleReset = async (id: string) => {
+    await updateRequestStatus(id, "pending");
+  };
+
+  const updateRequestStatus = async (id: string, status: string) => {
     try {
-      const response = await fetch("/api/requests", {
+      const response = await fetch("/api/admin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          id: id,
-          status: "pending",
-        }),
+        body: JSON.stringify({ id, status }),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to reset request");
+        throw new Error("Failed to update request");
       }
 
-      await fetchRequests(); // Refresh the requests after update
+      setRequests((prevRequests) =>
+        prevRequests.map((req) =>
+          req._id === id ? { ...req, status: status as Request["status"] } : req
+        )
+      );
     } catch (error) {
-      console.error("Error resetting request:", error);
+      console.error("Error updating request:", error);
     }
   };
 
@@ -140,7 +116,6 @@ export default function AdminView() {
             <TableHead>Company Name</TableHead>
             <TableHead>Industry</TableHead>
             <TableHead>Product Type</TableHead>
-            <TableHead>Comments</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
@@ -148,11 +123,66 @@ export default function AdminView() {
         <TableBody>
           {filteredRequests.map((req) => (
             <TableRow key={req._id}>
-              <TableCell>{req.entity}</TableCell>
-              <TableCell>{req.companyName}</TableCell>
+              <TableCell>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-between"
+                    >
+                      {req.entity}
+                      <ChevronDown className="h-4 w-4 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80">
+                    <div className="grid gap-4">
+                      <div className="space-y-2">
+                        <h4 className="font-medium leading-none">
+                          {req.entity}
+                        </h4>
+                        <p className="text-sm text-muted-foreground">
+                          {req.entity || "No additional information available."}
+                        </p>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </TableCell>
+              <TableCell>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-between"
+                    >
+                      {req.companyName}
+                      <ChevronDown className="h-4 w-4 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80">
+                    <div className="grid gap-4">
+                      <div className="space-y-5">
+                        <div className="space-y-3">
+                          <h5 className="font-medium">Company Address</h5>
+                          <p>
+                            {req.companyAddress ||
+                              "No additional information available."}
+                          </p>
+                        </div>
+
+                        <div className="space-y-3">
+                          <h5 className="font-medium">Contact Person</h5>
+                          <p>Name : {req.contactPersonName}</p>
+                          <p>Number: {req.contactPersonNumber}</p>
+                          <p>Email : {req.contactPersonEmail}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </TableCell>
               <TableCell>{req.industry}</TableCell>
               <TableCell>{req.producttype}</TableCell>
-              <TableCell></TableCell>
               <TableCell>
                 <Badge
                   variant={
@@ -166,51 +196,42 @@ export default function AdminView() {
                   {req.status}
                 </Badge>
               </TableCell>
-              {
-                <TableCell>
-                  <div className="flex space-x-2">
+              <TableCell>
+                <div className="flex space-x-2">
+                  <Button
+                    size="sm"
+                    onClick={() => handleApprove(req._id)}
+                    disabled={req.status !== "pending"}
+                    className="bg-green-500 hover:bg-green-600"
+                  >
+                    <CheckCircle className="h-4 w-4 mr-1" />
+                    Approve
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={() => handleDecline(req._id)}
+                    disabled={req.status !== "pending"}
+                    variant="destructive"
+                    className="bg-red-500 hover:bg-red-600"
+                  >
+                    <XCircle className="h-4 w-4 mr-1" />
+                    Decline
+                  </Button>
+                  {req.status !== "pending" && (
                     <Button
                       size="sm"
-                      onClick={() => handleApprove(req._id)}
-                      disabled={req.status !== "pending"}
-                      className="bg-green-500 hover:bg-green-600"
+                      onClick={() => handleReset(req._id)}
+                      variant="outline"
                     >
-                      <CheckCircle className="h-4 w-4 mr-1" />
-                      Approve
+                      Reset
                     </Button>
-                    <Button
-                      size="sm"
-                      onClick={() => handleDecline(req._id)}
-                      disabled={req.status !== "pending"}
-                      variant="destructive"
-                      className="bg-red-500 hover:bg-red-600"
-                    >
-                      <XCircle className="h-4 w-4 mr-1" />
-                      Decline
-                    </Button>
-                    {req.status !== "pending" && (
-                      <Button
-                        size="sm"
-                        onClick={() => handleReset(req._id)}
-                        variant="outline"
-                      >
-                        Reset
-                      </Button>
-                    )}
-                  </div>
-                </TableCell>
-              }
+                  )}
+                </div>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
-
-      <ConfirmationModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onConfirm={confirmAction}
-        action={currentAction!}
-      />
     </div>
   );
 }
