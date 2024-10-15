@@ -1,11 +1,15 @@
 // ConfirmationModal.tsx
 import React from "react";
+import { Input } from "./ui/input";
+import { Select } from "./ui/select";
+import { BULK_COMPANY_STATUSES } from "../lib/values";
 
 interface ConfirmationModalCompaniesProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
   action: string; // Action could be "approve" or "decline"
+  values: any;
 }
 
 const ConfirmationModalCompanies: React.FC<ConfirmationModalCompaniesProps> = ({
@@ -13,6 +17,7 @@ const ConfirmationModalCompanies: React.FC<ConfirmationModalCompaniesProps> = ({
   onClose,
   onConfirm,
   action,
+  values
 }) => {
   if (!isOpen) return null;
 
@@ -23,8 +28,16 @@ const ConfirmationModalCompanies: React.FC<ConfirmationModalCompaniesProps> = ({
           Are you sure you want to {action} this company?
         </h2>
         {action === "edit" && (
-          <p>Editable</p>
+          <>
+            <Input placeholder="Company Name" className="mb-4" value={values.company_name}/>
+            <Input placeholder="Company Email" className="mb-4" value={values.company_email}/>
+            <Input placeholder="Company Phone" className="mb-4" value={values.company_phone}/>
+            <Input placeholder="Company Address" className="mb-4" value={values.company_address}/>
+            <Select options={BULK_COMPANY_STATUSES}/>
+          </>
+
         )}
+        <br/>
         <div className="flex justify-end space-x-2">
           <button
             onClick={onClose}

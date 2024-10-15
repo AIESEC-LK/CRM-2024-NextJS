@@ -1,9 +1,9 @@
-'use client'
+'use client' // Interact with user
 
-import React, { useEffect, useState } from "react";
-import { upload_leads_to_mongo } from "./functions";
-import { Button } from "@/app/components/ui/button";
-import { Input } from "@/app/components/ui/input";
+import React, { useEffect, useState } from "react";   // API calls and realtime update
+import { upload_leads_to_mongo } from "./functions";  // API calls for upload leads
+import { Button } from "@/app/components/ui/button";  // Button Component
+import { Input } from "@/app/components/ui/input";    // Input Component
 import {
   Table,
   TableBody,
@@ -11,12 +11,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/app/components/ui/table";
-import { Badge } from "@/app/components/ui/badge";
-import { Search, CheckCircle, XCircle, XSquare, Pencil, ArrowUp01, ArrowUp, ArrowUpAz, FileIcon } from "lucide-react";
-import ConfirmationModalCompanies from "@/app/components/ConfirmationModalCompanies"; // Import the modal component
+} from "@/app/components/ui/table";                   // Table Component
+import { Badge } from "@/app/components/ui/badge";    // Badge Component
+import { Search, CheckCircle, XCircle, XSquare, Pencil, ArrowUp01, ArrowUp, ArrowUpAz, FileIcon } from "lucide-react";  //  Icon List
+import ConfirmationModalCompanies from "@/app/components/ConfirmationModalCompanies"; // Confirm Model Companies
 
-// Define the shape of the data you expect to receive
+// Lead Interface
 interface Lead {
   zip: string;
   street: string;
@@ -25,6 +25,17 @@ interface Lead {
   name: string;
   email_from: string;
   phone: string;
+}
+
+// Selected Company Interface
+
+interface SelectedCompany {
+  company_name: string,
+  company_email: string,
+  company_phone: string,
+  company_address: string,
+  company_status: string
+
 }
 
 export default function UpdateLeads() {
@@ -38,24 +49,40 @@ export default function UpdateLeads() {
     "save" | "delete" | "edit" |null
   >(null);
   const [currentRequestId, setCurrentRequestId] = useState<number | null>(null);
+  const [currentRequestCompany, setCurrentRequestCompany] = useState<SelectedCompany[]>([]);
 
   const handleApprove = (id: number) => {
     setCurrentRequestId(id);
     setCurrentAction("save");
     setIsModalOpen(true);
   };
-
   const handleDecline = (id: number) => {
     setCurrentRequestId(id);
     setCurrentAction("delete");
     setIsModalOpen(true);
   };
 
-  const handleEdit = (id: number) => {
-    setCurrentRequestId(id);
-    setCurrentAction("edit");
-    setIsModalOpen(true);
-  };
+const handleEdit = (
+  id: number,
+  company_name: string,
+  company_email: string,
+  company_phone: string,
+  company_address: string,
+  company_status: string
+) => {
+  setCurrentRequestId(id);
+  let selectedCompany = [
+    company_name,
+    company_email,
+    company_phone,
+    company_address,
+    company_status,
+  ]; 
+  setCurrentRequestCompany(selectedCompany)
+  setCurrentAction("edit");
+  setIsModalOpen(true);
+};
+
 
   const confirmAction = () => {
     if (currentAction === "save" && currentRequestId) {
@@ -222,11 +249,10 @@ export default function UpdateLeads() {
 
       {/* Confirmation Modal */}
       <ConfirmationModalCompanies
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onConfirm={confirmAction}
-        action={currentAction!}
-      />
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onConfirm={confirmAction}
+          action={currentAction!} values={[currentRequestCompany]}      />
     </div>
     </>
   );
