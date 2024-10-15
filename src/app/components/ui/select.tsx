@@ -3,10 +3,11 @@ import { cn } from "@/app/lib/utils";
 
 export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   options: { value: string; label: string }[]; // Array of options for the select box
+  defaultValue?: string; // Optional prop for default selected value
 }
 
 const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
-  ({ className, options, ...props }, ref) => {
+  ({ className, options, defaultValue, ...props }, ref) => {
     return (
       <select
         className={cn(
@@ -14,6 +15,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           className
         )}
         ref={ref}
+        defaultValue={defaultValue}
         {...props}
       >
         {options.map((option) => (
