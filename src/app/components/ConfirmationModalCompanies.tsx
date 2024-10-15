@@ -29,10 +29,10 @@ const ConfirmationModalCompanies: React.FC<ConfirmationModalCompaniesProps> = ({
         </h2>
         {action === "edit" && (
           <>
-            <Input placeholder="Company Name" className="mb-4" value={values.company_name}/>
-            <Input placeholder="Company Email" className="mb-4" value={values.company_email}/>
-            <Input placeholder="Company Phone" className="mb-4" value={values.company_phone}/>
-            <Input placeholder="Company Address" className="mb-4" value={values.company_address}/>
+            <Input placeholder="Company Name" className="mb-4" value={values[0][0]}/>
+            <Input placeholder="Company Email" className="mb-4" value={values[0][1]}/>
+            <Input placeholder="Company Phone" className="mb-4" value={values[0][2]}/>
+            <Input placeholder="Company Address" className="mb-4" value={values[0][3]}/>
             <Select options={BULK_COMPANY_STATUSES}/>
           </>
 

@@ -49,7 +49,7 @@ export default function UpdateLeads() {
     "save" | "delete" | "edit" |null
   >(null);
   const [currentRequestId, setCurrentRequestId] = useState<number | null>(null);
-  const [currentRequestCompany, setCurrentRequestCompany] = useState<SelectedCompany[]>([]);
+  const [currentRequestCompany, setCurrentRequestCompany] = useState<SelectedCompany | null>(null);
 
   const handleApprove = (id: number) => {
     setCurrentRequestId(id);
@@ -62,23 +62,19 @@ export default function UpdateLeads() {
     setIsModalOpen(true);
   };
 
-const handleEdit = (
-  id: number,
-  company_name: string,
-  company_email: string,
-  company_phone: string,
-  company_address: string,
-  company_status: string
-) => {
+const handleEdit = (id: number, company_name: string, company_email: string, company_phone: string, company_address: string, company_status: string) => {
   setCurrentRequestId(id);
   let selectedCompany = [
     company_name,
     company_email,
     company_phone,
     company_address,
-    company_status,
+   company_status,
   ]; 
+
+  //console.log(selectedCompany)
   setCurrentRequestCompany(selectedCompany)
+  console.log(currentRequestCompany)
   setCurrentAction("edit");
   setIsModalOpen(true);
 };
@@ -213,7 +209,7 @@ const handleEdit = (
                   </Button>
                   <Button
                     size="sm"
-                    onClick={() => handleEdit(lead.id)}
+                    onClick={() => handleEdit(lead.id, lead.name, lead.email_from, lead.phone, lead.street)}
                     disabled={lead.status !== "pending"}
                     variant="ghost"
                     className="bg-amber-500 hover:bg-amber-600"
