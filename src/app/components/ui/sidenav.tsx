@@ -82,8 +82,4 @@ const SideNav = () => {
   );
 };
 
-<<<<<<< HEAD
 export default SideNav;
-=======
-export default SideNav;
->>>>>>> origin/main
