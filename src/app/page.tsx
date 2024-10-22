@@ -1,14 +1,7 @@
 import React from "react";
-import { GET } from "./api/checkdb/route";
 
-export default function Home() {
+const HomePage = () => {
+  return <div> This is the HomePage </div>;
+};
 
-  GET()
-  return (
-    <>
-      <h1 className="text-4xl font-bold underline">
-      Hello world!
-    </h1>
-    </>
-  );
-}
+export default HomePage;

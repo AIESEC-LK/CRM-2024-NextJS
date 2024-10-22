@@ -11,4 +11,3 @@ const prospectSchema = new mongoose.Schema({
 
 const Prospect = mongoose.models.Prospect || mongoose.model("Prospect", prospectSchema);
 export default Prospect;
-

@@ -4,6 +4,18 @@ import { dbConnect } from "@/app/lib/db";
 import Prospect from "@/app/models/Prospect";
 import { NextResponse } from "next/server";
 
+<<<<<<< HEAD
+=======
+// Define the structure of a Prospect
+interface ProspectType {
+  id: string; 
+  entity: string;
+  companyName: string;
+  industry: string;
+  producttype: string;
+  status: string;
+}
+>>>>>>> origin/main
 
 export async function GET() {
   try {
