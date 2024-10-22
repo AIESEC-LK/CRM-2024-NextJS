@@ -134,7 +134,7 @@ const ProspectsPage = () => {
             type="text"
             placeholder="Filter by company name"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)} 
             className="pl-10"
           />
           <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
@@ -184,7 +184,6 @@ const ProspectsPage = () => {
           <option value="IGTa">IGTa</option>
           <option value="IGTe">IGTe</option>
 
-          {/* Add other products here */}
         </select>
 
         {/* Stage Filter */}
