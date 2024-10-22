@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
 import { ObjectId } from "mongodb";
 
+
+// Get Pending Leads
 export async function GET() {
   try {
     const client = await clientPromise;
@@ -18,6 +20,7 @@ export async function GET() {
   }
 }
 
+// Add Pending Leads
 export async function POST(req: Request) {
   try {
     const { entity, companyName,companyAddress,contactPersonName,contactPersonNumber,contactPersonEmail,comment,industry,producttype} = await req.json();
@@ -53,6 +56,35 @@ export async function POST(req: Request) {
     console.error("Error updating request:", e);
     return NextResponse.json(
       { error: "Failed to update request" },
+      { status: 500 }
+    );
+  }
+}
+
+// Remove Expired Leads
+export async function DELETE(req: Request) {
+  try {
+    const client = await clientPromise;
+    const db = client.db("CRM");
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const result = await db.collection("Pending_Prospects").deleteMany({
+      expireDate: { $lte: today },
+    });
+
+    if (result.deletedCount) {
+      return NextResponse.json({
+        success: true,
+        deletedCount: result.deletedCount,
+      });
+    }
+    return NextResponse.json({ success: true, deletedCount: 0 });
+  } catch (e) {
+    console.error("Error deleting records:", e);
+    return NextResponse.json(
+      { error: "Failed to delete records" },
       { status: 500 }
     );
   }
