@@ -4,6 +4,8 @@ import { dbConnect } from "@/app/lib/db";
 import Prospect from "@/app/models/Prospect";
 import { NextResponse } from "next/server";
 
+<<<<<<< HEAD
+=======
 // Define the structure of a Prospect
 interface ProspectType {
   id: string; 
@@ -13,12 +15,14 @@ interface ProspectType {
   producttype: string;
   status: string;
 }
+>>>>>>> origin/main
 
 export async function GET() {
   try {
     await dbConnect();
 
-    const prospectsFromDB: ProspectType[] = await Prospect.find(); // Retrieve all prospects from the database
+    const prospectsFromDB = await Prospect.find(); // Retrieve all prospects from the database
+
     console.log("Fetched prospects:", prospectsFromDB);
 
     // Return prospects or empty array if none found

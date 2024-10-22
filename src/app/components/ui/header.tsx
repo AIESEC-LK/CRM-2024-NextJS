@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 
@@ -20,5 +21,6 @@ const Header = () => {
     </header>
   );
 };
+
 
 export default Header;
