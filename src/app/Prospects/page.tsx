@@ -22,7 +22,8 @@ const initialProspects = [
     industry: "NGO",
     producttype: "IGTa",
     label: "Prospect",
-  },
+
+  }, 
   {
     id: 2,
     entity: "Colombo North",
@@ -30,6 +31,7 @@ const initialProspects = [
     industry: "Tourism",
     producttype: "IGTe",
     label: "Promoter",
+
   },
   {
     id: 3,
@@ -38,6 +40,7 @@ const initialProspects = [
     industry: "Construction",
     producttype: "OGV",
     label: "Prospect",
+
   },
   {
     id: 4,
@@ -46,6 +49,7 @@ const initialProspects = [
     industry: "Health Services",
     producttype: "OGV",
     label: "Customer",
+
   },
   {
     id: 5,
@@ -54,6 +58,7 @@ const initialProspects = [
     industry: "Cosmetics",
     producttype: "IGTe",
     label: "EntityPartner",
+
   },
 ];
 
@@ -108,6 +113,7 @@ const ProspectsPage = () => {
     const searchMatch = companyName.includes(searchTerm.toLowerCase()) || entityName.includes(searchTerm.toLowerCase());
 
   return searchMatch && industryMatch && productMatch && lableMatch && entityMatch;
+
   });
 
   return (
@@ -164,7 +170,7 @@ const ProspectsPage = () => {
           <option value="Shipping and Logistics">Shipping and Logistics</option>
           <option value="Design and Architecture">Design and Architecture</option>
           <option value="Goverment institutes">Goverment institutes</option>
-        </select>
+       </select>
 
         {/* Product Filter  */}
         <select
@@ -177,6 +183,8 @@ const ProspectsPage = () => {
           <option value="IGV">IGV</option>
           <option value="IGTa">IGTa</option>
           <option value="IGTe">IGTe</option>
+
+          {/* Add other products here */}
         </select>
 
         {/* Stage Filter */}
@@ -225,6 +233,7 @@ const ProspectsPage = () => {
             <TableHead>Industry</TableHead>
             <TableHead>Product Type</TableHead>
             {/* <TableHead>Status</TableHead> */}
+
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -241,6 +250,7 @@ const ProspectsPage = () => {
               </TableCell>
               <TableCell>{prospect.industry}</TableCell>
               <TableCell>{prospect.producttype}</TableCell>
+
             </TableRow>
           ))}
         </TableBody>

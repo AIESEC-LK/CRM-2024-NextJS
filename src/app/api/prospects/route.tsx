@@ -4,11 +4,13 @@ import { dbConnect } from "@/app/lib/db";
 import Prospect from "@/app/models/Prospect";
 import { NextResponse } from "next/server";
 
+
 export async function GET() {
   try {
-    await dbConnect(); 
+    await dbConnect();
 
     const prospectsFromDB = await Prospect.find(); // Retrieve all prospects from the database
+
     console.log("Fetched prospects:", prospectsFromDB);
 
     // Return prospects or empty array if none found
