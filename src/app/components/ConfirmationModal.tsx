@@ -41,4 +41,8 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   );
 };
 
+<<<<<<< HEAD
 export default ConfirmationModal;
+=======
+export default ConfirmationModal;
+>>>>>>> origin/main
