@@ -12,7 +12,9 @@ import {
   TableRow,
 } from "@/app/components/ui/table";
 import { Badge } from "@/app/components/ui/badge";
-import { Search, CheckCircle, XCircle, ChevronDown } from "lucide-react";
+
+import { Search, CheckCircle, XCircle, Info, Eye } from "lucide-react";
+
 import {
   Popover,
   PopoverContent,
@@ -30,6 +32,7 @@ interface Request {
   industry: string;
   producttype: string;
   status: "pending" | "approved" | "declined";
+  createdAt: string;
 }
 
 export default function AdminView() {
@@ -53,48 +56,23 @@ export default function AdminView() {
     }
   };
 
-  const handleApprove = async (id: string) => {
-    await updateRequestStatus(id, "approved");
-  };
-
-  const handleDecline = async (id: string) => {
-    await updateRequestStatus(id, "declined");
-  };
-
-  const handleReset = async (id: string) => {
-    await updateRequestStatus(id, "pending");
-  };
-
-  const updateRequestStatus = async (id: string, status: string) => {
-    try {
-      const response = await fetch("/api/admin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id, status }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update request");
-      }
-
-      setRequests((prevRequests) =>
-        prevRequests.map((req) =>
-          req._id === id ? { ...req, status: status as Request["status"] } : req
-        )
-      );
-    } catch (error) {
-      console.error("Error updating request:", error);
-    }
-  };
-
   const filteredRequests = requests.filter(
     (req) =>
       req.entity.toLowerCase().includes(searchTerm.toLowerCase()) ||
       req.industry.toLowerCase().includes(searchTerm.toLowerCase()) ||
       req.producttype.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
   return (
     <div className="container mx-auto pt-0">
@@ -112,90 +90,69 @@ export default function AdminView() {
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead>Time Requested</TableHead>
             <TableHead>Entity</TableHead>
             <TableHead>Company Name</TableHead>
             <TableHead>Industry</TableHead>
             <TableHead>Product Type</TableHead>
-            <TableHead>Status</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {filteredRequests.map((req) => (
             <TableRow key={req._id}>
+              <TableCell>{formatDate(req.createdAt)}</TableCell>
+              <TableCell>{req.entity}</TableCell>
               <TableCell>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="w-full justify-between"
-                    >
-                      {req.entity}
-                      <ChevronDown className="h-4 w-4 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80">
-                    <div className="grid gap-4">
-                      <div className="space-y-2">
-                        <h4 className="font-medium leading-none">
-                          {req.entity}
-                        </h4>
-                        <p className="text-sm text-muted-foreground">
-                          {req.entity || "No additional information available."}
-                        </p>
-                      </div>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              </TableCell>
-              <TableCell>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="w-full justify-between"
-                    >
-                      {req.companyName}
-                      <ChevronDown className="h-4 w-4 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80">
-                    <div className="grid gap-4">
-                      <div className="space-y-5">
-                        <div className="space-y-3">
-                          <h5 className="font-medium">Company Address</h5>
-                          <p>
-                            {req.companyAddress ||
-                              "No additional information available."}
-                          </p>
+                <div className="flex items-center">
+                  {req.companyName}
+                  <div className="ml-auto">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0 ml-2">
+                          <Info className="h-4 w-4" />
+                          <span className="sr-only">Company Info</span>
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-80">
+                        <div className="grid gap-4">
+                          <div className="space-y-2">
+                            <h4 className="font-medium leading-none">
+                              Company Details
+                            </h4>
+                            <p className="text-sm text-muted-foreground">
+                              Address: {req.companyAddress}
+                            </p>
+                          </div>
+                          <div className="space-y-2">
+                            <h4 className="font-medium leading-none">
+                              Contact Person
+                            </h4>
+                            <p className="text-sm text-muted-foreground">
+                              Name: {req.contactPersonName}
+                              <br />
+                              Number: {req.contactPersonNumber}
+                              <br />
+                              Email: {req.contactPersonEmail}
+                            </p>
+                          </div>
                         </div>
-
-                        <div className="space-y-3">
-                          <h5 className="font-medium">Contact Person</h5>
-                          <p>Name : {req.contactPersonName}</p>
-                          <p>Number: {req.contactPersonNumber}</p>
-                          <p>Email : {req.contactPersonEmail}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </PopoverContent>
-                </Popover>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
               </TableCell>
               <TableCell>{req.industry}</TableCell>
               <TableCell>{req.producttype}</TableCell>
               <TableCell>
-                <Badge
-                  variant={
-                    req.status === "approved"
-                      ? "success"
-                      : req.status === "declined"
-                      ? "destructive"
-                      : "default"
-                  }
-                >
-                  {req.status}
-                </Badge>
+                <div className="flex space-x-2">
+                  <Button size="sm" className="bg-gray-400 hover:bg-gray-500">
+                    <Eye className="h-4 w-4 mr-1" />
+                    View
+                  </Button>
+                </div>
               </TableCell>
+
               <TableCell>
                 <div className="flex space-x-2">
                   <Button

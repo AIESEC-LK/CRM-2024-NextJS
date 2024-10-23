@@ -17,11 +17,7 @@ const SideNav = () => {
             href="/dashboard/admin"
             className="flex items-center justify-center p-4 hover:bg-gray-700 rounded"
           >
-            <FontAwesomeIcon
-              icon={faBell}
-              className="h-6 w-6"
-              title="Prospect Requests"
-            />
+            Prospect Requests
           </Link>
           <span className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-max bg-gray-700 text-white text-sm p-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-100">
             Prospect Requests (Admin)
@@ -55,14 +51,10 @@ const SideNav = () => {
         </li>
         <li>
           <Link
-            href="/dashboard/profile"
+            href="/dashboard/entities"
             className="flex items-center justify-center p-4 hover:bg-gray-700 rounded"
           >
-            <FontAwesomeIcon
-              icon={faUser}
-              className="h-6 w-6"
-              title="Update Leads"
-            />
+            Entities
           </Link>
         </li>
         <li>
