@@ -42,7 +42,7 @@ export default function ProspectQueue() {
 
   const fetchRequests = async () => {
     try {
-      const response = await fetch("/api/admin");
+      const response = await fetch("/api/pending_prospects");
       if (!response.ok) {
         throw new Error("Failed to fetch requests");
       }
@@ -184,8 +184,9 @@ export default function ProspectQueue() {
               </TableCell>
               <TableCell>{req.industry}</TableCell>
               <TableCell>{req.producttype}</TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
+              <TableCell>{new Date(req.dateAdded).toLocaleDateString()}</TableCell>
+              <TableCell>{new Date(req.expireDate).toLocaleDateString()}</TableCell>
+
               <TableCell>
                 <div className="flex space-x-2">
                   <Button
