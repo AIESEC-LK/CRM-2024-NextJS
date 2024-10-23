@@ -37,7 +37,6 @@ export default function ProspectQueue() {
 
   useEffect(() => {
     fetchRequests();
-    checkTime(); // Start checking the time
   }, []);
 
   const fetchRequests = async () => {
@@ -65,6 +64,27 @@ export default function ProspectQueue() {
     await updateRequestStatus(id, "pending");
   };
 
+  const handleClone = async (id: string) => {
+    try {
+      const response = await fetch("/api/pending_prospects/clonning", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to clone prospect");
+      }
+
+      // Refresh the request list after cloning
+      fetchRequests();
+    } catch (error) {
+      console.error("Error cloning prospect:", error);
+    }
+  };
+
   const updateRequestStatus = async (id: string, status: string) => {
     try {
       const response = await fetch("/api/admin", {
@@ -89,34 +109,10 @@ export default function ProspectQueue() {
     }
   };
 
-const checkTime = () => {
-  const MIN_HOURS = 0;
-  const MIN_MINUTES = 0;
-  const MAX_HOURS = 1;
-  const MAX_MINUTES = 0;
-  const API_CHECK_TIME = 15 * 60 * 1000; // 15 minutes in milliseconds
-
-  setInterval(() => {
-    const now = new Date();
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-
-    if (
-      (hours >= MIN_HOURS && minutes >= MIN_MINUTES) &&
-      (hours <= MAX_HOURS && minutes <= MAX_MINUTES)
-    ) {
-      console.log("Your time has come");
-    } else {
-      console.log("Please wait until your time");
-    }
-  }, API_CHECK_TIME); // Check every 15 minutes
-};
-
-
   const filteredRequests = requests.filter(
     (req) =>
       req.entity.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      req.companyName.toLowerCase().includes(searchTerm.toLowerCase())  ||
+      req.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       req.companyAddress.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -136,112 +132,48 @@ const checkTime = () => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Entity</TableHead>
+            <TableHead className="w-[200px]">Entity</TableHead>
             <TableHead>Company Name</TableHead>
-            <TableHead>Industry</TableHead>
-            <TableHead>Product Type</TableHead>
-            <TableHead>Date Added</TableHead>
-            <TableHead>Date Expires</TableHead>
+            <TableHead>Address</TableHead>
+            <TableHead>Contact Person</TableHead>
+            <TableHead>Status</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {filteredRequests.map((req) => (
-            <TableRow key={req._id}>
+          {filteredRequests.map((request) => (
+            <TableRow key={request._id}>
+              <TableCell>{request.entity}</TableCell>
+              <TableCell>{request.companyName}</TableCell>
+              <TableCell>{request.companyAddress}</TableCell>
+              <TableCell>{request.contactPersonName}</TableCell>
               <TableCell>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="w-full justify-between"
-                    >
-                      {req.entity}
-                      <ChevronDown className="h-4 w-4 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80">
-                    <div className="grid gap-4">
-                      <div className="space-y-2">
-                        <h4 className="font-medium leading-none">
-                          {req.entity}
-                        </h4>
-                        <p className="text-sm text-muted-foreground">
-                          {req.entity || "No additional information available."}
-                        </p>
-                      </div>
-                    </div>
-                  </PopoverContent>
-                </Popover>
+                <span
+                  className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ${
+                    request.status === "approved"
+                      ? "bg-green-100 text-green-800"
+                      : request.status === "declined"
+                      ? "bg-red-100 text-red-800"
+                      : "bg-yellow-100 text-yellow-800"
+                  }`}
+                >
+                  {request.status}
+                </span>
               </TableCell>
               <TableCell>
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="w-full justify-between"
-                    >
-                      {req.companyName}
-                      <ChevronDown className="h-4 w-4 opacity-50" />
-                    </Button>
+                    <Button variant="outline">Actions</Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-80">
-                    <div className="grid gap-4">
-                      <div className="space-y-5">
-                        <div className="space-y-3">
-                          <h5 className="font-medium">Company Address</h5>
-                          <p>
-                            {req.companyAddress ||
-                              "No additional information available."}
-                          </p>
-                        </div>
-
-                        <div className="space-y-3">
-                          <h5 className="font-medium">Contact Person</h5>
-                          <p>Name : {req.contactPersonName}</p>
-                          <p>Number: {req.contactPersonNumber}</p>
-                          <p>Email : {req.contactPersonEmail}</p>
-                        </div>
-                      </div>
+                  <PopoverContent>
+                    <div className="flex flex-col">
+                      <Button onClick={() => handleClone(request._id)}>Clone</Button>
+                      <Button onClick={() => handleApprove(request._id)}>Approve</Button>
+                      <Button onClick={() => handleDecline(request._id)}>Decline</Button>
+                      <Button onClick={() => handleReset(request._id)}>Reset</Button>
                     </div>
                   </PopoverContent>
                 </Popover>
-              </TableCell>
-              <TableCell>{req.industry}</TableCell>
-              <TableCell>{req.producttype}</TableCell>
-              <TableCell>{new Date(req.dateAdded).toLocaleDateString()}</TableCell>
-              <TableCell>{new Date(req.expireDate).toLocaleDateString()}</TableCell>
-
-              <TableCell>
-                <div className="flex space-x-2">
-                  <Button
-                    size="sm"
-                    onClick={() => handleApprove(req._id)}
-                    disabled={req.status !== "pending"}
-                    className="bg-green-500 hover:bg-green-600"
-                  >
-                    <CheckCircle className="h-4 w-4 mr-1" />
-                    Approve
-                  </Button>
-                  <Button
-                    size="sm"
-                    onClick={() => handleDecline(req._id)}
-                    disabled={req.status !== "pending"}
-                    variant="destructive"
-                    className="bg-red-500 hover:bg-red-600"
-                  >
-                    <XCircle className="h-4 w-4 mr-1" />
-                    Decline
-                  </Button>
-                  {req.status !== "pending" && (
-                    <Button
-                      size="sm"
-                      onClick={() => handleReset(req._id)}
-                      variant="outline"
-                    >
-                      Reset
-                    </Button>
-                  )}
-                </div>
               </TableCell>
             </TableRow>
           ))}

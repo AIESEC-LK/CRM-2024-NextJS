@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     const db = client.db("CRM");
 
 
-    const result = await db.collection("Users").insertOne({
+    const result = await db.collection("Prospects").insertOne({
       entity: 'CS',
       companyName: companyName,
       companyAddress: companyAddress,

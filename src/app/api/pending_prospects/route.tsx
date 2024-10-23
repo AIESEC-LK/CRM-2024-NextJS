@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
 import { ObjectId } from "mongodb";
 
-
 // Get Pending Leads
 export async function GET() {
   try {
@@ -20,15 +19,15 @@ export async function GET() {
   }
 }
 
-// Add Pending Leads
+// Add Pending Lead
 export async function POST(req: Request) {
   try {
-    const { entity, companyName,companyAddress,contactPersonName,contactPersonNumber,contactPersonEmail,comment,industry,producttype} = await req.json();
+    const { entity, companyName, companyAddress, contactPersonName, contactPersonNumber, contactPersonEmail, comment, industry, producttype } = await req.json();
     const client = await clientPromise;
     const db = client.db("CRM");
     const today = new Date();
     const expireDate = new Date();
-    expireDate.setMonth(expireDate.getMonth() + 3); 
+    expireDate.setMonth(expireDate.getMonth() + 3);
 
     const result = await db.collection("Pending_Prospects").insertOne({
       entity: entity,
@@ -39,17 +38,15 @@ export async function POST(req: Request) {
       contactPersonEmail: contactPersonEmail,
       comment: comment,
       industry: industry,
-      producttype:producttype,
+      producttype: producttype,
       status: "pending",
       dateAdded: today,
       expireDate: expireDate
-
     });
 
     if (result.insertedId) {
       return NextResponse.json({ success: true, id: result.insertedId });
     }
-
 
     return NextResponse.json({ success: true });
   } catch (e) {
@@ -61,7 +58,7 @@ export async function POST(req: Request) {
   }
 }
 
-// Remove Expired Leads
+// Remove Pending Leads
 export async function DELETE(req: Request) {
   try {
     const client = await clientPromise;
