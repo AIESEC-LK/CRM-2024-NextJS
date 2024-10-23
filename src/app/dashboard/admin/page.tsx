@@ -12,26 +12,32 @@ import {
   TableRow,
 } from "@/app/components/ui/table";
 import { Badge } from "@/app/components/ui/badge";
-import { Search, CheckCircle, XCircle } from "lucide-react";
-import ConfirmationModal from "@/app/components/ConfirmationModal";
+import { Search, CheckCircle, XCircle, Info, Eye } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/app/components/ui/popover";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfo, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 
 interface Request {
   _id: string;
   entity: string;
   companyName: string;
+  companyAddress: string;
+  contactPersonName: string;
+  contactPersonNumber: string;
+  contactPersonEmail: string;
   industry: string;
   producttype: string;
   status: "pending" | "approved" | "declined";
+  createdAt: string;
 }
 
 export default function AdminView() {
   const [requests, setRequests] = useState<Request[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentAction, setCurrentAction] = useState<
-    "approve" | "decline" | null
-  >(null);
-  const [currentRequestId, setCurrentRequestId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchRequests();
@@ -50,75 +56,23 @@ export default function AdminView() {
     }
   };
 
-  const handleApprove = (id: string) => {
-    setCurrentRequestId(id);
-    setCurrentAction("approve");
-    setIsModalOpen(true);
-  };
-
-  const handleDecline = (id: string) => {
-    setCurrentRequestId(id);
-    setCurrentAction("decline");
-    setIsModalOpen(true);
-  };
-
-  const confirmAction = async () => {
-    if (currentAction && currentRequestId) {
-      try {
-        const response = await fetch("/api/requests", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: currentRequestId,
-            status: currentAction === "approve" ? "approved" : "declined",
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to update request");
-        }
-
-        await fetchRequests(); // Refresh the requests after update
-      } catch (error) {
-        console.error("Error updating request:", error);
-      }
-    }
-    setIsModalOpen(false);
-    setCurrentAction(null);
-    setCurrentRequestId(null);
-  };
-
-  const handleReset = async (id: string) => {
-    try {
-      const response = await fetch("/api/requests", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: id,
-          status: "pending",
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to reset request");
-      }
-
-      await fetchRequests(); // Refresh the requests after update
-    } catch (error) {
-      console.error("Error resetting request:", error);
-    }
-  };
-
   const filteredRequests = requests.filter(
     (req) =>
       req.entity.toLowerCase().includes(searchTerm.toLowerCase()) ||
       req.industry.toLowerCase().includes(searchTerm.toLowerCase()) ||
       req.producttype.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
   return (
     <div className="container mx-auto pt-0">
@@ -136,81 +90,72 @@ export default function AdminView() {
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead>Time Requested</TableHead>
             <TableHead>Entity</TableHead>
             <TableHead>Company Name</TableHead>
             <TableHead>Industry</TableHead>
             <TableHead>Product Type</TableHead>
-            <TableHead>Comments</TableHead>
-            <TableHead>Status</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {filteredRequests.map((req) => (
             <TableRow key={req._id}>
+              <TableCell>{formatDate(req.createdAt)}</TableCell>
               <TableCell>{req.entity}</TableCell>
-              <TableCell>{req.companyName}</TableCell>
+              <TableCell>
+                <div className="flex items-center">
+                  {req.companyName}
+                  <div className="ml-auto">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0 ml-2">
+                          <Info className="h-4 w-4" />
+                          <span className="sr-only">Company Info</span>
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-80">
+                        <div className="grid gap-4">
+                          <div className="space-y-2">
+                            <h4 className="font-medium leading-none">
+                              Company Details
+                            </h4>
+                            <p className="text-sm text-muted-foreground">
+                              Address: {req.companyAddress}
+                            </p>
+                          </div>
+                          <div className="space-y-2">
+                            <h4 className="font-medium leading-none">
+                              Contact Person
+                            </h4>
+                            <p className="text-sm text-muted-foreground">
+                              Name: {req.contactPersonName}
+                              <br />
+                              Number: {req.contactPersonNumber}
+                              <br />
+                              Email: {req.contactPersonEmail}
+                            </p>
+                          </div>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+              </TableCell>
               <TableCell>{req.industry}</TableCell>
               <TableCell>{req.producttype}</TableCell>
-              <TableCell></TableCell>
               <TableCell>
-                <Badge
-                  variant={
-                    req.status === "approved"
-                      ? "success"
-                      : req.status === "declined"
-                      ? "destructive"
-                      : "default"
-                  }
-                >
-                  {req.status}
-                </Badge>
+                <div className="flex space-x-2">
+                  <Button size="sm" className="bg-gray-400 hover:bg-gray-500">
+                    <Eye className="h-4 w-4 mr-1" />
+                    View
+                  </Button>
+                </div>
               </TableCell>
-              {
-                <TableCell>
-                  <div className="flex space-x-2">
-                    <Button
-                      size="sm"
-                      onClick={() => handleApprove(req._id)}
-                      disabled={req.status !== "pending"}
-                      className="bg-green-500 hover:bg-green-600"
-                    >
-                      <CheckCircle className="h-4 w-4 mr-1" />
-                      Approve
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={() => handleDecline(req._id)}
-                      disabled={req.status !== "pending"}
-                      variant="destructive"
-                      className="bg-red-500 hover:bg-red-600"
-                    >
-                      <XCircle className="h-4 w-4 mr-1" />
-                      Decline
-                    </Button>
-                    {req.status !== "pending" && (
-                      <Button
-                        size="sm"
-                        onClick={() => handleReset(req._id)}
-                        variant="outline"
-                      >
-                        Reset
-                      </Button>
-                    )}
-                  </div>
-                </TableCell>
-              }
             </TableRow>
           ))}
         </TableBody>
       </Table>
-
-      <ConfirmationModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onConfirm={confirmAction}
-        action={currentAction!}
-      />
     </div>
   );
 }

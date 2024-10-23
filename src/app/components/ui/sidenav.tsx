@@ -17,11 +17,7 @@ const SideNav = () => {
             href="/dashboard/admin"
             className="flex items-center justify-center p-4 hover:bg-gray-700 rounded"
           >
-            <FontAwesomeIcon
-              icon={faBell}
-              className="h-6 w-6"
-              title="Prospect Requests"
-            />
+            Prospect Requests
           </Link>
         </li>
         <li>
@@ -38,14 +34,10 @@ const SideNav = () => {
         </li>
         <li>
           <Link
-            href="/dashboard/profile"
+            href="/dashboard/entities"
             className="flex items-center justify-center p-4 hover:bg-gray-700 rounded"
           >
-            <FontAwesomeIcon
-              icon={faUser}
-              className="h-6 w-6"
-              title="Update Leads"
-            />
+            Entities
           </Link>
         </li>
         <li>
