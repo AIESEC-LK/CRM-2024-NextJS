@@ -22,8 +22,4 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 );
 Input.displayName = "Input";
 
-<<<<<<< HEAD
 export { Input };
-=======
-export { Input };
->>>>>>> origin/main

@@ -152,39 +152,6 @@ export default function AdminView() {
                   </Button>
                 </div>
               </TableCell>
-
-              <TableCell>
-                <div className="flex space-x-2">
-                  <Button
-                    size="sm"
-                    onClick={() => handleApprove(req._id)}
-                    disabled={req.status !== "pending"}
-                    className="bg-green-500 hover:bg-green-600"
-                  >
-                    <CheckCircle className="h-4 w-4 mr-1" />
-                    Approve
-                  </Button>
-                  <Button
-                    size="sm"
-                    onClick={() => handleDecline(req._id)}
-                    disabled={req.status !== "pending"}
-                    variant="destructive"
-                    className="bg-red-500 hover:bg-red-600"
-                  >
-                    <XCircle className="h-4 w-4 mr-1" />
-                    Decline
-                  </Button>
-                  {req.status !== "pending" && (
-                    <Button
-                      size="sm"
-                      onClick={() => handleReset(req._id)}
-                      variant="outline"
-                    >
-                      Reset
-                    </Button>
-                  )}
-                </div>
-              </TableCell>
             </TableRow>
           ))}
         </TableBody>
