@@ -1,14 +1,14 @@
 // ConfirmationModal.tsx
 import React from "react";
 
-interface ConfirmationModalProps {
+interface ConfirmationModalCompaniesProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
   action: string; // Action could be "approve" or "decline"
 }
 
-const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
+const ConfirmationModalCompanies: React.FC<ConfirmationModalCompaniesProps> = ({
   isOpen,
   onClose,
   onConfirm,
@@ -20,8 +20,11 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white rounded-lg p-6 max-w-sm mx-auto">
         <h2 className="text-lg font-bold mb-4">
-          Are you sure you want to {action} this request?
+          Are you sure you want to {action} this company?
         </h2>
+        {action === "edit" && (
+          <p>Editable</p>
+        )}
         <div className="flex justify-end space-x-2">
           <button
             onClick={onClose}
@@ -41,8 +44,4 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   );
 };
 
-<<<<<<< HEAD
-export default ConfirmationModal;
-=======
-export default ConfirmationModal;
->>>>>>> origin/main
+export default ConfirmationModalCompanies;
