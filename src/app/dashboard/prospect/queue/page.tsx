@@ -11,7 +11,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/app/components/ui/table";
-import { Badge } from "@/app/components/ui/badge";
 import { Search, CheckCircle, XCircle, ChevronDown } from "lucide-react";
 import {
   Popover,
@@ -38,6 +37,7 @@ export default function ProspectQueue() {
 
   useEffect(() => {
     fetchRequests();
+    checkTime(); // Start checking the time
   }, []);
 
   const fetchRequests = async () => {
@@ -89,11 +89,35 @@ export default function ProspectQueue() {
     }
   };
 
+const checkTime = () => {
+  const MIN_HOURS = 0;
+  const MIN_MINUTES = 0;
+  const MAX_HOURS = 1;
+  const MAX_MINUTES = 0;
+  const API_CHECK_TIME = 15 * 60 * 1000; // 15 minutes in milliseconds
+
+  setInterval(() => {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+
+    if (
+      (hours >= MIN_HOURS && minutes >= MIN_MINUTES) &&
+      (hours <= MAX_HOURS && minutes <= MAX_MINUTES)
+    ) {
+      console.log("Your time has come");
+    } else {
+      console.log("Please wait until your time");
+    }
+  }, API_CHECK_TIME); // Check every 15 minutes
+};
+
+
   const filteredRequests = requests.filter(
     (req) =>
       req.entity.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      req.industry.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      req.producttype.toLowerCase().includes(searchTerm.toLowerCase())
+      req.companyName.toLowerCase().includes(searchTerm.toLowerCase())  ||
+      req.companyAddress.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
