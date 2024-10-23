@@ -72,21 +72,22 @@ const ProspectsPage = () => {
   const [entity, setEntity] = useState("");
 
   const entityColors: { [key: string]: string } = {
-    "Colombo South": "bg-blue-500",      
-    "Colombo North": "bg-yellow-500",     
-    "Colombo Central": "bg-orange-500",    
-    "Jayawardenapura": "bg-red-500",       
-    "Rajarata": "bg-purple-500",           
-    "Ruhuna": "bg-pink-500",              
-    "NIBM": "bg-teal-500",                 
-    "NSBM": "bg-green-500",                
-    "SLIIT": "bg-indigo-500",              
-    "Kandy": "bg-gray-500",                
-    "MC": "bg-lime-500",                   
-    "MC 01": "bg-emerald-500",             
-    "MC 02": "bg-cyan-500",                
-    "MC 03": "bg-sky-500",                 
-};
+
+    "Colombo South": "bg-blue-500",
+    "Colombo North": "bg-yellow-500",
+    "Colombo Central": "bg-orange-500",
+    Jayawardenapura: "bg-red-500",
+    Rajarata: "bg-purple-500",
+    Ruhuna: "bg-pink-500",
+    NIBM: "bg-teal-500",
+    NSBM: "bg-green-500",
+    SLIIT: "bg-indigo-500",
+    Kandy: "bg-gray-500",
+    MC: "bg-lime-500",
+    "MC 01": "bg-emerald-500",
+    "MC 02": "bg-cyan-500",
+    "MC 03": "bg-sky-500",
+  };
 
 
   // Filter prospects based on search term and other filters
@@ -164,7 +165,6 @@ const ProspectsPage = () => {
           <option value="apparel">Shipping and Logistics</option>
           <option value="apparel">Design and Architecture</option>
           <option value="apparel">Goverment institutes</option>
-
         </select>
 
         {/* Product Filter  */}
@@ -188,10 +188,11 @@ const ProspectsPage = () => {
         >
           <option value="">Select Stage</option>
           <option value="unoccupied">Unoccupied</option>
-           <option value="prospect">Prospect</option>
-           <option value="lead">Lead</option>
-           <option value="customer">Customer</option>
-           <option value="promoter">Promoter</option>
+          <option value="prospect">Prospect</option>
+          <option value="lead">Lead</option>
+          <option value="customer">Customer</option>
+          <option value="promoter">Promoter</option>
+
         </select>
 
         {/* Entity Filter */}
@@ -221,7 +222,9 @@ const ProspectsPage = () => {
       <Table>
         <TableHeader>
           <TableRow>
-          <TableHead>Company Name</TableHead>
+
+            <TableHead>Company Name</TableHead>
+
             <TableHead>Entity</TableHead>
             <TableHead>Industry</TableHead>
             <TableHead>Product Type</TableHead>
