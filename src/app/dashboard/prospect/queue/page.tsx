@@ -10,7 +10,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/app/components/ui/table";
-import { Badge } from "@/app/components/ui/badge";
 import { Search, Info } from "lucide-react";
 import {
   Popover,
@@ -30,6 +29,8 @@ interface Request {
   producttype: string;
   status: "pending" | "approved" | "declined";
   createdAt: string;
+  dateAdded: string;
+  expireDate: string;
 }
 
 export default function ProspectQueue() {
@@ -40,6 +41,7 @@ export default function ProspectQueue() {
     fetchRequests();
   }, []);
 
+  // Fetch pending prospects from API
   const fetchRequests = async () => {
     try {
       const response = await fetch("/api/pending_prospects");
@@ -50,6 +52,36 @@ export default function ProspectQueue() {
       setRequests(data);
     } catch (error) {
       console.error("Error fetching requests:", error);
+    }
+  };
+
+  // Automatically clone each request by calling the API
+  useEffect(() => {
+    if (requests.length > 0) {
+      requests.forEach((request) => handleClone(request.companyName));
+    }
+  }, [requests]);
+
+  // Function to call the clone API
+  const handleClone = async (companyName: string) => {
+    try {
+      const response = await fetch("/api/pending_prospects/clonning", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ companyName }), // Pass companyName to clone the prospect
+      });
+
+      if (!response.ok) {
+        console.error(`Failed to clone prospect for ${companyName}`);
+        return;
+      }
+
+      const data = await response.json();
+      console.log(`Prospect for ${companyName} cloned successfully:`, data);
+    } catch (error) {
+      console.error(`Error cloning prospect for ${companyName}:`, error);
     }
   };
 
