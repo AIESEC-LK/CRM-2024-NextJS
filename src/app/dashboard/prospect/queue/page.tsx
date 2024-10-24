@@ -31,8 +31,13 @@ export default function ProspectQueue() {
 
   useEffect(() => {
     fetchRequests();
-  }, []);
+    const intervalId = setInterval(() => {
+      deleteExpiredRequests();
+      fetchRequests(); // Refresh the list of requests
+    }, 60000); // Check for expired requests every minute
 
+    return () => clearInterval(intervalId); // Cleanup interval on unmount
+  }, []);
 
   const fetchRequests = async () => {
     try {
@@ -47,6 +52,22 @@ export default function ProspectQueue() {
     }
   };
 
+  const deleteExpiredRequests = async () => {
+    try {
+      const response = await fetch("/api/pending_prospects", {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error("Failed to delete expired requests");
+      }
+      const result = await response.json();
+      if (result.deletedCount) {
+        console.log(`Deleted ${result.deletedCount} expired requests.`);
+      }
+    } catch (error) {
+      console.error("Error deleting expired requests:", error);
+    }
+  };
 
   const filteredRequests = requests.filter(
     (req) =>
