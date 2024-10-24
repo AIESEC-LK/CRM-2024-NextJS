@@ -10,7 +10,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/app/components/ui/table";
-import { Search } from "lucide-react";
+import { Badge } from "@/app/components/ui/badge";
+import { Search, Info } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/app/components/ui/popover";
 
 interface Request {
   _id: string;
@@ -23,6 +29,7 @@ interface Request {
   industry: string;
   producttype: string;
   status: "pending" | "approved" | "declined";
+  createdAt: string;
 }
 
 export default function ProspectQueue() {
@@ -31,12 +38,6 @@ export default function ProspectQueue() {
 
   useEffect(() => {
     fetchRequests();
-    const intervalId = setInterval(() => {
-      deleteExpiredRequests();
-      fetchRequests(); // Refresh the list of requests
-    }, 60000); // Check for expired requests every minute
-
-    return () => clearInterval(intervalId); // Cleanup interval on unmount
   }, []);
 
   const fetchRequests = async () => {
@@ -52,29 +53,23 @@ export default function ProspectQueue() {
     }
   };
 
-  const deleteExpiredRequests = async () => {
-    try {
-      const response = await fetch("/api/pending_prospects", {
-        method: "DELETE",
-      });
-      if (!response.ok) {
-        throw new Error("Failed to delete expired requests");
-      }
-      const result = await response.json();
-      if (result.deletedCount) {
-        console.log(`Deleted ${result.deletedCount} expired requests.`);
-      }
-    } catch (error) {
-      console.error("Error deleting expired requests:", error);
-    }
-  };
-
   const filteredRequests = requests.filter(
     (req) =>
       req.entity.toLowerCase().includes(searchTerm.toLowerCase()) ||
       req.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       req.companyAddress.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
   return (
     <div className="container mx-auto pt-0">
@@ -92,18 +87,58 @@ export default function ProspectQueue() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[200px]">Entity</TableHead>
+            <TableHead>Entity</TableHead>
             <TableHead>Company Name</TableHead>
             <TableHead>Address</TableHead>
             <TableHead>Contact Person</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead>Date Added</TableHead>
+            <TableHead>Date Expires</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {filteredRequests.map((request) => (
             <TableRow key={request._id}>
               <TableCell>{request.entity}</TableCell>
-              <TableCell>{request.companyName}</TableCell>
+              <TableCell>
+                <div className="flex items-center">
+                  {request.companyName}
+                  <div className="ml-auto">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <span className="text-gray-400 cursor-pointer">
+                          <Info className="h-4 w-4" />
+                          <span className="sr-only">Company Info</span>
+                        </span>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-80">
+                        <div className="grid gap-4">
+                          <div className="space-y-2">
+                            <h4 className="font-medium leading-none">
+                              Company Details
+                            </h4>
+                            <p className="text-sm text-muted-foreground">
+                              Address: {request.companyAddress}
+                            </p>
+                          </div>
+                          <div className="space-y-2">
+                            <h4 className="font-medium leading-none">
+                              Contact Person
+                            </h4>
+                            <p className="text-sm text-muted-foreground">
+                              Name: {request.contactPersonName}
+                              <br />
+                              Number: {request.contactPersonNumber}
+                              <br />
+                              Email: {request.contactPersonEmail}
+                            </p>
+                          </div>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+              </TableCell>
               <TableCell>{request.companyAddress}</TableCell>
               <TableCell>{request.contactPersonName}</TableCell>
               <TableCell>
@@ -119,6 +154,8 @@ export default function ProspectQueue() {
                   {request.status}
                 </span>
               </TableCell>
+              <TableCell>{formatDate(request.dateAdded)}</TableCell>
+              <TableCell>{formatDate(request.expireDate)}</TableCell>
             </TableRow>
           ))}
         </TableBody>
