@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import {
   Table,
@@ -11,12 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/app/components/ui/table";
-import { Search, CheckCircle, XCircle, ChevronDown } from "lucide-react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/app/components/ui/popover";
+import { Search } from "lucide-react";
 
 interface Request {
   _id: string;
@@ -39,6 +33,7 @@ export default function ProspectQueue() {
     fetchRequests();
   }, []);
 
+
   const fetchRequests = async () => {
     try {
       const response = await fetch("/api/pending_prospects");
@@ -52,62 +47,6 @@ export default function ProspectQueue() {
     }
   };
 
-  const handleApprove = async (id: string) => {
-    await updateRequestStatus(id, "approved");
-  };
-
-  const handleDecline = async (id: string) => {
-    await updateRequestStatus(id, "declined");
-  };
-
-  const handleReset = async (id: string) => {
-    await updateRequestStatus(id, "pending");
-  };
-
-  const handleClone = async (id: string) => {
-    try {
-      const response = await fetch("/api/pending_prospects/clonning", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to clone prospect");
-      }
-
-      // Refresh the request list after cloning
-      fetchRequests();
-    } catch (error) {
-      console.error("Error cloning prospect:", error);
-    }
-  };
-
-  const updateRequestStatus = async (id: string, status: string) => {
-    try {
-      const response = await fetch("/api/admin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id, status }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update request");
-      }
-
-      setRequests((prevRequests) =>
-        prevRequests.map((req) =>
-          req._id === id ? { ...req, status: status as Request["status"] } : req
-        )
-      );
-    } catch (error) {
-      console.error("Error updating request:", error);
-    }
-  };
 
   const filteredRequests = requests.filter(
     (req) =>
@@ -137,7 +76,6 @@ export default function ProspectQueue() {
             <TableHead>Address</TableHead>
             <TableHead>Contact Person</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -159,21 +97,6 @@ export default function ProspectQueue() {
                 >
                   {request.status}
                 </span>
-              </TableCell>
-              <TableCell>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button variant="outline">Actions</Button>
-                  </PopoverTrigger>
-                  <PopoverContent>
-                    <div className="flex flex-col">
-                      <Button onClick={() => handleClone(request._id)}>Clone</Button>
-                      <Button onClick={() => handleApprove(request._id)}>Approve</Button>
-                      <Button onClick={() => handleDecline(request._id)}>Decline</Button>
-                      <Button onClick={() => handleReset(request._id)}>Reset</Button>
-                    </div>
-                  </PopoverContent>
-                </Popover>
               </TableCell>
             </TableRow>
           ))}

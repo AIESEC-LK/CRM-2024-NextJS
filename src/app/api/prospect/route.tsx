@@ -6,7 +6,7 @@ export async function GET() {
   try {
     const client = await clientPromise;
     const db = client.db("CRM");
-    const requests = await db.collection("Users").find({}).toArray();
+    const requests = await db.collection("Prospects").find({}).toArray();
 
     return NextResponse.json(requests);
   } catch (e) {

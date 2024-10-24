@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
 import { ObjectId } from "mongodb";
 
-// Get Pending Leads
+// Get Pending Prospects
 export async function GET() {
   try {
     const client = await clientPromise;
@@ -19,7 +19,7 @@ export async function GET() {
   }
 }
 
-// Add Pending Lead
+// Add Pending Prospect
 export async function POST(req: Request) {
   try {
     const { entity, companyName, companyAddress, contactPersonName, contactPersonNumber, contactPersonEmail, comment, industry, producttype } = await req.json();
@@ -58,7 +58,7 @@ export async function POST(req: Request) {
   }
 }
 
-// Remove Pending Leads
+// Remove Pending Prospect
 export async function DELETE(req: Request) {
   try {
     const client = await clientPromise;
