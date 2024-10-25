@@ -111,8 +111,5 @@ export {
   TableRow,
   TableCell,
   TableCaption,
-<<<<<<< HEAD
+
 };
-=======
-};
->>>>>>> origin/main
