@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { ObjectId } from "mongodb";
 
 export async function GET() {
@@ -20,6 +21,7 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { entity, companyName,companyAddress,contactPersonName,contactPersonNumber,contactPersonEmail,comment,industry,producttype,} = await req.json();
     const client = await clientPromise;
     const db = client.db("CRM");
