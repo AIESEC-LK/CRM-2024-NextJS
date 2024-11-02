@@ -17,6 +17,9 @@ const Page: React.FC = () => {
   });
   const [searchResults, setSearchResults] = useState<IRequest[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  console.log("Dropdown visibility:", showDropdown, "Search results:", searchResults);
+  // const [suggestedPartnership, setSuggestedPartnership] = useState("");
+
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -34,10 +37,9 @@ const Page: React.FC = () => {
   const fetchCompanies = async (query: string) => {
     try {
       const res = await fetch(`/api/prospects/search?companyName=${query}`);
-      console.log("Fetching companies with query:", query);
       if (res.ok) {
         const data = await res.json();
-        console.log("Fetched data:", data); 
+        // console.log("Fetched data:", data); 
         setSearchResults(data);
         setShowDropdown(data.length > 0);
       }
@@ -66,6 +68,11 @@ const Page: React.FC = () => {
       partnership: company.partnership || "",
     });
     setShowDropdown(false);
+    console.log("Updated Form Data:", formData);
+    // const suggestedPartnership =
+    // company.partnership === "event" ? "product" : "event";
+
+  // setSuggestedPartnership(suggestedPartnership);
   };
   
   
@@ -84,7 +91,7 @@ const Page: React.FC = () => {
 
       if (res.ok) {
         // Handle success (e.g., display success message, reset form)
-        console.log("Form submitted successfully!");
+        // console.log("Form submitted successfully!");
       } else {
         // Handle error response
         console.error("Form submission failed.");
@@ -132,11 +139,16 @@ const Page: React.FC = () => {
                   onClick={() => handleSelectCompany(result)}
                   className="p-2 cursor-pointer hover:bg-blue-500 hover:text-white"
                 >
-                  {result.companyName}
+                  {result.companyName} - Current Partnership: {result.partnership || "None"}
                 </li>
               ))}
             </ul>
-          )}-
+          )}
+          {/* {suggestedPartnership && (
+          <p className="text-sm text-gray-600 mt-1">
+            Suggested Partnership: Try a <strong>{suggestedPartnership}</strong> partnership.
+          </p>
+        )} */}
         </div>
         <div className="mb-4">
           <label htmlFor="companyAddress" className="block text-sm font-medium mb-1">

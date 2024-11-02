@@ -11,4 +11,6 @@ export interface IRequest {
     comment?: string;
     status: "pending" | "approved" | "declined";
     partnership: string;
+    dateAdded?: Date; 
+    expireDate?: Date;
   }

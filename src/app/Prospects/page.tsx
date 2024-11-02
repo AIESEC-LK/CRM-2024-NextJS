@@ -18,7 +18,7 @@ const initialProspects = [
   {
     id: 1,
     entity: "Jayawardenapura",
-    companyName: "A",
+    companyName: "WSO2",
     industry: "NGO",
     producttype: "IGTa",
     label: "Prospect",
@@ -27,7 +27,7 @@ const initialProspects = [
   {
     id: 2,
     entity: "Colombo North",
-    companyName: "B",
+    companyName: "Codegen",
     industry: "Tourism",
     producttype: "IGTe",
     label: "Promoter",
@@ -36,8 +36,8 @@ const initialProspects = [
   {
     id: 3,
     entity: "Colombo South",
-    companyName: "C",
-    industry: "Construction",
+    companyName: "Rootcode",
+    industry: "Apparel",
     producttype: "OGV",
     label: "Lead",
     partnership: "Products",
@@ -45,7 +45,7 @@ const initialProspects = [
   {
     id: 4,
     entity: "SLIIT",
-    companyName: "D",
+    companyName: "99x",
     industry: "Health Services",
     producttype: "OGV",
     label: "Customer",
@@ -54,8 +54,8 @@ const initialProspects = [
   {
     id: 5,
     entity: "Colombo South",
-    companyName: "E",
-    industry: "Cosmetics",
+    companyName: "Virtusa",
+    industry: "Beauty and cosmetics",
     producttype: "IGTe",
     label: "EntityPartner",
     partnership: "Products",
@@ -100,7 +100,7 @@ const ProspectsPage = () => {
     Promoter: "bg-red-500 text-white",
     Customer: "bg-cyan-800 text-white",
     EntityPartner: "bg-teal-600 text-white",
-    Lead: "bg-yellow-400 text-white"
+    Lead: "bg-yellow-400 text-white",
   };
 
   const handleRowClick = (id: number) => {
@@ -108,21 +108,27 @@ const ProspectsPage = () => {
   };
 
   // Filter prospects based on search term and other filters
-  const filteredProspects = prospects.filter((prospect) => {
-    const companyName = prospect.companyName
-      ? prospect.companyName.toLowerCase()
-      : "";
-    const industryMatch = industry ? prospect.industry === industry : true;
-    const productMatch = product ? prospect.producttype === product : true;
-    const lableMatch = lable ? prospect.label === lable : true;
-    const entityMatch = entity ? prospect.entity === entity : true;
+  const filteredProspects = prospects
+    .filter((prospect) => {
+      const companyName = prospect.companyName
+        ? prospect.companyName.toLowerCase()
+        : "";
+      const industryMatch = industry ? prospect.industry === industry : true;
+      const productMatch = product ? prospect.producttype === product : true;
+      const lableMatch = lable ? prospect.label === lable : true;
+      const entityMatch = entity ? prospect.entity === entity : true;
 
-    const searchMatch = companyName.includes(searchTerm.toLowerCase());
+      const searchMatch = companyName.includes(searchTerm.toLowerCase());
 
-    return (
-      searchMatch && industryMatch && productMatch && lableMatch && entityMatch
-    );
-  });
+      return (
+        searchMatch &&
+        industryMatch &&
+        productMatch &&
+        lableMatch &&
+        entityMatch
+      );
+    })
+    .sort((a, b) => a.companyName.localeCompare(b.companyName));
 
   return (
     <div className="container mx-auto p-10">
@@ -261,7 +267,9 @@ const ProspectsPage = () => {
                 {prospect.partnership === "Events" && (
                   <>
                     <div
-                      className={`rounded-lg ${entityColors[prospect.entity]} text-white text-lg font-normal px-4 py-4`}
+                      className={`rounded-lg ${
+                        entityColors[prospect.entity]
+                      } text-white text-lg font-normal px-4 py-4`}
                     >
                       {prospect.entity}
                     </div>
@@ -274,23 +282,17 @@ const ProspectsPage = () => {
                     </span>
                   </>
                 )}
-
                 {expandedEntity === prospect.id &&
                   prospect.partnership === "Events" && (
-                    <div className="flex flex-col space-y-2 mt-4">
-                      <div className="flex justify-center space-x-4">
-                        {productNames.map((product) => (
-                          <div
-                            key={product}
-                            className={`px-4 py-2 rounded-lg text-black ${
-                              product === prospect.producttype
-                                ? "bg-blue-500"
-                                : "bg-gray-300"
-                            }`}
-                          >
-                            {product}
-                          </div>
-                        ))}
+                    <div className="flex justify-center mt-4">
+                      <div
+                        key={product}
+                        className={`px-4 py-2 rounded-lg text-black ${
+                          product === prospect.producttype? "bg-blue-500": "bg-blue-500"
+                        }`}
+                      >
+                        {product}
+                        Events
                       </div>
                     </div>
                   )}
@@ -301,7 +303,9 @@ const ProspectsPage = () => {
                 {prospect.partnership === "Products" && (
                   <>
                     <div
-                      className={`rounded-lg ${entityColors[prospect.entity]} text-white text-lg font-normal px-4 py-4`}
+                      className={`rounded-lg ${
+                        entityColors[prospect.entity]
+                      } text-white text-lg font-normal px-4 py-4`}
                     >
                       {prospect.entity}
                     </div>
@@ -314,7 +318,6 @@ const ProspectsPage = () => {
                     </span>
                   </>
                 )}
-
                 {expandedEntity === prospect.id &&
                   prospect.partnership === "Products" && (
                     <div className="flex flex-col space-y-2 mt-2">
