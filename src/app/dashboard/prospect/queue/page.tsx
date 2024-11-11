@@ -37,6 +37,10 @@ export default function ProspectQueue() {
   const [requests, setRequests] = useState<Request[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
+  function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
   useEffect(() => {
     fetchRequests();
   }, []);
@@ -56,11 +60,18 @@ export default function ProspectQueue() {
   };
 
   // Automatically clone each request by calling the API
-  useEffect(() => {
+useEffect(() => {
+  const cloneRequests = async () => {
     if (requests.length > 0) {
-      requests.forEach((request) => handleClone(request.companyName));
+      for (const request of requests) {
+        await handleClone(request.companyName);
+        await sleep(1000); // 1 second delay
+      }
     }
-  }, [requests]);
+  };
+
+  cloneRequests();
+}, [requests]);
 
   // Function to call the clone API
   const handleClone = async (companyName: string) => {
