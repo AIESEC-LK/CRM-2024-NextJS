@@ -8,7 +8,7 @@ export async function PATCH(req: Request) {
     const client = await clientPromise;
     const db = client.db(process.env.DB_NAME);
 
-    const result = await db.collection("Entities").updateOne(
+    const result = await db.collection("Products").updateOne(
       { _id: new ObjectId(id) },
       {
         $set: {
