@@ -8,7 +8,7 @@ export async function DELETE(req: Request) {
     const client = await clientPromise;
     const db = client.db(process.env.DB_NAME);
 
-    const result = await db.collection("Prospects").deleteOne({ _id: new ObjectId(id) });
+    const result = await db.collection("Companies").deleteOne({ _id: new ObjectId(id) });
 
     if (result.deletedCount > 0) {
       return NextResponse.json({ success: true });
