@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const {companyName,companyAddress,contactPersonName,contactPersonNumber,contactPersonEmail,comment,industry} = await req.json();
+    const {companyName,companyAddress,contactPersonName,contactPersonNumber,contactPersonEmail,comment,industry_id} = await req.json();
     const client = await clientPromise;
     const db = client.db(process.env.DB_NAME);
 
@@ -15,7 +15,7 @@ export async function POST(req: Request) {
       contactPersonNumber: contactPersonNumber,
       contactPersonEmail: contactPersonEmail,
       comment: comment,
-      industry: industry,
+      industry_id: industry_id,
       status: "pending",
 
     });

@@ -4,7 +4,7 @@ import { ObjectId } from "mongodb";
 
 export async function PATCH(req: Request) {
   try {
-    const { id, companyName, companyAddress, contactPersonName, contactPersonNumber, contactPersonEmail, comment, industry } = await req.json();
+    const { id, companyName, companyAddress, contactPersonName, contactPersonNumber, contactPersonEmail, comment, industry_id } = await req.json();
     const client = await clientPromise;
     const db = client.db(process.env.DB_NAME);
 
@@ -18,7 +18,7 @@ export async function PATCH(req: Request) {
           contactPersonNumber,
           contactPersonEmail,
           comment,
-          industry
+          industry_id
         }
       }
     );
