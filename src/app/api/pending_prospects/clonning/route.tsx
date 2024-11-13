@@ -57,6 +57,34 @@ export async function PUT(req: Request) {
         return NextResponse.json({
           message: "Prospect updated and transferred successfully",
         });
+      } else if (pendingProspect.producttype === "event" && existingProspect.producttype !== "event") {
+        // Update the existing prospect with data from the pending prospect
+        await db.collection("Prospects").updateOne(
+          { _id: existingProspect._id },
+          {
+            $set: {
+              entity: pendingProspect.entity,
+              companyName: pendingProspect.companyName,
+              companyAddress: pendingProspect.companyAddress,
+              contactPersonName: pendingProspect.contactPersonName,
+              contactPersonNumber: pendingProspect.contactPersonNumber,
+              contactPersonEmail: pendingProspect.contactPersonEmail,
+              comment: pendingProspect.comment,
+              industry: pendingProspect.industry,
+              producttype: pendingProspect.producttype,
+              status: "approved", // Set status to approved upon transfer
+              dateAdded: pendingProspect.dateAdded,
+              expireDate: pendingProspect.expireDate,
+            },
+          }
+        );
+
+        // Remove the prospect from the pending prospects collection
+        await db.collection("Pending_Prospects").deleteOne({ companyName });
+
+        return NextResponse.json({
+          message: "Prospect updated and transferred successfully",
+        });
       } else {
         return NextResponse.json(
           { message: "Prospect already exists with entity and producttype" },
