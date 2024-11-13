@@ -6,7 +6,7 @@ export async function GET() {
   try {
     const client = await clientPromise;
     const db = client.db("CRM");
-    const requests = await db.collection("Users").find({}).toArray();
+    const requests = await db.collection("Prospects").find({}).toArray();
 
     return NextResponse.json(requests);
   } catch (e) {
@@ -25,8 +25,8 @@ export async function POST(req: Request) {
     const db = client.db("CRM");
 
 
-    const result = await db.collection("Users").insertOne({
-      entity: 'CS',
+    const result = await db.collection("Prospects").insertOne({
+      entity: entity,
       companyName: companyName,
       companyAddress: companyAddress,
       contactPersonName: contactPersonName,

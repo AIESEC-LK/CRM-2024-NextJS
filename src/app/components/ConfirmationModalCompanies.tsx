@@ -1,8 +1,6 @@
 // ConfirmationModal.tsx
 import React from "react";
 import { Input } from "./ui/input";
-import { Select } from "./ui/select";
-import { BULK_COMPANY_STATUSES } from "../lib/values";
 
 interface ConfirmationModalCompaniesProps {
   isOpen: boolean;
@@ -33,7 +31,6 @@ const ConfirmationModalCompanies: React.FC<ConfirmationModalCompaniesProps> = ({
             <Input placeholder="Company Email" className="mb-4" value={values[0][1]}/>
             <Input placeholder="Company Phone" className="mb-4" value={values[0][2]}/>
             <Input placeholder="Company Address" className="mb-4" value={values[0][3]}/>
-            <Select options={BULK_COMPANY_STATUSES}/>
           </>
 
         )}

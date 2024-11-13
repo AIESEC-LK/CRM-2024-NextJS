@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/app/components/ui/table";                   // Table Component
 import { Badge } from "@/app/components/ui/badge";    // Badge Component
-import { Search, CheckCircle, XCircle, XSquare, Pencil, ArrowUp01, ArrowUp, ArrowUpAz, FileIcon } from "lucide-react";  //  Icon List
+import { Search, XCircle, Pencil, FileIcon } from "lucide-react";  //  Icon List
 import ConfirmationModalCompanies from "@/app/components/ConfirmationModalCompanies"; // Confirm Model Companies
 
 // Lead Interface
@@ -51,7 +51,7 @@ export default function UpdateLeads() {
   const [currentRequestId, setCurrentRequestId] = useState<number | null>(null);
   const [currentRequestCompany, setCurrentRequestCompany] = useState<SelectedCompany | null>(null);
 
-  const handleApprove = (id: number) => {
+  const handleApprove = (id: number, company_name: string, company_email: string, company_phone: string, company_address: string, company_status: string) => {
     setCurrentRequestId(id);
     setCurrentAction("save");
     setIsModalOpen(true);
@@ -64,13 +64,13 @@ export default function UpdateLeads() {
 
 const handleEdit = (id: number, company_name: string, company_email: string, company_phone: string, company_address: string, company_status: string) => {
   setCurrentRequestId(id);
-  let selectedCompany = [
+    let selectedCompany = [
     company_name,
     company_email,
     company_phone,
     company_address,
-   company_status,
-  ]; 
+    company_status,
+  ];
 
   //console.log(selectedCompany)
   setCurrentRequestCompany(selectedCompany)
