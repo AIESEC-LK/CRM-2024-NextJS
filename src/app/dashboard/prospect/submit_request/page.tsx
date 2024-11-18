@@ -1,11 +1,11 @@
-"use client"; // Enable client-side rendering
+"use client";
 
 import React, { useState } from 'react';
-import ConfirmationModal from "@/app/components/ConfirmationModal";
+import { IRequest } from '@/app/models/RequestTypes';
 
-const page: React.FC = () => {
+const Page: React.FC = () => {
   const [formData, setFormData] = useState({
-    companyName: '',
+    name: '',
     companyAddress: '',
     contactPersonName: '',
     contactPersonNumber: '',
@@ -13,16 +13,71 @@ const page: React.FC = () => {
     industry: '',
     producttype: '',
     comment: '',
+    partnership:'',
   });
+  const [searchResults, setSearchResults] = useState<IRequest[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  console.log("Dropdown visibility:", showDropdown, "Search results:", searchResults);
+  // const [suggestedPartnership, setSuggestedPartnership] = useState("");
 
-  const handleChange = (e: { target: { name: any; value: any; }; }) => {
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+    if (name === "name" && value) {
+      fetchCompanies(value);
+    } else {
+      setShowDropdown(false);
+    }
   };
 
-  const handleSubmit = async (e: { preventDefault: () => void; }) => {
+  const fetchCompanies = async (query: string) => {
+    try {
+      const res = await fetch(`/api/prospects/search?companyName=${query}`);
+      if (res.ok) {
+        const data = await res.json();
+        // console.log("Fetched data:", data); 
+        setSearchResults(data);
+        setShowDropdown(data.length > 0);
+      }
+    } catch (error) {
+      console.error("Error fetching companies:", error);
+    }
+  };
+
+  // const handleSelectCompany = (name: string) => {
+  //   setFormData((prev) => ({ ...prev, name: name }));
+  //   setShowDropdown(false);
+  // };
+
+  const handleSelectCompany = (company: IRequest) => {
+    console.log("Selected Company:", company);
+    setFormData({
+      ...formData,
+      name: company.companyName,
+      companyAddress: company.companyAddress || "",
+      contactPersonName: company.contactPersonName,
+      contactPersonNumber: company.contactPersonNumber || "",
+      contactPersonEmail: company.contactPersonEmail || "",
+      industry: company.industry,
+      producttype: company.producttype,
+      comment: company.comment || "",
+      partnership: company.partnership || "",
+    });
+    setShowDropdown(false);
+    console.log("Updated Form Data:", formData);
+    // const suggestedPartnership =
+    // company.partnership === "event" ? "product" : "event";
+
+  // setSuggestedPartnership(suggestedPartnership);
+  };
+  
+  
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
@@ -36,7 +91,7 @@ const page: React.FC = () => {
 
       if (res.ok) {
         // Handle success (e.g., display success message, reset form)
-        console.log("Form submitted successfully!");
+        // console.log("Form submitted successfully!");
       } else {
         // Handle error response
         console.error("Form submission failed.");
@@ -63,21 +118,38 @@ const page: React.FC = () => {
       <form onSubmit={handleSubmit} className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg">
         <h2 className="text-xl font-semibold mb-6">Add New Prospect Request</h2>
 
-        <div className="mb-4">
-          <label htmlFor="companyName" className="block text-sm font-medium mb-1">
+        <div className="mb-4 relative">
+          <label htmlFor="name" className="block text-sm font-medium mb-1">
             Company Name
           </label>
           <input
-            id="companyName"
+            id="name"
             type="text"
-            name="companyName"
-            value={formData.companyName}
+            name="name"
+            value={formData.name}
             onChange={handleChange}
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
+          {showDropdown && (
+            <ul className="absolute bg-white border border-gray-300 rounded-md mt-1 w-full max-h-40 overflow-y-auto">
+              {searchResults.map((result) => (
+                <li
+                  key={result._id}
+                  onClick={() => handleSelectCompany(result)}
+                  className="p-2 cursor-pointer hover:bg-blue-500 hover:text-white"
+                >
+                  {result.companyName} - Current Partnership: {result.partnership || "None"}
+                </li>
+              ))}
+            </ul>
+          )}
+          {/* {suggestedPartnership && (
+          <p className="text-sm text-gray-600 mt-1">
+            Suggested Partnership: Try a <strong>{suggestedPartnership}</strong> partnership.
+          </p>
+        )} */}
         </div>
-
         <div className="mb-4">
           <label htmlFor="companyAddress" className="block text-sm font-medium mb-1">
             Company Address
@@ -206,4 +278,4 @@ const page: React.FC = () => {
   );
 };
 
-export default page;
+export default Page;
