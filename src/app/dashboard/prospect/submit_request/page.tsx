@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { IRequest } from '@/app/models/RequestTypes';
-import { fetchProducts } from './functions';
+import { fetchProducts,fetchIndustry } from './functions';
 
 interface Product {
   _id: string;
@@ -10,21 +10,38 @@ interface Product {
   abbravation: string;
 }
 
+interface Industry {
+  _id: string;
+  industryName: string;
+}
+
 const Page: React.FC = () => {
 
   const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [productsLoading, setProductsLoading] = useState<boolean>(true);
+
+  const [industries, setIndustries] = useState<Industry[]>([]);
+  const [industriesLoading, setIndustriesLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const loadProducts = async () => {
-      setLoading(true);
+      setProductsLoading(true);
       const data = await fetchProducts();
       setProducts(data);
-      setLoading(false);
+      setProductsLoading(false);
+    };
+
+    const loadIndustries = async () => {
+      setIndustriesLoading(true);
+      const data2 = await fetchIndustry();
+      setIndustries(data2);
+      setIndustriesLoading(false);
     };
 
     loadProducts();
+    loadIndustries();
   }, []);
+
 
   const [formData, setFormData] = useState({
     name: '',
@@ -125,12 +142,6 @@ const Page: React.FC = () => {
     }
   };
 
-
-  const industries = [
-    { label: 'Technology', value: 'tech' },
-    { label: 'Finance', value: 'finance' },
-    { label: 'Healthcare', value: 'healthcare' },
-  ];
 
   const productTypes = [
     { label: 'Software', value: 'software' },
@@ -235,21 +246,14 @@ const Page: React.FC = () => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="industry" className="block text-sm font-medium mb-1">
-            Select an Industry
+          <label htmlFor="producttype" className="block text-sm font-medium mb-1">
+            Select a Industry
           </label>
-          <select
-            id="industry"
-            name="industry"
-            value={formData.industry}
-            onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          >
-            <option value="">Select an Industry</option>
-            {industries.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
+
+          <select className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            {industries.map((industries) => (
+              <option key={industries._id} value={industries._id}>
+                {industries.industryName}
               </option>
             ))}
           </select>
@@ -264,27 +268,6 @@ const Page: React.FC = () => {
             {products.map((product) => (
               <option key={product._id} value={product.abbravation}>
                 {product.productName}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="producttype" className="block text-sm font-medium mb-1">
-            Select a Product Sub Type
-          </label>
-          <select
-            id="producttype"
-            name="producttype"
-            value={formData.producttype}
-            onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          >
-            <option value="">Select a Product Type</option>
-            {productTypes.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
               </option>
             ))}
           </select>
