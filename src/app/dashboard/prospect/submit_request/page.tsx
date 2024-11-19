@@ -1,9 +1,31 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IRequest } from '@/app/models/RequestTypes';
+import { fetchProducts } from './functions';
+
+interface Product {
+  _id: string;
+  productName: string;
+  abbravation: string;
+}
 
 const Page: React.FC = () => {
+
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      setLoading(true);
+      const data = await fetchProducts();
+      setProducts(data);
+      setLoading(false);
+    };
+
+    loadProducts();
+  }, []);
+
   const [formData, setFormData] = useState({
     name: '',
     companyAddress: '',
@@ -13,8 +35,10 @@ const Page: React.FC = () => {
     industry: '',
     producttype: '',
     comment: '',
-    partnership:'',
+    partnership: '',
   });
+
+
   const [searchResults, setSearchResults] = useState<IRequest[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
   console.log("Dropdown visibility:", showDropdown, "Search results:", searchResults);
@@ -72,10 +96,10 @@ const Page: React.FC = () => {
     // const suggestedPartnership =
     // company.partnership === "event" ? "product" : "event";
 
-  // setSuggestedPartnership(suggestedPartnership);
+    // setSuggestedPartnership(suggestedPartnership);
   };
-  
-  
+
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -235,6 +259,20 @@ const Page: React.FC = () => {
           <label htmlFor="producttype" className="block text-sm font-medium mb-1">
             Select a Product Type
           </label>
+
+          <select className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            {products.map((product) => (
+              <option key={product._id} value={product.abbravation}>
+                {product.productName}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="mb-4">
+          <label htmlFor="producttype" className="block text-sm font-medium mb-1">
+            Select a Product Sub Type
+          </label>
           <select
             id="producttype"
             name="producttype"
@@ -273,7 +311,7 @@ const Page: React.FC = () => {
           Submit Request
         </button>
       </form>
-      
+
     </div>
   );
 };
