@@ -2,18 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { IRequest } from '@/app/models/RequestTypes';
-import { fetchProducts,fetchIndustry } from './functions';
-
-interface Product {
-  _id: string;
-  productName: string;
-  abbravation: string;
-}
-
-interface Industry {
-  _id: string;
-  industryName: string;
-}
+import { fetchProducts, fetchIndustry, submitProspect, FormData, Industry, Product } from './functions';
 
 const Page: React.FC = () => {
 
@@ -43,8 +32,8 @@ const Page: React.FC = () => {
   }, []);
 
 
-  const [formData, setFormData] = useState({
-    name: '',
+  const [formData, setFormData] = useState<FormData>({
+    companyName: '',
     companyAddress: '',
     contactPersonName: '',
     contactPersonNumber: '',
@@ -52,9 +41,11 @@ const Page: React.FC = () => {
     industry: '',
     producttype: '',
     comment: '',
-    partnership: '',
+    partnership: ''
   });
 
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const [searchResults, setSearchResults] = useState<IRequest[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -68,7 +59,7 @@ const Page: React.FC = () => {
       ...formData,
       [name]: value,
     });
-    if (name === "name" && value) {
+    if (name === "companyName" && value) {
       fetchCompanies(value);
     } else {
       setShowDropdown(false);
@@ -77,7 +68,7 @@ const Page: React.FC = () => {
 
   const fetchCompanies = async (query: string) => {
     try {
-      const res = await fetch(`/api/prospects/search?companyName=${query}`);
+      const res = await fetch(`/api_new/companies/get_by_query?companyName=${query}`);
       if (res.ok) {
         const data = await res.json();
         // console.log("Fetched data:", data); 
@@ -98,7 +89,7 @@ const Page: React.FC = () => {
     console.log("Selected Company:", company);
     setFormData({
       ...formData,
-      name: company.companyName,
+      companyName: company.companyName,
       companyAddress: company.companyAddress || "",
       contactPersonName: company.contactPersonName,
       contactPersonNumber: company.contactPersonNumber || "",
@@ -121,32 +112,26 @@ const Page: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    try {
-      const res = await fetch("/api/prospect", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+    // Validate form data
+    /*const validationError = validateFormData(formData);
+    if (validationError) {
+      setErrorMessage(validationError);
+      setSuccessMessage(null);
+      return;
+    }*/
 
-      if (res.ok) {
-        // Handle success (e.g., display success message, reset form)
-        // console.log("Form submitted successfully!");
-      } else {
-        // Handle error response
-        console.error("Form submission failed.");
-      }
-    } catch (error) {
-      console.error("An error occurred:", error);
+    // Submit form data
+    const success = await submitProspect(formData);
+    if (success) {
+      setSuccessMessage('Form submitted successfully!');
+      setErrorMessage(null);
+      //setFormData({ productName: '', abbravation: '' }); // Reset form
+    } else {
+      setErrorMessage('Failed to submit the form. Please try again.');
+      setSuccessMessage(null);
     }
   };
 
-
-  const productTypes = [
-    { label: 'Software', value: 'software' },
-    { label: 'Hardware', value: 'hardware' },
-  ];
 
   return (
     <div>
@@ -158,11 +143,11 @@ const Page: React.FC = () => {
             Company Name
           </label>
           <input
-            id="name"
+            id="companyName"
             type="text"
-            name="name"
-            value={formData.name}
+            name="companyName"
             onChange={handleChange}
+            value={formData.companyName as string}
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
@@ -179,11 +164,13 @@ const Page: React.FC = () => {
               ))}
             </ul>
           )}
+          
           {/* {suggestedPartnership && (
           <p className="text-sm text-gray-600 mt-1">
             Suggested Partnership: Try a <strong>{suggestedPartnership}</strong> partnership.
           </p>
         )} */}
+        
         </div>
         <div className="mb-4">
           <label htmlFor="companyAddress" className="block text-sm font-medium mb-1">
@@ -192,7 +179,7 @@ const Page: React.FC = () => {
           <textarea
             id="companyAddress"
             name="companyAddress"
-            value={formData.companyAddress}
+            value={formData.companyAddress as string}
             onChange={handleChange}
             rows={3}
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -208,7 +195,7 @@ const Page: React.FC = () => {
             id="contactPersonName"
             type="text"
             name="contactPersonName"
-            value={formData.contactPersonName}
+            value={formData.contactPersonName as string}
             onChange={handleChange}
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
@@ -223,7 +210,7 @@ const Page: React.FC = () => {
             id="contactPersonNumber"
             type="text"
             name="contactPersonNumber"
-            value={formData.contactPersonNumber}
+            value={formData.contactPersonNumber as string}
             onChange={handleChange}
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
@@ -238,7 +225,7 @@ const Page: React.FC = () => {
             id="contactPersonEmail"
             type="email"
             name="contactPersonEmail"
-            value={formData.contactPersonEmail}
+            value={formData.contactPersonEmail as string}
             onChange={handleChange}
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
@@ -250,10 +237,20 @@ const Page: React.FC = () => {
             Select a Industry
           </label>
 
-          <select className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-            {industries.map((industries) => (
-              <option key={industries._id} value={industries._id}>
-                {industries.industryName}
+          <select
+            id="industry"
+            name="industry"
+            value={formData.industry as string} // Bind the dropdown to formData.industry
+            onChange={handleChange}   // Update formData when a new industry is selected
+            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          >
+            <option value="" disabled>
+              -- Select an Industry --
+            </option>
+            {industries.map((industry) => (
+              <option key={industry._id} value={industry._id}>
+                {industry.industryName}
               </option>
             ))}
           </select>
@@ -264,13 +261,26 @@ const Page: React.FC = () => {
             Select a Product Type
           </label>
 
-          <select className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <select
+            id="producttype"
+            name="producttype"
+            value={formData.producttype as string} // Bind the dropdown to formData.industry
+            onChange={handleChange}   // Update formData when a new industry is selected
+            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          >
+            <option value="" disabled>
+              -- Select an Industry --
+            </option>
             {products.map((product) => (
-              <option key={product._id} value={product.abbravation}>
+              <option key={product._id} value={product._id}>
                 {product.productName}
               </option>
             ))}
           </select>
+
+          
+          
         </div>
 
         <div className="mb-4">
@@ -280,7 +290,7 @@ const Page: React.FC = () => {
           <textarea
             id="comment"
             name="comment"
-            value={formData.comment}
+            value={formData.comment as string}
             onChange={handleChange}
             rows={3}
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
