@@ -21,6 +21,18 @@ export async function POST(req: Request) {
     const client = await clientPromise;
     const db = client.db(process.env.DB_NAME);
 
+    //Check whether the company already exists
+    const { ObjectId } = require('mongodb');
+    const company = await db.collection("Companies").findOne({_id: new ObjectId(prospect._id)});
+
+    if (!company) {
+      return NextResponse.json(
+        { error: "Company does not exist" },
+        { status: 400 }
+      );
+    }
+
+
     // Set current date as the date added
     const dateAdded = new Date();
 
@@ -29,7 +41,7 @@ export async function POST(req: Request) {
     // Set date expires to three months from now
     const dateExpires = new Date();
     dateExpires.setMonth(dateExpires.getMonth() + 3);
-
+    
     const result = await db.collection("Prospects").insertOne({
       company_id: prospect._id,
       product_type_id: prospect.producttype,
@@ -55,3 +67,5 @@ export async function POST(req: Request) {
     );
   }
 }
+
+
