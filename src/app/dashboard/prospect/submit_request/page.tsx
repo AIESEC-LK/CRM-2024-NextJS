@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { IRequest } from '@/app/models/RequestTypes';
-import { fetchProducts, fetchIndustry, submitProspect, FormData, Industry, Product } from './functions';
+import { fetchCompany,fetchProducts, fetchIndustry, submitProspect, FormData, Industry, Product, fetchCompanyQuery,ICompanyQuery } from './functions';
 
 const Page: React.FC = () => {
 
@@ -11,6 +11,31 @@ const Page: React.FC = () => {
 
   const [industries, setIndustries] = useState<Industry[]>([]);
   const [industriesLoading, setIndustriesLoading] = useState<boolean>(true);
+
+  const [searchResults, setSearchResults] = useState<ICompanyQuery[]>([]);
+  const [searchResultsLoading, setsearchResultsLoading] = useState<boolean>(true);
+  const [showDropdown, setShowDropdown] = useState(false);
+  //console.log("Dropdown visibility:", showDropdown, "Search results:", searchResults);
+
+  const [companyData, setcompanyData] = useState<FormData>();
+
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const [formData, setFormData] = useState<FormData>({
+    _id: '',
+    company_id: '',
+    companyName: '',
+    companyAddress: '',
+    contactPersonName: '',
+    contactPersonNumber: '',
+    contactPersonEmail: '',
+    industry: '',
+    producttype: '',
+    comment: '',
+    partnership: '',
+    industry_id: ''
+  });
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -31,83 +56,44 @@ const Page: React.FC = () => {
     loadIndustries();
   }, []);
 
+  const loadsearchResults = async (query: string) => {
+    setsearchResultsLoading(true);
+    const data2 = await fetchCompanyQuery(query);
+    setSearchResults(data2);
+    setsearchResultsLoading(false);
+    setShowDropdown(true);
+  };
 
-  const [formData, setFormData] = useState<FormData>({
-    companyName: '',
-    companyAddress: '',
-    contactPersonName: '',
-    contactPersonNumber: '',
-    contactPersonEmail: '',
-    industry: '',
-    producttype: '',
-    comment: '',
-    partnership: ''
-  });
+  const loadCompanyData = async (companyid: string) => {
+    const data2 = await fetchCompany(companyid);
+    data2.producttype=industries.find((industry) => industry._id === data2.industry)?._id;
+    //setcompanyData(data2);
+    console.log("Company data 2:", data2);
+    setFormData(data2);
 
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
-
-  const [searchResults, setSearchResults] = useState<IRequest[]>([]);
-  const [showDropdown, setShowDropdown] = useState(false);
-  console.log("Dropdown visibility:", showDropdown, "Search results:", searchResults);
-  // const [suggestedPartnership, setSuggestedPartnership] = useState("");
-
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    console.log("Name:", name, "Value:", value);
     setFormData({
       ...formData,
       [name]: value,
+      _id:''
     });
+
     if (name === "companyName" && value) {
-      fetchCompanies(value);
+      loadsearchResults(value);
     } else {
       setShowDropdown(false);
+
     }
   };
 
-  const fetchCompanies = async (query: string) => {
-    try {
-      const res = await fetch(`/api_new/companies/get_by_query?companyName=${query}`);
-      if (res.ok) {
-        const data = await res.json();
-        // console.log("Fetched data:", data); 
-        setSearchResults(data);
-        setShowDropdown(data.length > 0);
-      }
-    } catch (error) {
-      console.error("Error fetching companies:", error);
-    }
-  };
-
-  // const handleSelectCompany = (name: string) => {
-  //   setFormData((prev) => ({ ...prev, name: name }));
-  //   setShowDropdown(false);
-  // };
-
-  const handleSelectCompany = (company: IRequest) => {
-    console.log("Selected Company:", company);
-    setFormData({
-      ...formData,
-      companyName: company.companyName,
-      companyAddress: company.companyAddress || "",
-      contactPersonName: company.contactPersonName,
-      contactPersonNumber: company.contactPersonNumber || "",
-      contactPersonEmail: company.contactPersonEmail || "",
-      industry: company.industry,
-      producttype: company.producttype,
-      comment: company.comment || "",
-      partnership: company.partnership || "",
-    });
+  const handleSelectCompany = (companyid: string) => {
+    loadCompanyData(companyid);
     setShowDropdown(false);
-    console.log("Updated Form Data:", formData);
-    // const suggestedPartnership =
-    // company.partnership === "event" ? "product" : "event";
-
-    // setSuggestedPartnership(suggestedPartnership);
   };
-
-
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -122,10 +108,11 @@ const Page: React.FC = () => {
 
     // Submit form data
     const success = await submitProspect(formData);
+
     if (success) {
       setSuccessMessage('Form submitted successfully!');
       setErrorMessage(null);
-      //setFormData({ productName: '', abbravation: '' }); // Reset form
+
     } else {
       setErrorMessage('Failed to submit the form. Please try again.');
       setSuccessMessage(null);
@@ -151,6 +138,7 @@ const Page: React.FC = () => {
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
+          {/*
           {showDropdown && (
             <ul className="absolute bg-white border border-gray-300 rounded-md mt-1 w-full max-h-40 overflow-y-auto">
               {searchResults.map((result) => (
@@ -163,14 +151,28 @@ const Page: React.FC = () => {
                 </li>
               ))}
             </ul>
+          )}*/}
+
+          {showDropdown && (
+            <ul className="absolute bg-white border border-gray-300 rounded-md mt-1 w-full max-h-40 overflow-y-auto">
+              {searchResults.map((result) => (
+                <li
+                  key={result._id}
+                  onClick={() => handleSelectCompany(result._id)}
+                  className="p-2 cursor-pointer hover:bg-blue-500 hover:text-white"
+                >
+                  {result.companyName}
+                </li>
+              ))}
+            </ul>
           )}
-          
+
           {/* {suggestedPartnership && (
           <p className="text-sm text-gray-600 mt-1">
             Suggested Partnership: Try a <strong>{suggestedPartnership}</strong> partnership.
           </p>
         )} */}
-        
+
         </div>
         <div className="mb-4">
           <label htmlFor="companyAddress" className="block text-sm font-medium mb-1">
@@ -239,8 +241,8 @@ const Page: React.FC = () => {
 
           <select
             id="industry"
-            name="industry"
-            value={formData.industry as string} // Bind the dropdown to formData.industry
+            name="industry_id"
+            value={formData.industry_id as string} // Bind the dropdown to formData.industry
             onChange={handleChange}   // Update formData when a new industry is selected
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
@@ -249,7 +251,7 @@ const Page: React.FC = () => {
               -- Select an Industry --
             </option>
             {industries.map((industry) => (
-              <option key={industry._id} value={industry._id}>
+              <option key={industry._id} value={industry._id} >
                 {industry.industryName}
               </option>
             ))}
@@ -270,7 +272,7 @@ const Page: React.FC = () => {
             required
           >
             <option value="" disabled>
-              -- Select an Industry --
+              -- Select an Product Type --
             </option>
             {products.map((product) => (
               <option key={product._id} value={product._id}>
@@ -279,8 +281,8 @@ const Page: React.FC = () => {
             ))}
           </select>
 
-          
-          
+
+
         </div>
 
         <div className="mb-4">

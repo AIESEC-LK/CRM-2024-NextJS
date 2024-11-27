@@ -1,4 +1,6 @@
 export interface FormData {
+    _id: String;
+    company_id: String;
     companyName: String;
     companyAddress: String;
     contactPersonName: String;
@@ -8,6 +10,12 @@ export interface FormData {
     producttype: String;
     comment: String;
     partnership: String;
+    industry_id: String;
+}
+
+export interface ICompanyQuery {
+    _id: any;
+    companyName: string;
 }
 
 export interface Product {
@@ -21,6 +29,32 @@ export interface Industry {
     industryName: string;
 }
 
+const fetchCompanyQuery = async (query: string) => {
+    try {
+        const response = await fetch(`/api_new/companies/get_by_query?companyName=${query}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch products');
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error fetching companies:", error);
+    }
+};
+
+const fetchCompany = async (company_id: string) => {
+    try {
+        const response = await fetch(`/api_new/companies/get_by_id?company_id=${company_id}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch products');
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        return [];
+    }
+};
 
 const fetchProducts = async () => {
     try {
@@ -73,6 +107,6 @@ const submitProspect = async (data: FormData): Promise<boolean> => {
 };
 
 
-export { fetchIndustry, fetchProducts, submitProspect };
+export { fetchIndustry, fetchProducts, submitProspect, fetchCompanyQuery,fetchCompany };
 
 
