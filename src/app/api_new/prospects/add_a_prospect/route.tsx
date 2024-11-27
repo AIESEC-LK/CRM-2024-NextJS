@@ -21,7 +21,8 @@ export async function POST(req: Request) {
       entity_id: entity_id,
       date_added: dateAdded,
       date_expires: dateExpires,
-      status: PROSPECT_VALUES[0].value 
+      status: PROSPECT_VALUES[0].value,
+      proof_url: "" 
     });
 
     if (result.insertedId) {
