@@ -12,14 +12,18 @@ import {
 } from "@/app/components/ui/table";
 import { Trash2 } from "lucide-react";
 import Link from "next/link";
+import ConfirmationModal from "@/app/components/ConfirmationModal";
 
 interface Entity {
   _id: string;
   name: string;
+  color: string;
 }
 
 export default function EntitiesPage() {
   const [entities, setEntities] = useState<Entity[]>([]);
+  const [entityToDelete, setEntityToDelete] = useState<Entity | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   useEffect(() => {
     fetchEntities();
@@ -38,24 +42,40 @@ export default function EntitiesPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = (entity: Entity) => {
+    setEntityToDelete(entity);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!entityToDelete) return;
+
     try {
-      const response = await fetch(`/api/entities/${id}`, {
+      const response = await fetch(`/api/entities/${entityToDelete._id}`, {
         method: "DELETE",
       });
       if (!response.ok) {
         throw new Error("Failed to delete entity");
       }
-      setEntities(entities.filter((entity) => entity._id !== id));
+      setEntities(
+        entities.filter((entity) => entity._id !== entityToDelete._id)
+      );
+      setIsDeleteModalOpen(false);
+      setEntityToDelete(null);
     } catch (error) {
       console.error("Error deleting entity:", error);
     }
   };
 
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setEntityToDelete(null);
+  };
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Manage Entities</h1>
-      <Link href={"add_entity"}>
+      <Link href="/dashboard/add_entity">
         <Button className="mb-4 bg-slate-900 text-white hover:bg-slate-700">
           Add New Entity
         </Button>
@@ -63,21 +83,30 @@ export default function EntitiesPage() {
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead>Color</TableHead>
             <TableHead>Name</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {entities.map((entity) => (
             <TableRow key={entity._id}>
+              <TableCell>
+                <div
+                  className="w-6 h-6 rounded-full"
+                  style={{ backgroundColor: entity.color }}
+                  aria-label={`Color: ${entity.color}`}
+                />
+              </TableCell>
               <TableCell>{entity.name}</TableCell>
               <TableCell className="text-right">
                 <Button
                   variant="destructive"
                   size="sm"
-                  onClick={() => handleDelete(entity._id)}
-                  className="bg-red-500 hover:bg-red-400 mr-20"
+                  onClick={() => handleDelete(entity)}
+                  className="bg-red-500 hover:bg-red-400"
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Trash2 className="h-4 w-4 mr-2" />
                   Delete
                 </Button>
               </TableCell>
@@ -85,6 +114,13 @@ export default function EntitiesPage() {
           ))}
         </TableBody>
       </Table>
+
+      <ConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={closeDeleteModal}
+        onConfirm={confirmDelete}
+        action="delete"
+      />
     </div>
   );
 }
