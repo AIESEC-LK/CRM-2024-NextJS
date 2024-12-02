@@ -11,7 +11,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/app/components/ui/table";
-import { Badge } from "@/app/components/ui/badge";
 
 import { Search, CheckCircle, XCircle, Info, Eye } from "lucide-react";
 import Link from "next/link";
@@ -95,7 +94,7 @@ export default function AdminView() {
             <TableHead>Company Name</TableHead>
             <TableHead>Industry</TableHead>
             <TableHead>Product Type</TableHead>
-            <TableHead>Actions</TableHead>
+            <TableHead></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -146,7 +145,7 @@ export default function AdminView() {
               <TableCell>{req.producttype}</TableCell>
               <TableCell>
                 <div className="flex space-x-2">
-                  <Link href="view_prospect_request">
+                  <Link href={`/dashboard/prospect_requests/${req._id}`}>
                     <Button size="sm" className="bg-gray-400 hover:bg-gray-500">
                       <Eye className="h-4 w-4 mr-1" />
                       View

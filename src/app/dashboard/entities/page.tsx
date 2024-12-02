@@ -83,9 +83,9 @@ export default function EntitiesPage() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Color</TableHead>
+            <TableHead style={{ width: "5%" }}></TableHead>
             <TableHead>Name</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead className="text-right"></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
