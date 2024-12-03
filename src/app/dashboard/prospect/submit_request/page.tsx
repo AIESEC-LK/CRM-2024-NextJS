@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { IRequest } from '@/app/models/RequestTypes';
-import { fetchCompany,fetchProducts, fetchIndustry, submitProspect, FormData, Industry, Product, fetchCompanyQuery,ICompanyQuery } from './functions';
+import { fetchCompany, fetchProducts, fetchIndustry, submitProspect, FormData, Industry, Product, fetchCompanyQuery, ICompanyQuery } from './functions';
 
 const Page: React.FC = () => {
 
@@ -23,14 +23,12 @@ const Page: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<FormData>({
-    _id: '',
     company_id: '',
     companyName: '',
     companyAddress: '',
     contactPersonName: '',
     contactPersonNumber: '',
     contactPersonEmail: '',
-    industry: '',
     producttype: '',
     comment: '',
     partnership: '',
@@ -66,7 +64,7 @@ const Page: React.FC = () => {
 
   const loadCompanyData = async (companyid: string) => {
     const data2 = await fetchCompany(companyid);
-    data2.producttype=industries.find((industry) => industry._id === data2.industry)?._id;
+    data2.producttype = industries.find((industry) => industry._id === data2.industry)?._id;
     //setcompanyData(data2);
     console.log("Company data 2:", data2);
     setFormData(data2);
@@ -79,7 +77,7 @@ const Page: React.FC = () => {
     setFormData({
       ...formData,
       [name]: value,
-      _id:''
+      company_id: ''
     });
 
     if (name === "companyName" && value) {
@@ -179,6 +177,7 @@ const Page: React.FC = () => {
             Company Address
           </label>
           <textarea
+            autoComplete="off"
             id="companyAddress"
             name="companyAddress"
             value={formData.companyAddress as string}
