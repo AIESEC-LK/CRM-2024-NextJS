@@ -25,7 +25,7 @@ interface Prospect {
   industry: string;
   producttype: string;
   status: string;
-  createdAt: string;
+  dateAdded: string;
 }
 
 export default function ProspectDetails({
@@ -55,30 +55,27 @@ export default function ProspectDetails({
   };
 
   const handleStatusChange = async (status: string) => {
-    if (!prospect) return;
+    if (!prospect || (status !== "approved" && status !== "declined")) {
+      return;
+    }
 
     try {
-      // Remove the prospect from the current collection
-      await fetch(`/api/prospect_requests/${prospect._id}`, {
-        method: "DELETE",
-      });
-
-      // Add the prospect to the new collection based on status
-      const response = await fetch(`/api/prospect_requests/${status}`, {
-        method: "POST",
-        body: JSON.stringify(prospect),
+      const response = await fetch(`/api/prospect_requests/${prospect._id}`, {
+        method: "PATCH", // Using PATCH to update the status
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({ status }), // Send the updated status
       });
 
       if (!response.ok) {
         throw new Error("Failed to update prospect status");
       }
 
-      router.push("/dashboard/prospect_requests");
+      router.push("/dashboard/admin"); // Navigate after status change
     } catch (error) {
       console.error("Error updating status:", error);
+      alert("An error occurred while updating the prospect status.");
     }
   };
 
@@ -145,11 +142,46 @@ export default function ProspectDetails({
             <TableRow>
               <TableCell className="font-medium">Requested At</TableCell>
               <TableCell>
-                {new Date(prospect.createdAt).toLocaleString()}
+                {new Date(prospect.dateAdded).toLocaleString()}
               </TableCell>
             </TableRow>
+            {/* <TableRow>
+              <TableCell className="font-medium"> Actions </TableCell>
+              <TableCell>
+                <Button
+                  variant="ghost"
+                  onClick={() => router.back()}
+                  className="mb-1 mr-3 bg-green-500 hover:bg-green-700 p-3"
+                >
+                  Approve
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={() => router.back()}
+                  className="mb-1 ml-3 bg-red-500 p-3 hover:bg-red-700 "
+                >
+                  Decline
+                </Button>
+              </TableCell>
+            </TableRow> */}
           </TableBody>
         </Table>
+        <div className="flex justify-end p-4">
+          <>
+            <Button
+              className="mr-2 bg-red-500 text-white"
+              onClick={() => handleStatusChange("declined")}
+            >
+              Decline
+            </Button>
+            <Button
+              className="bg-green-500 text-white"
+              onClick={() => handleStatusChange("approved")}
+            >
+              Approve
+            </Button>
+          </>
+        </div>
       </div>
     </div>
   );
