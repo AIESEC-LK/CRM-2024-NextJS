@@ -4,6 +4,8 @@ import clientPromise from "@/app/lib/mongodb";
 interface ICompanyQuery {
   _id: any;
   companyName: string;
+  dateexpiresEvent:Date;
+  dateexpiresProduct:Date;
 }
 
 interface ICompany {

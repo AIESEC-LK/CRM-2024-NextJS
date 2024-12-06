@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { IRequest } from '@/app/models/RequestTypes';
 import { fetchCompany, fetchProducts, fetchIndustry, submitProspect, FormData, Industry, Product, fetchCompanyQuery, ICompanyQuery } from './functions';
+import { format } from 'date-fns';
 
 const Page: React.FC = () => {
 
@@ -159,7 +160,19 @@ const Page: React.FC = () => {
                   onClick={() => handleSelectCompany(result._id)}
                   className="p-2 cursor-pointer hover:bg-blue-500 hover:text-white"
                 >
-                  {result.companyName}
+                  <div>
+                    <span className="font-semibold">{result.companyName}</span>
+                  </div>
+                  <div className="ml-4 mt-1 text-sm text-gray-500">
+
+                    {result.dateexpiresEvent && (
+                      <div>Event Partnership Expires: {format(result.dateexpiresEvent,"MMMM dd, yyyy hh:mm a")}</div>
+                    )}
+
+                    {result.dateexpiresProduct && (
+                      <div>Product Partnership Expires: {format(result.dateexpiresProduct,"MMMM dd, yyyy hh:mm a")}</div>
+                    )}
+                  </div>
                 </li>
               ))}
             </ul>

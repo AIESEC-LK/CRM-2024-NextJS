@@ -14,6 +14,8 @@ export interface FormData {
 export interface ICompanyQuery {
     _id: any;
     companyName: string;
+    dateexpiresEvent:Date;
+    dateexpiresProduct:Date;
 }
 
 export interface Product {
