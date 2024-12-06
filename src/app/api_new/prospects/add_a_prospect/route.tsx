@@ -19,6 +19,7 @@ interface IProspectRequest {
 export async function POST(req: Request) {
   try {
     var company = null;
+    var newCompany = false;
     const prospect: IProspectRequest = await req.json();
     const client = await clientPromise;
     const db = client.db(process.env.DB_NAME);
@@ -26,7 +27,7 @@ export async function POST(req: Request) {
     var createCompany = false;
 
     //Map all other Product ID to the SameProduct ID
-    if(prospect.productId != "6734053c308fd8d176381e07"){
+    if (prospect.productId != "6734053c308fd8d176381e07") {
       prospect.productId = "6734054e308fd8d176381e08";
     }
 
@@ -65,8 +66,7 @@ export async function POST(req: Request) {
         approved: false
       });
       prospect.companyId = createCompanyResult.insertedId.toString();
-
-
+      newCompany = true;
       company = await db.collection("Companies").findOne({ _id: new ObjectId(prospect.companyId.toString()) });
     }
 
@@ -74,23 +74,33 @@ export async function POST(req: Request) {
     //Get Prospect partnership type
     if (company != null) {
 
-      const lastRecord = await db.collection("Prospects")
-        .find({ company_id: prospect.companyId.toString(), product_type_id: prospect.productId.toString() })
-        .sort({ _id: -1 })
-        .limit(1)
-        .toArray();
+      if (!newCompany) {
+        const lastRecord = await db.collection("Prospects")
+          .find({ company_id: prospect.companyId.toString(), product_type_id: prospect.productId.toString() })
+          .sort({ _id: -1 })
+          .limit(1)
+          .toArray();
 
-      if (lastRecord.length > 0) {
-        const prospectExpiresDate = new Date(lastRecord[0].date_expires);
-        const currentDate = new Date();
+        if (lastRecord.length > 0) {
+          const prospectExpiresDate = new Date(lastRecord[0].date_expires);
+          const currentDate = new Date();
 
-        if (prospectExpiresDate > currentDate) {
-          console.log("The expiration date is in the future.");
-          //Integrate with bhanukas API for Queue
+          if (prospectExpiresDate > currentDate) {
+            console.log("The expiration date is in the future.");
+            /*TODO
+            //Integrate with bhanuka`s API for Queue
+            **
+            **
+            **
+            */
+            return NextResponse.json({ error: "The expiration date is in the future." },
+              { status: 500 });
+          }
+
         }
 
       }
-       
+
       const prospectResult = await db.collection("Prospects").insertOne({
         company_id: prospect.companyId,
         product_type_id: prospect.productId,
@@ -106,8 +116,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: true });
     }
 
-
-    //return NextResponse.json({ success: true });
 
     return NextResponse.json({ error: "Failed to update request" },
       { status: 500 });
