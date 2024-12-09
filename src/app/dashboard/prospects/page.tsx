@@ -14,7 +14,7 @@ import {
 import { Badge } from "@/app/components/ui/badge";
 
 import { Search, CheckCircle, XCircle, Info, Eye } from "lucide-react";
-import Link from "next/link";
+
 import {
   Popover,
   PopoverContent,
@@ -146,12 +146,10 @@ export default function AdminView() {
               <TableCell>{req.producttype}</TableCell>
               <TableCell>
                 <div className="flex space-x-2">
-                  <Link href="view_prospect_request">
-                    <Button size="sm" className="bg-gray-400 hover:bg-gray-500">
-                      <Eye className="h-4 w-4 mr-1" />
-                      View
-                    </Button>
-                  </Link>
+                  <Button size="sm" className="bg-gray-400 hover:bg-gray-500">
+                    <Eye className="h-4 w-4 mr-1" />
+                    View
+                  </Button>
                 </div>
               </TableCell>
             </TableRow>
