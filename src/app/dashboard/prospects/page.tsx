@@ -11,9 +11,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/app/components/ui/table";
+import { Badge } from "@/app/components/ui/badge";
 
 import { Search, CheckCircle, XCircle, Info, Eye } from "lucide-react";
-import Link from "next/link";
+
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/app/components/ui/popover";
 
 interface Request {
   _id: string;
@@ -26,7 +32,7 @@ interface Request {
   industry: string;
   producttype: string;
   status: "pending" | "approved" | "declined";
-  dateAdded: string;
+  createdAt: string;
 }
 
 export default function AdminView() {
@@ -89,27 +95,61 @@ export default function AdminView() {
             <TableHead>Company Name</TableHead>
             <TableHead>Industry</TableHead>
             <TableHead>Product Type</TableHead>
-            <TableHead></TableHead>
+            <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {filteredRequests.map((req) => (
             <TableRow key={req._id}>
-              <TableCell>{formatDate(req.dateAdded)}</TableCell>
+              <TableCell>{formatDate(req.createdAt)}</TableCell>
               <TableCell>{req.entity}</TableCell>
               <TableCell>
-                <div className="flex items-center">{req.companyName}</div>
+                <div className="flex items-center">
+                  {req.companyName}
+                  <div className="ml-auto">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0 ml-2">
+                          <Info className="h-4 w-4" />
+                          <span className="sr-only">Company Info</span>
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-80">
+                        <div className="grid gap-4">
+                          <div className="space-y-2">
+                            <h4 className="font-medium leading-none">
+                              Company Details
+                            </h4>
+                            <p className="text-sm text-muted-foreground">
+                              Address: {req.companyAddress}
+                            </p>
+                          </div>
+                          <div className="space-y-2">
+                            <h4 className="font-medium leading-none">
+                              Contact Person
+                            </h4>
+                            <p className="text-sm text-muted-foreground">
+                              Name: {req.contactPersonName}
+                              <br />
+                              Number: {req.contactPersonNumber}
+                              <br />
+                              Email: {req.contactPersonEmail}
+                            </p>
+                          </div>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
               </TableCell>
               <TableCell>{req.industry}</TableCell>
               <TableCell>{req.producttype}</TableCell>
               <TableCell>
                 <div className="flex space-x-2">
-                  <Link href={`/dashboard/prospect_requests/${req._id}`}>
-                    <Button size="sm" className="bg-gray-400 hover:bg-gray-500">
-                      <Eye className="h-4 w-4 mr-1" />
-                      View
-                    </Button>
-                  </Link>
+                  <Button size="sm" className="bg-gray-400 hover:bg-gray-500">
+                    <Eye className="h-4 w-4 mr-1" />
+                    View
+                  </Button>
                 </div>
               </TableCell>
             </TableRow>
