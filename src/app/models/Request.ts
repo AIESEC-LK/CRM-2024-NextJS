@@ -18,7 +18,6 @@ const RequestSchema = new mongoose.Schema({
   },
 });
 
-const Request =
-  mongoose.models.Request || mongoose.model("Request", RequestSchema);
+const Request = mongoose.models.Request || mongoose.model("Request", RequestSchema);
 
-export default Request;
+  export { Request };
