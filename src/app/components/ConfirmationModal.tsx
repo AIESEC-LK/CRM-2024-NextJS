@@ -17,7 +17,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-black  bg-opacity-50">
       <div className="bg-white rounded-lg p-6 max-w-sm mx-auto">
         <h2 className="text-lg font-bold mb-4">
           Are you sure you want to {action}?

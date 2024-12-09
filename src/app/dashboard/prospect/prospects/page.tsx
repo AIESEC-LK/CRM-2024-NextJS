@@ -11,8 +11,8 @@ import {
   TableRow,
 } from "@/app/components/ui/table";
 import { Search } from "lucide-react";
-import router from "next/router";
-import { Button } from "../components/ui/button";
+import { useRouter } from "next/navigation";
+import { Button } from "../../../components/ui/button";
 
 const initialProspects = [
   {
@@ -65,7 +65,8 @@ const initialProspects = [
 const productNames = ["OGV", "IGV", "IGTa", "IGTe"];
 
 const ProspectsPage = () => {
-  const handleButtonClick = () => {
+    const router = useRouter();
+    const handleButtonClick = () => {
     router.push("/dashboard/prospect/submit_request");
   };
   const [expandedEntity, setExpandedEntity] = useState<number | null>(null);
