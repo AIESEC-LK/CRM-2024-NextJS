@@ -54,6 +54,7 @@ export default function EntitiesPage() {
       const response = await fetch(`/api/entities/${entityToDelete._id}`, {
         method: "DELETE",
       });
+
       if (!response.ok) {
         throw new Error("Failed to delete entity");
       }

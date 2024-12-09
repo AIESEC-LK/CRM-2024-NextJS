@@ -1,27 +1,35 @@
 "use client";
 
-import React, { useState } from 'react';
-import { IRequest } from '@/app/models/RequestTypes';
+import React, { useState } from "react";
+import { IRequest } from "@/app/models/RequestTypes";
 
 const Page: React.FC = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    companyAddress: '',
-    contactPersonName: '',
-    contactPersonNumber: '',
-    contactPersonEmail: '',
-    industry: '',
-    producttype: '',
-    comment: '',
-    partnership:'',
+    name: "",
+    companyAddress: "",
+    contactPersonName: "",
+    contactPersonNumber: "",
+    contactPersonEmail: "",
+    industry: "",
+    producttype: "",
+    comment: "",
+    partnership: "",
   });
   const [searchResults, setSearchResults] = useState<IRequest[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
-  console.log("Dropdown visibility:", showDropdown, "Search results:", searchResults);
+  console.log(
+    "Dropdown visibility:",
+    showDropdown,
+    "Search results:",
+    searchResults
+  );
   // const [suggestedPartnership, setSuggestedPartnership] = useState("");
 
-
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -39,7 +47,7 @@ const Page: React.FC = () => {
       const res = await fetch(`/api/prospects/search?companyName=${query}`);
       if (res.ok) {
         const data = await res.json();
-        // console.log("Fetched data:", data); 
+        // console.log("Fetched data:", data);
         setSearchResults(data);
         setShowDropdown(data.length > 0);
       }
@@ -72,10 +80,8 @@ const Page: React.FC = () => {
     // const suggestedPartnership =
     // company.partnership === "event" ? "product" : "event";
 
-  // setSuggestedPartnership(suggestedPartnership);
+    // setSuggestedPartnership(suggestedPartnership);
   };
-  
-  
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -101,21 +107,23 @@ const Page: React.FC = () => {
     }
   };
 
-
   const industries = [
-    { label: 'Technology', value: 'tech' },
-    { label: 'Finance', value: 'finance' },
-    { label: 'Healthcare', value: 'healthcare' },
+    { label: "Technology", value: "tech" },
+    { label: "Finance", value: "finance" },
+    { label: "Healthcare", value: "healthcare" },
   ];
 
   const productTypes = [
-    { label: 'Software', value: 'software' },
-    { label: 'Hardware', value: 'hardware' },
+    { label: "Software", value: "software" },
+    { label: "Hardware", value: "hardware" },
   ];
 
   return (
     <div>
-      <form onSubmit={handleSubmit} className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg">
+      <form
+        onSubmit={handleSubmit}
+        className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg"
+      >
         <h2 className="text-xl font-semibold mb-6">Add New Prospect Request</h2>
 
         <div className="mb-4 relative">
@@ -139,7 +147,8 @@ const Page: React.FC = () => {
                   onClick={() => handleSelectCompany(result)}
                   className="p-2 cursor-pointer hover:bg-blue-500 hover:text-white"
                 >
-                  {result.companyName} - Current Partnership: {result.partnership || "None"}
+                  {result.companyName} - Current Partnership:{" "}
+                  {result.partnership || "None"}
                 </li>
               ))}
             </ul>
@@ -151,7 +160,10 @@ const Page: React.FC = () => {
         )} */}
         </div>
         <div className="mb-4">
-          <label htmlFor="companyAddress" className="block text-sm font-medium mb-1">
+          <label
+            htmlFor="companyAddress"
+            className="block text-sm font-medium mb-1"
+          >
             Company Address
           </label>
           <textarea
@@ -166,7 +178,10 @@ const Page: React.FC = () => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="contactPersonName" className="block text-sm font-medium mb-1">
+          <label
+            htmlFor="contactPersonName"
+            className="block text-sm font-medium mb-1"
+          >
             Contact Person Name
           </label>
           <input
@@ -181,7 +196,10 @@ const Page: React.FC = () => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="contactPersonNumber" className="block text-sm font-medium mb-1">
+          <label
+            htmlFor="contactPersonNumber"
+            className="block text-sm font-medium mb-1"
+          >
             Contact Person Contact Number
           </label>
           <input
@@ -196,7 +214,10 @@ const Page: React.FC = () => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="contactPersonEmail" className="block text-sm font-medium mb-1">
+          <label
+            htmlFor="contactPersonEmail"
+            className="block text-sm font-medium mb-1"
+          >
             Contact Person Email Address
           </label>
           <input
@@ -232,7 +253,10 @@ const Page: React.FC = () => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="producttype" className="block text-sm font-medium mb-1">
+          <label
+            htmlFor="producttype"
+            className="block text-sm font-medium mb-1"
+          >
             Select a Product Type
           </label>
           <select
@@ -273,7 +297,6 @@ const Page: React.FC = () => {
           Submit Request
         </button>
       </form>
-      
     </div>
   );
 };
