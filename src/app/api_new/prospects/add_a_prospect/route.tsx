@@ -40,6 +40,18 @@ export async function POST(req: Request) {
     const dateExpires = new Date();
     dateExpires.setMonth(dateExpires.getMonth() + 3);
 
+    const result = await db.collection("Prospects").insertOne({
+      company_id: company_id,
+      product_type_id: product_type_id,
+      entity_id: entity_id,
+      date_added: dateAdded,
+      date_expires: dateExpires,
+      status: PROSPECT_VALUES[0].value,
+      proof_url: "" 
+    });
+
+    if (result.insertedId) {
+      return NextResponse.json({ success: true, id: result.insertedId });
     //Check whether the company already exists
     if (prospect.companyId == "" || prospect.companyId == null) {
       createCompany = true;
