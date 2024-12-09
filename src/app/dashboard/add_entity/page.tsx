@@ -17,6 +17,7 @@ const COLORS = [
   "#FFD54F",
   "#4DB6AC",
   "#7986CB",
+  "#7D9AE9",
 ];
 
 export default function AddEntityPage() {

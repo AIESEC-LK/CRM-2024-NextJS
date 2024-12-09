@@ -5,7 +5,7 @@ interface ConfirmationModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  action: string; // Action could be "approve" or "decline"
+  action: string;
 }
 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
