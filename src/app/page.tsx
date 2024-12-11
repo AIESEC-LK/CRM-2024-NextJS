@@ -42,17 +42,17 @@ const LoginPage = () => {
               className="mt-1"
             />
           </div>
-          <div className="flex justify-between">
+          <div className="space-y-4">
             <Button
               type="submit"
-              className="w-[48%] bg-[#037ef3] text-white hover:bg-[#0367c4]"
+              className="w-full bg-[#037ef3] text-white hover:bg-[#0367c4]"
             >
               Login
             </Button>
             <Button
               type="reset"
               variant="outline"
-              className="w-[48%] bg-[#caccd1] text-gray-700 hover:bg-[#b8babc]"
+              className="w-full bg-[#caccd1] text-gray-700 hover:bg-[#b8babc]"
             >
               Reset
             </Button>
