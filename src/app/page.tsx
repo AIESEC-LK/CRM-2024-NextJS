@@ -21,7 +21,7 @@ const LoginPage = () => {
       style={{ backgroundImage: "url('/partnership.jpg')" }}
     >
       <div className="absolute inset-0 bg-gradient-to-b from-[#037ef3] to-[#f3f4f7] opacity-90"></div>
-      <div className="relative w-full max-w-sm p-6 bg-white rounded-md shadow-md">
+      <div className="relative w-full max-w-sm p-6 bg-white rounded-md shadow-2xl">
         <h1 className="text-2xl font-semibold text-center text-gray-800">Login</h1>
         <form className="mt-4 space-y-4" onSubmit={handleSubmit}>
           <div>
