@@ -58,6 +58,7 @@ const ProspectsPage = () => {
             <TableHead>Company Name</TableHead>
             <TableHead>Events</TableHead>
             <TableHead>Products</TableHead>
+            <TableHead>Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -124,6 +125,26 @@ const ProspectsPage = () => {
                   </TableCell>
                 </>
               )}
+
+              {/* Action buttons */}
+              <TableCell>
+                {prospect.status === "prospect" && (
+                  <Button
+                    onClick={() => router.push(`/dashboard/prospect/convert_to_a_lead?id=${prospect._id}`)}
+                    className="bg-yellow-400 hover:bg-yellow-500 text-white"
+                  >
+                    Convert to Lead
+                  </Button>
+                )}
+                {prospect.status === "lead" && (
+                  <Button
+                    onClick={() => router.push(`/dashboard/prospect/lead_to_customer?id=${prospect._id}`)}
+                    className="bg-cyan-800 hover:bg-cyan-700 text-white"
+                  >
+                    Convert to Customer
+                  </Button>
+                )}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
