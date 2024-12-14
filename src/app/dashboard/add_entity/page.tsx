@@ -28,12 +28,12 @@ export default function AddEntityPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch("/api/entities", {
+      const response = await fetch("/api_new/entities/add_an_entity", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name, color }),
+        body: JSON.stringify({ entityName: name, color: color }),
       });
       if (!response.ok) {
         throw new Error("Failed to add entity");

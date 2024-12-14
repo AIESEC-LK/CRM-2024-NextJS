@@ -13,4 +13,7 @@ export const PROSPECT_VALUES = [
 ]
 
 export const BASE_URL = "http://localhost:3000";
+
+
+
 export const PARTNERHSIPS_UI_PATH = "/dashboard/prospect/prospects"

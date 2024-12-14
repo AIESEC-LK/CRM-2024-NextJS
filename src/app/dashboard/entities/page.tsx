@@ -16,7 +16,7 @@ import ConfirmationModal from "@/app/components/ConfirmationModal";
 
 interface Entity {
   _id: string;
-  name: string;
+  entityName: string;
   color: string;
 }
 
@@ -31,7 +31,7 @@ export default function EntitiesPage() {
 
   const fetchEntities = async () => {
     try {
-      const response = await fetch("/api/entities");
+      const response = await fetch("/api_new/entities/get_all_entities");
       if (!response.ok) {
         throw new Error("Failed to fetch entities");
       }
@@ -51,7 +51,7 @@ export default function EntitiesPage() {
     if (!entityToDelete) return;
 
     try {
-      const response = await fetch(`/api/entities/${entityToDelete._id}`, {
+      const response = await fetch(`/api_new/entities/${entityToDelete._id}`, {
         method: "DELETE",
       });
       if (!response.ok) {
@@ -98,7 +98,7 @@ export default function EntitiesPage() {
                   aria-label={`Color: ${entity.color}`}
                 />
               </TableCell>
-              <TableCell>{entity.name}</TableCell>
+              <TableCell>{entity.entityName}</TableCell>
               <TableCell className="text-right">
                 <Button
                   variant="destructive"
