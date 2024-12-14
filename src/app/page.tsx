@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Input } from "./components/ui/input";
 import { Button } from "./components/ui/button";
 import { Label } from "./components/ui/label";
+import { PARTNERHSIPS_UI_PATH } from "./lib/values";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -12,15 +13,14 @@ const LoginPage = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     // Add login logic here if needed
-    router.push("/dashboard");
+    router.push(PARTNERHSIPS_UI_PATH);
   };
 
   return (
     <div
       className="relative flex items-center justify-center min-h-screen bg-cover bg-center"
-      style={{ backgroundImage: "url('/partnership.jpg')" }}
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-[#037ef3] to-[#f3f4f7] opacity-90"></div>
+      <div className="absolute inset-0 bg-gray-900"></div>
       <div className="relative w-full max-w-sm p-6 bg-white rounded-md shadow-2xl">
         <h1 className="text-2xl font-semibold text-center text-gray-800">Login</h1>
         <form className="mt-4 space-y-4" onSubmit={handleSubmit}>

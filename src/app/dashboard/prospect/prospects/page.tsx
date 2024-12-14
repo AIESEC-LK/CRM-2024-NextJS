@@ -137,7 +137,7 @@ const ProspectsPage = () => {
 
       <Button
         onClick={handleButtonClick}
-        className="bg-blue-500 hover:bg-blue-600"
+        className="bg-blue-500 hover:bg-blue-600 text-gray-100 mb-5"
       >
         Create New Prospect
       </Button>

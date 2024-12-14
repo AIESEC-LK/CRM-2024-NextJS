@@ -11,3 +11,6 @@ export const PROSPECT_VALUES = [
   { value: "promoter", label: "Promoter" },
   { value: "lost", label: "Lost" },
 ]
+
+export const BASE_URL = "http://localhost:3000";
+export const PARTNERHSIPS_UI_PATH = "/dashboard/prospect/prospects"

@@ -7,11 +7,23 @@ import {
   faQuestion,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
+import { PARTNERHSIPS_UI_PATH } from "@/app/lib/values";
 
 const SideNav = () => {
   return (
     <nav className="h-full bg-gray-800 text-white">
       <ul className="space-y-4 p-4">
+        <li>
+          <Link
+            href={PARTNERHSIPS_UI_PATH}
+            className="flex items-center justify-center p-4 hover:bg-gray-700 rounded"
+          >
+            Partnerships
+          </Link>
+          <span className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-max bg-gray-700 text-white text-sm p-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-100">
+            Prospect Requests (Admin)
+          </span>
+        </li>
         <li>
           <Link
             href="/dashboard/admin"
