@@ -5,9 +5,18 @@ import { useRouter } from "next/navigation";
 import { Button } from "../../../components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/app/components/ui/table";
 
+// Define label color schema
+const labelColors: { [key: string]: string } = {
+  prospect: "bg-orange-400 text-white",
+  promoter: "bg-red-500 text-white",
+  customer: "bg-cyan-800 text-white",
+  entityPartner: "bg-teal-600 text-white",
+  lead: "bg-yellow-400 text-white",
+};
+
 const ProspectsPage = () => {
   const router = useRouter();
-  const [prospects, setProspects] = useState([]);
+  const [prospects, setProspects] = useState<any[]>([]);
   const [expandedEntity, setExpandedEntity] = useState<number | null>(null);
 
   // Fetch prospects from the API
@@ -38,7 +47,7 @@ const ProspectsPage = () => {
 
       <Button
         onClick={() => router.push("/dashboard/prospect/submit_request")}
-        className="bg-blue-500 hover:bg-blue-600 text-gray-100 mb-5"
+        className="bg-gray-800 hover:bg-gray-600 text-gray-100 mb-5"
       >
         Create New Prospect
       </Button>
@@ -59,26 +68,62 @@ const ProspectsPage = () => {
               className="cursor-pointer hover:bg-gray-200"
             >
               <TableCell>{prospect.company_name}</TableCell>
-              <TableCell className="relative">
-                {prospect.product_type_name === "Event" && (
+
+              {/* Check if the status is entityPartner, display merged columns */}
+              {prospect.status === "entityPartner" ? (
+                <TableCell colSpan={2} className="relative">
                   <div
                     className="rounded-lg text-gray-900 text-lg font-normal px-4 py-4"
                     style={{ backgroundColor: prospect.lc_color }}
                   >
                     {prospect.lc_name}
+                    {/* Label for status with dynamic background color */}
+                    <span
+                      className={`absolute top-0 right-0 text-xs font-semibold py-1 px-2 rounded-tl-lg ${labelColors[prospect.status] || 'bg-gray-400 text-white'}`}
+                      style={{ zIndex: 10 }}
+                    >
+                      {prospect.status}
+                    </span>
                   </div>
-                )}
-              </TableCell>
-              <TableCell className="relative">
-                {prospect.product_type_name !== "Event" && (
-                  <div
-                    className="rounded-lg text-gray-900 text-lg font-normal px-4 py-4"
-                    style={{ backgroundColor: prospect.lc_color }}
-                  >
-                    {prospect.lc_name}
-                  </div>
-                )}
-              </TableCell>
+                </TableCell>
+              ) : (
+                <>
+                  <TableCell className="relative">
+                    {prospect.product_type_name === "Event" && (
+                      <div
+                        className="rounded-lg text-gray-900 text-lg font-normal px-4 py-4"
+                        style={{ backgroundColor: prospect.lc_color }}
+                      >
+                        {prospect.lc_name}
+                        {/* Label for status with dynamic background color */}
+                        <span
+                          className={`absolute top-0 right-0 text-xs font-semibold py-1 px-2 rounded-tl-lg ${labelColors[prospect.status] || 'bg-gray-400 text-white'}`}
+                          style={{ zIndex: 10 }}
+                        >
+                          {prospect.status}
+                        </span>
+                      </div>
+                    )}
+                  </TableCell>
+                  <TableCell className="relative">
+                    {prospect.product_type_name !== "Event" && (
+                      <div
+                        className="rounded-lg text-gray-900 text-lg font-normal px-4 py-4"
+                        style={{ backgroundColor: prospect.lc_color }}
+                      >
+                        {prospect.lc_name}
+                        {/* Label for status with dynamic background color */}
+                        <span
+                          className={`absolute top-0 right-0 text-xs font-semibold py-1 px-2 rounded-tl-lg ${labelColors[prospect.status] || 'bg-gray-400 text-white'}`}
+                          style={{ zIndex: 10 }}
+                        >
+                          {prospect.status}
+                        </span>
+                      </div>
+                    )}
+                  </TableCell>
+                </>
+              )}
             </TableRow>
           ))}
         </TableBody>
