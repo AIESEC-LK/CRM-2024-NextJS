@@ -5,14 +5,6 @@ import { useRouter } from "next/navigation";
 import { Button } from "../../../components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/app/components/ui/table";
 
-const entityColors: { [key: string]: string } = {
-  "Colombo South": "bg-blue-500",
-  "Colombo North": "bg-yellow-500",
-  Jayawardenapura: "bg-red-500",
-  SLIIT: "bg-indigo-500",
-  // Add more entities if needed
-};
-
 const ProspectsPage = () => {
   const router = useRouter();
   const [prospects, setProspects] = useState([]);
@@ -70,7 +62,8 @@ const ProspectsPage = () => {
               <TableCell className="relative">
                 {prospect.product_type_name === "Event" && (
                   <div
-                    className={`rounded-lg ${entityColors[prospect.lc_name]} text-gray-900 text-lg font-normal px-4 py-4`}
+                    className="rounded-lg text-gray-900 text-lg font-normal px-4 py-4"
+                    style={{ backgroundColor: prospect.lc_color }}
                   >
                     {prospect.lc_name}
                   </div>
@@ -79,7 +72,8 @@ const ProspectsPage = () => {
               <TableCell className="relative">
                 {prospect.product_type_name !== "Event" && (
                   <div
-                    className={`rounded-lg ${entityColors[prospect.lc_name]} text-gray-900 text-lg font-normal px-4 py-4`}
+                    className="rounded-lg text-gray-900 text-lg font-normal px-4 py-4"
+                    style={{ backgroundColor: prospect.lc_color }}
                   >
                     {prospect.lc_name}
                   </div>
