@@ -87,16 +87,16 @@ const confirmDelete = async () => {
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Manage Entities</h1>
       <Link href="/dashboard/add_entity">
-        <Button className="mb-4 bg-slate-900 text-white hover:bg-slate-700">
+        <Button className="mb-4 bg-gray-800 text-white hover:bg-gray-600">
           Add New Entity
         </Button>
       </Link>
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead style={{ width: "5%" }}></TableHead>
+            <TableHead style={{ width: "5%" }}>Color</TableHead>
             <TableHead>Name</TableHead>
-            <TableHead className="text-right"></TableHead>
+            <TableHead className="text-right pr-16">Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
