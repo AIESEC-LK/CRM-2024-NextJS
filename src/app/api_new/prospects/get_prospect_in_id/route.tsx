@@ -2,12 +2,22 @@ import { NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
 import { ObjectId } from "mongodb";
 
-export async function GET() {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get("id");
+
+  if (!id) {
+    return NextResponse.json({ error: "ID is required" }, { status: 400 });
+  }
+
   try {
     const client = await clientPromise;
     const db = client.db(process.env.DB_NAME);
 
     const prospects = await db.collection("Prospects").aggregate([
+      {
+        $match: { _id: new ObjectId(id) }
+      },
       {
         $lookup: {
           from: "Entities",
@@ -63,12 +73,13 @@ export async function GET() {
       }
     ]).toArray();
 
-    return NextResponse.json(prospects);
+    if (prospects.length === 0) {
+      return NextResponse.json({ error: "Prospect not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(prospects[0]);
   } catch (e) {
-    console.error("Error fetching requests:", e);
-    return NextResponse.json(
-      { error: "Failed to fetch requests" },
-      { status: 500 }
-    );
+    console.error("Error fetching prospect:", e);
+    return NextResponse.json({ error: "Failed to fetch prospect" }, { status: 500 });
   }
 }
