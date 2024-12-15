@@ -14,7 +14,7 @@ export async function GET() {
           let: { entityId: "$entity_id" },
           pipeline: [
             { $match: { $expr: { $eq: [{ $toString: "$_id" }, "$$entityId"] } } },
-            { $project: { _id: 0, entityName: 1, color: 1 } } // Include color field here
+            { $project: { _id: 0, entityName: 1, color: 1 } }
           ],
           as: "entity"
         }
@@ -56,7 +56,9 @@ export async function GET() {
           company_name: { $arrayElemAt: ["$company.companyName", 0] },
           product_type_name: { $arrayElemAt: ["$product.productName", 0] },
           lc_name: { $arrayElemAt: ["$entity.entityName", 0] },
-          lc_color: { $arrayElemAt: ["$entity.color", 0] } // Include color field here
+          lc_color: { $arrayElemAt: ["$entity.color", 0] },
+          activities: 1,       // Include activities field
+          lead_proof_url: 1    // Include lead_proof_url field
         }
       }
     ]).toArray();

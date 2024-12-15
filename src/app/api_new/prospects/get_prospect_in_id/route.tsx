@@ -66,7 +66,9 @@ export async function GET(request: Request) {
           company_name: { $arrayElemAt: ["$company.companyName", 0] },
           product_type_name: { $arrayElemAt: ["$product.productName", 0] },
           lc_name: { $arrayElemAt: ["$entity.entityName", 0] },
-          lc_color: { $arrayElemAt: ["$entity.color", 0] }
+          lc_color: { $arrayElemAt: ["$entity.color", 0] },
+          activities: 1,       // Include activities field
+          lead_proof_url: 1    // Include lead_proof_url field
         }
       }
     ]).toArray();
