@@ -144,6 +144,14 @@ const ProspectsPage = () => {
                     Convert to Customer
                   </Button>
                 )}
+                 {prospect.status === "promoter" && (
+                  <Button
+                    onClick={() => router.push(`/dashboard/prospect/promoter?id=${prospect._id}`)}
+                    className="bg-red-800 hover:bg-red-700 text-white"
+                  >
+                    View Promoter
+                  </Button>
+                )}
               </TableCell>
             </TableRow>
           ))}
