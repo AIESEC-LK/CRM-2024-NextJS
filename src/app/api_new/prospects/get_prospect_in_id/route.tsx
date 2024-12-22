@@ -68,7 +68,8 @@ export async function GET(request: Request) {
           lc_name: { $arrayElemAt: ["$entity.entityName", 0] },
           lc_color: { $arrayElemAt: ["$entity.color", 0] },
           activities: 1,       // Include activities field
-          lead_proof_url: 1    // Include lead_proof_url field
+          lead_proof_url: 1,    // Include lead_proof_url field
+          partnership_type: 1
         }
       }
     ]).toArray();
