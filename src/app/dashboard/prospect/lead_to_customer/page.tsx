@@ -9,20 +9,18 @@ import ProgressBar from "@/app/components/ui/progress";
 import ListGroup from "@/app/components/ui/list_groups";
 import Image from "next/image";
 import ToastNotification from "@/app/components/ui/toast"; // Assume you have this component
-import { Product } from "./functions";
+import { formatDate, Product } from "./functions";
 
 export default function MakeALeadPage() {
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [activities, setActivities] = useState<string[]>([]);
   const [companyName, setCompanyName] = useState(String);
   const [selectedProduct, setSelectedProduct] = useState("");
-  const [partnershipCategoryName, setpartnershipCategoryName] = useState("Inkind Partnership");
-  const [activeStateApproval, setActiveStateApproval] = useState("approved");
-  const [prospectStateApproval, setProspecttateApproval] = useState("approved");
-  const [leadStateApproval, setLeadStateApproval] = useState("approved");
-  const [activeMouStartDate, setActiveMouStartDate] = useState("2024-01-01");
-  const [activeMouEndDate, setActiveMouEndDate] = useState("2024-01-01");
+  const [partnershipCategoryName, setpartnershipCategoryName] = useState(String);
+  const [activeMouStartDate, setActiveMouStartDate] = useState("");
+  const [activeMouEndDate, setActiveMouEndDate] = useState("");
+  const [leadMouStartDate, setLeadMouStartDate] = useState("");
+  const [leadMouEndDate, setLeadMouEndDate] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
+   const [activities, setActivities] = useState<string[]>([]);
 
   useEffect(() => {
     async function fetchProducts() {
@@ -55,6 +53,12 @@ export default function MakeALeadPage() {
         const prospect = await response.json();
         setCompanyName(prospect.company_name || "");
         setSelectedProduct(prospect.product_type_id || "");
+        setActiveMouStartDate(formatDate(prospect.date_added) || "");
+        setActiveMouEndDate(formatDate(prospect.date_expires) || "");
+        setLeadMouStartDate(formatDate(prospect.date_added) || "");
+        setLeadMouEndDate(formatDate(prospect.date_expires) || "");
+        setpartnershipCategoryName(prospect.partnership_type || "");
+        setActivities(prospect.activities || []);
       } catch (error) {
         console.error("Error fetching prospect:", error);
       }
@@ -104,7 +108,6 @@ export default function MakeALeadPage() {
               <h1 className="text-2xl font-bold mb-6">Active Stage - Customer</h1>
               <Label htmlFor="category" className="block mb-2">Category:</Label>
               <Input
-                placeholder="Partnership Category"
                 value={partnershipCategoryName}
                 onChange={(e) => setpartnershipCategoryName(e.target.value)}
                 className="w-full mb-4"
@@ -113,7 +116,7 @@ export default function MakeALeadPage() {
               />
               <Label htmlFor="mouStart" className="block mb-2">MOU Start Date:</Label>
               <Input
-                placeholder="2024/12/31"
+                placeholder="YYYY/MM/DD"
                 value={activeMouStartDate}
                 onChange={(e) => setActiveMouStartDate(e.target.value)}
                 className="w-full mb-4"
@@ -122,7 +125,7 @@ export default function MakeALeadPage() {
               />
               <Label htmlFor="mouEnd" className="block mb-2">MOU End Date:</Label>
               <Input
-                placeholder="2024/12/31"
+                placeholder="YYYY/MM/DD"
                 value={activeMouEndDate}
                 onChange={(e) => setActiveMouEndDate(e.target.value)}
                 className="w-full mb-4"
@@ -136,14 +139,10 @@ export default function MakeALeadPage() {
           <div className="w-full bg-gray-100 rounded overflow-hidden shadow-lg">
             <div className="px-14 py-14">
               <h1 className="text-2xl font-bold mb-6">Prospect Stage</h1>
-              <Label htmlFor="companyName" className="block mb-2">Company Name:</Label>
-              <Input
-                placeholder="Company"
-                value={companyName}
-                onChange={(e) => setCompanyName(e.target.value)}
-                className="w-full mb-4"
-                type="text"
-                disabled
+              <Label htmlFor="companyName" className="block mb-2">Activities:</Label>
+              <ListGroup
+                values={activities.length > 0 ? activities : ['No activities recorded']}
+                className="mt-4 mb-4"
               />
             </div>
           </div>
@@ -154,7 +153,6 @@ export default function MakeALeadPage() {
               <h1 className="text-2xl font-bold mb-6">Lead Stage</h1>
               <Label htmlFor="category" className="block mb-2">Category:</Label>
               <Input
-                placeholder="Partnership Category"
                 value={partnershipCategoryName}
                 onChange={(e) => setpartnershipCategoryName(e.target.value)}
                 className="w-full mb-4"
@@ -163,18 +161,18 @@ export default function MakeALeadPage() {
               />
               <Label htmlFor="mouStart" className="block mb-2">MOU Start Date:</Label>
               <Input
-                placeholder="2024/12/31"
-                value={activeMouStartDate}
-                onChange={(e) => setActiveMouStartDate(e.target.value)}
+                placeholder="YYYY/MM/DD"
+                value={leadMouStartDate}
+                onChange={(e) => setLeadMouStartDate(e.target.value)}
                 className="w-full mb-4"
                 type="text"
                 disabled
               />
               <Label htmlFor="mouEnd" className="block mb-2">MOU End Date:</Label>
               <Input
-                placeholder="2024/12/31"
-                value={activeMouEndDate}
-                onChange={(e) => setActiveMouEndDate(e.target.value)}
+                placeholder="YYYY/MM/DD"
+                value={leadMouEndDate}
+                onChange={(e) => setLeadMouEndDate(e.target.value)}
                 className="w-full mb-4"
                 type="text"
                 disabled
