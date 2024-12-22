@@ -71,7 +71,7 @@ export default function MakeALeadPage() {
   return (
     <>
       <div className="container mx-auto pt-0 pr-4">
-        <h1 className="text-2xl font-bold mb-6 ml-4">Lead to Customer Pending</h1>
+        <h1 className="text-2xl font-bold mb-6 ml-4">Promoter</h1>
 
         {/* Lead Details Row */}
         <div className="w-full ml-4 mb-6 bg-gray-100 rounded overflow-hidden shadow-lg">

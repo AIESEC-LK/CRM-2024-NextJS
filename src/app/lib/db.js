@@ -19,7 +19,7 @@ export async function dbConnect() {/*
         const promise = mongoose.connect(conString, {
             useNewUrlParser: true,      // Ensure proper URL parsing
             useUnifiedTopology: true,   // Handles different server topologies
-            dbName: 'CRM',              // Ensure the correct database name (case-sensitive)
+            dbName: process.env.DB_NAME,              // Ensure the correct database name (case-sensitive)
             autoIndex: true,            // Ensure indexes are auto-created
         });
 
