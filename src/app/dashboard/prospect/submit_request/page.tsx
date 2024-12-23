@@ -13,6 +13,7 @@ import {
   TableRow,
 } from "@/app/components/ui/table";
 import Popup from "@/app/components/popup/Popup";
+import styles from "./styles.module.css";
 
 const Page: React.FC = () => {
 
@@ -76,20 +77,11 @@ const Page: React.FC = () => {
 
 
     const loadMyProspectList = async () => {
-      const myProspectList = await fetctMyProspectList("586");
-      //setmyProspectList(myProspectList);
+      const myProspectList = await fetctMyProspectList("675dbabf296393f677c5cf21");//TODO: Entity ID Fetch from Auth
+      setmyProspectList(myProspectList);
     };
 
-    setmyProspectList([{
-      _id: "67694b10855d970eb0dd3712",
-      date_added: "2024-12-23T11:35:44.123Z",
-      date_expires: "2025-03-23T11:35:44.123Z",
-      status: "prospect",
-      company_name: "Sri Lanka Insurance Ltd",
-      product_type_name: "Event"
-    }]);
-
-    //loadMyProspectList();
+    loadMyProspectList();
     loadProducts();
     loadIndustries();
   }, []);
@@ -152,8 +144,9 @@ const Page: React.FC = () => {
     if (submitResponse instanceof Response) {
       // If the response is successful, you can check for a status or extract a message from the response
       if (submitResponse.ok) {
-        openPopup("Form submitted successfully!", "Successful");
-        setSuccessMessage('Form submitted successfully!');
+        const errorData = await submitResponse.json();
+        openPopup(errorData.error, "Sucessfull");
+        setErrorMessage(errorData.error);
         setErrorMessage(null);
       } else {
         // Handle response failure if you want to extract error message from the response body
@@ -175,26 +168,29 @@ const Page: React.FC = () => {
 
 
   return (
-    <div className="grid grid-cols-3 h-screen">
+    <div className="container mx-auto pt-0">
+      <h1 className="text-2xl font-bold mb-6 ml-4">Prospect Request</h1>
       <Popup isOpen={isPopupOpen} close={closePopup} title={titlePopup} message={messagePopup} />
-      <div className="col-span-2 p-6">
-        <form onSubmit={handleSubmit} className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg">
-          <h2 className="text-xl font-semibold mb-6">Add New Prospect Request</h2>
+      <div className="grid grid-cols-2 gap-16 pr-6">
+        <div className="w-full ml-4 mt-5 pr-6 bg-gray-100 rounded overflow-hidden shadow-lg">
+          <div className="px-14 py-14">
+            <form onSubmit={handleSubmit} >
+              <h2 className="text-xl font-semibold mb-6">Add New Prospect Request</h2>
 
-          <div className="mb-4 relative">
-            <label htmlFor="name" className="block text-sm font-medium mb-1">
-              Company Name
-            </label>
-            <input
-              id="companyName"
-              type="text"
-              name="companyName"
-              onChange={handleChange}
-              value={formData.companyName as string}
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            {/*
+              <div className="mb-4 relative">
+                <label htmlFor="name" className="block text-sm font-medium mb-1">
+                  Company Name
+                </label>
+                <input
+                  id="companyName"
+                  type="text"
+                  name="companyName"
+                  onChange={handleChange}
+                  value={formData.companyName as string}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+                {/*
           {showDropdown && (
             <ul className="absolute bg-white border border-gray-300 rounded-md mt-1 w-full max-h-40 overflow-y-auto">
               {searchResults.map((result) => (
@@ -209,205 +205,215 @@ const Page: React.FC = () => {
             </ul>
           )}*/}
 
-            {showDropdown && (
-              <ul className="absolute bg-white border border-gray-300 rounded-md mt-1 w-full max-h-40 overflow-y-auto">
-                {searchResults.map((result) => (
-                  <li
-                    key={result._id}
-                    onClick={() => handleSelectCompany(result._id)}
-                    className="p-2 cursor-pointer hover:bg-blue-500 hover:text-white"
-                  >
-                    <div>
-                      <span className="font-semibold">{result.companyName}</span>
-                    </div>
-                    <div className="ml-4 mt-1 text-sm text-gray-500">
+                {showDropdown && (
+                  <ul className="absolute bg-white border border-gray-300 rounded-md mt-1 w-full max-h-40 overflow-y-auto">
+                    {searchResults.map((result) => (
+                      <li
+                        key={result._id}
+                        onClick={() => handleSelectCompany(result._id)}
+                        className="p-2 cursor-pointer hover:bg-blue-500 hover:text-white"
+                      >
+                        <div>
+                          <span className="font-semibold">{result.companyName}</span>
+                        </div>
+                        <div className="ml-4 mt-1 text-sm text-gray-500">
 
-                      {result.dateexpiresEvent && (
-                        <div>Product Partnership Expires: {format(result.dateexpiresEvent, "MMMM dd, yyyy hh:mm a")}</div>
-                      )}
+                          {result.dateexpiresEvent && (
+                            <div>Product Partnership Expires: {format(result.dateexpiresEvent, "MMMM dd, yyyy hh:mm a")}</div>
+                          )}
 
-                      {result.dateexpiresProduct && (
-                        <div>EventPartnership Expires: {format(result.dateexpiresProduct, "MMMM dd, yyyy hh:mm a")}</div>
-                      )}
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
+                          {result.dateexpiresProduct && (
+                            <div>EventPartnership Expires: {format(result.dateexpiresProduct, "MMMM dd, yyyy hh:mm a")}</div>
+                          )}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
 
-            {/* {suggestedPartnership && (
+                {/* {suggestedPartnership && (
           <p className="text-sm text-gray-600 mt-1">
             Suggested Partnership: Try a <strong>{suggestedPartnership}</strong> partnership.
           </p>
         )} */}
 
+              </div>
+              <div className="mb-4">
+                <label htmlFor="companyAddress" className="block text-sm font-medium mb-1">
+                  Company Address
+                </label>
+                <textarea
+                  autoComplete="off"
+                  id="companyAddress"
+                  name="companyAddress"
+                  value={formData.companyAddress as string}
+                  onChange={handleChange}
+                  rows={3}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="contactPersonName" className="block text-sm font-medium mb-1">
+                  Contact Person Name
+                </label>
+                <input
+                  id="contactPersonName"
+                  type="text"
+                  name="contactPersonName"
+                  value={formData.contactPersonName as string}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="contactPersonNumber" className="block text-sm font-medium mb-1">
+                  Contact Person Contact Number
+                </label>
+                <input
+                  id="contactPersonNumber"
+                  type="text"
+                  name="contactPersonNumber"
+                  value={formData.contactPersonNumber as string}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="contactPersonEmail" className="block text-sm font-medium mb-1">
+                  Contact Person Email Address
+                </label>
+                <input
+                  id="contactPersonEmail"
+                  type="email"
+                  name="contactPersonEmail"
+                  value={formData.contactPersonEmail as string}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="producttype" className="block text-sm font-medium mb-1">
+                  Select a Industry
+                </label>
+
+                <select
+                  id="industry"
+                  name="industry_id"
+                  value={formData.industry_id as string} // Bind the dropdown to formData.industry
+                  onChange={handleChange}   // Update formData when a new industry is selected
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                >
+                  <option value="" disabled>
+                    -- Select an Industry --
+                  </option>
+                  {industries.map((industry) => (
+                    <option key={industry._id} value={industry._id} >
+                      {industry.industryName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="producttype" className="block text-sm font-medium mb-1">
+                  Select a Product Type
+                </label>
+
+                <select
+                  id="producttype"
+                  name="productId"
+                  value={formData.productId as string} // Bind the dropdown to formData.industry
+                  onChange={handleChange}   // Update formData when a new industry is selected
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                >
+                  <option value="" disabled>
+                    -- Select an Product Type --
+                  </option>
+                  {products.map((product) => (
+                    <option key={product._id} value={product._id}>
+                      {product.productName}
+                    </option>
+                  ))}
+                </select>
+
+
+
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="comment" className="block text-sm font-medium mb-1">
+                  Comments
+                </label>
+                <textarea
+                  id="comment"
+                  name="comment"
+                  value={formData.comment as string}
+                  onChange={handleChange}
+                  rows={3}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                Submit Request
+              </button>
+            </form>
           </div>
-          <div className="mb-4">
-            <label htmlFor="companyAddress" className="block text-sm font-medium mb-1">
-              Company Address
-            </label>
-            <textarea
-              autoComplete="off"
-              id="companyAddress"
-              name="companyAddress"
-              value={formData.companyAddress as string}
-              onChange={handleChange}
-              rows={3}
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
+        </div>
+        <div className="w-full ml-4 mt-5 pr-6 bg-gray-100 rounded overflow-hidden shadow-lg">
+          <div className="px-14 py-14">
+          <h2 className="text-xl font-semibold mb-6">Prospect Request History</h2>
+
+            <Table>
+              <TableHeader>
+                <TableRow>
+
+                  <TableHead>Company Name</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Submission Date</TableHead>
+                  <TableHead>Submission Expires</TableHead>
+                  <TableHead>Product Type</TableHead>
+
+                </TableRow>
+              </TableHeader>
+
+              <TableBody>
+                {myProspectList && myProspectList.length > 0 ? (
+                  myProspectList.map((item) => (
+                    <TableRow key={item._id}>
+                      <TableCell>{item.company_name}</TableCell>
+                      <TableCell>{item.status}</TableCell>
+                      <TableCell>{new Date(item.date_added).toLocaleDateString()}</TableCell>
+                      <TableCell>{new Date(item.date_added).toLocaleDateString()}</TableCell>
+                      <TableCell>{item.product_type_name}</TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5}>No data available</TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+
+            </Table>
           </div>
 
-          <div className="mb-4">
-            <label htmlFor="contactPersonName" className="block text-sm font-medium mb-1">
-              Contact Person Name
-            </label>
-            <input
-              id="contactPersonName"
-              type="text"
-              name="contactPersonName"
-              value={formData.contactPersonName as string}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
+        </div>
 
-          <div className="mb-4">
-            <label htmlFor="contactPersonNumber" className="block text-sm font-medium mb-1">
-              Contact Person Contact Number
-            </label>
-            <input
-              id="contactPersonNumber"
-              type="text"
-              name="contactPersonNumber"
-              value={formData.contactPersonNumber as string}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
-
-          <div className="mb-4">
-            <label htmlFor="contactPersonEmail" className="block text-sm font-medium mb-1">
-              Contact Person Email Address
-            </label>
-            <input
-              id="contactPersonEmail"
-              type="email"
-              name="contactPersonEmail"
-              value={formData.contactPersonEmail as string}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
-
-          <div className="mb-4">
-            <label htmlFor="producttype" className="block text-sm font-medium mb-1">
-              Select a Industry
-            </label>
-
-            <select
-              id="industry"
-              name="industry_id"
-              value={formData.industry_id as string} // Bind the dropdown to formData.industry
-              onChange={handleChange}   // Update formData when a new industry is selected
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            >
-              <option value="" disabled>
-                -- Select an Industry --
-              </option>
-              {industries.map((industry) => (
-                <option key={industry._id} value={industry._id} >
-                  {industry.industryName}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="mb-4">
-            <label htmlFor="producttype" className="block text-sm font-medium mb-1">
-              Select a Product Type
-            </label>
-
-            <select
-              id="producttype"
-              name="productId"
-              value={formData.productId as string} // Bind the dropdown to formData.industry
-              onChange={handleChange}   // Update formData when a new industry is selected
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            >
-              <option value="" disabled>
-                -- Select an Product Type --
-              </option>
-              {products.map((product) => (
-                <option key={product._id} value={product._id}>
-                  {product.productName}
-                </option>
-              ))}
-            </select>
-
-
-
-          </div>
-
-          <div className="mb-4">
-            <label htmlFor="comment" className="block text-sm font-medium mb-1">
-              Comments
-            </label>
-            <textarea
-              id="comment"
-              name="comment"
-              value={formData.comment as string}
-              onChange={handleChange}
-              rows={3}
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="w-full py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            Submit Request
-          </button>
-        </form>
       </div>
-
-      <div className="p-3">
-        {/*
-        <Table>
-          <TableHeader>
-            <TableRow>
-
-              <TableHead>Company Name</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Submission Date</TableHead>
-              <TableHead>Submission Expires</TableHead>
-              <TableHead>Product Type</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {myProspectList.map((item) => (
-
-              <TableRow key={item._id}>
-                <TableCell>{item.company_name}</TableCell>
-                <TableCell>
-                  {item.status}
-                </TableCell>
-                <TableCell>{item.date_added}</TableCell>
-                <TableCell>{item.date_expires}</TableCell>
-                <TableCell>{item.product_type_name}</TableCell>
-              </TableRow>))};
-
-          </TableBody>
-        </Table>*/}
-      </div>
-
-
     </div>
   );
 };
