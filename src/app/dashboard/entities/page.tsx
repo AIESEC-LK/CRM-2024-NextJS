@@ -16,7 +16,7 @@ import ConfirmationModal from "@/app/components/ConfirmationModal";
 
 interface Entity {
   _id: string;
-  name: string;
+  entityName: string;
   color: string;
 }
 
@@ -31,7 +31,7 @@ export default function EntitiesPage() {
 
   const fetchEntities = async () => {
     try {
-      const response = await fetch("/api/entities");
+      const response = await fetch("/api_new/entities/get_all_entities");
       if (!response.ok) {
         throw new Error("Failed to fetch entities");
       }
@@ -51,16 +51,27 @@ export default function EntitiesPage() {
     if (!entityToDelete) return;
 
     try {
-      const response = await fetch(`/api/entities/${entityToDelete._id}`, {
+      const response = await fetch(`/api_new/entities/delete_an_entity`, {
         method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: entityToDelete._id }),
       });
 
       if (!response.ok) {
         throw new Error("Failed to delete entity");
       }
-      setEntities(
-        entities.filter((entity) => entity._id !== entityToDelete._id)
-      );
+
+      const result = await response.json();
+      if (result.success) {
+        setEntities(
+          entities.filter((entity) => entity._id !== entityToDelete._id)
+        );
+      } else {
+        console.error("No records deleted:", result.message);
+      }
+
       setIsDeleteModalOpen(false);
       setEntityToDelete(null);
     } catch (error) {
@@ -77,16 +88,16 @@ export default function EntitiesPage() {
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Manage Entities</h1>
       <Link href="/dashboard/add_entity">
-        <Button className="mb-4 bg-slate-900 text-white hover:bg-slate-700">
+        <Button className="mb-4 bg-gray-800 text-white hover:bg-gray-600">
           Add New Entity
         </Button>
       </Link>
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead style={{ width: "5%" }}></TableHead>
+            <TableHead style={{ width: "5%" }}>Color</TableHead>
             <TableHead>Name</TableHead>
-            <TableHead className="text-right"></TableHead>
+            <TableHead className="text-right pr-16">Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -99,7 +110,7 @@ export default function EntitiesPage() {
                   aria-label={`Color: ${entity.color}`}
                 />
               </TableCell>
-              <TableCell>{entity.name}</TableCell>
+              <TableCell>{entity.entityName}</TableCell>
               <TableCell className="text-right">
                 <Button
                   variant="destructive"

@@ -3,14 +3,14 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const {entityName, abbravation} = await req.json();
+    const {entityName, color} = await req.json();
     const client = await clientPromise;
     const db = client.db(process.env.DB_NAME);
 
 
     const result = await db.collection("Entities").insertOne({
       entityName: entityName,
-      abbravation: abbravation,
+      color: color,
 
 
     });
