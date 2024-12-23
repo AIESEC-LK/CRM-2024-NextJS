@@ -98,12 +98,13 @@ const Page: React.FC = () => {
     e.preventDefault();
 
     // Validate form data
+    /*
     const validationError = validateFormData(formData);
     if (validationError) {
       setErrorMessage(validationError);
       setSuccessMessage(null);
       return;
-    }
+    }*/
 
     // Submit form data
     const success = await submitProspect(formData);
