@@ -12,6 +12,8 @@ export const PROSPECT_VALUES = [
   { value: "lost", label: "Lost" },
 ]
 
+export const AUTONOMATION_TABLE_ID = "6769349892a256157cb6142c"
+
 export const PROSPECT_EXPIRE_TIME_DURATION = 1000 * 60 * 60 * 24 * 14
 export const LEAD_EXPIRE_TIME_DURATION = 1000 * 60 * 60 * 24 * 30
 
