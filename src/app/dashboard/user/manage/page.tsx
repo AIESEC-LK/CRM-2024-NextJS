@@ -71,6 +71,8 @@ const UserManagement: React.FC = () => {
                 </button>
             </div>
 
+            <hr/>
+
             {/* Current Users Section */}
             <h2 className="text-xl font-bold mb-4">Current Users</h2>
             <div className="divide-y divide-gray-200">
