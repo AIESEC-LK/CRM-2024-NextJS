@@ -20,7 +20,7 @@ const Page: React.FC = () => {
   const [titlePopup, setPopupTitle] = useState('This is the default message.');
   const [messagePopup, setPopupMessage] = useState('This is the default message.');
 
-  const openPopup = (newMessage: string,newTitle:string): void => {
+  const openPopup = (newMessage: string, newTitle: string): void => {
     setPopupTitle(newTitle);  // Update the title state dynamically
     setPopupMessage(newMessage);  // Update the message state dynamically
     setIsPopupOpen(true);    // Open the popup
@@ -117,7 +117,7 @@ const Page: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
 
     // Validate form data
     /*
@@ -129,16 +129,28 @@ const Page: React.FC = () => {
     }*/
 
     // Submit form data
-    const success = await submitProspect(formData);
+    const submitResponse = await submitProspect(formData);
 
-    if (success) {
-      openPopup("Form submitted successfully!","Sucessful");
-      setSuccessMessage('Form submitted successfully!');
-      setErrorMessage(null);
+    if (submitResponse instanceof Response) {
+      // If the response is successful, you can check for a status or extract a message from the response
+      if (submitResponse.ok) {
+        openPopup("Form submitted successfully!", "Successful");
+        setSuccessMessage('Form submitted successfully!');
+        setErrorMessage(null);
+      } else {
+        // Handle response failure if you want to extract error message from the response body
+        const errorData = await submitResponse.json(); // Assuming the response returns a JSON error message
 
-    } else {
-      openPopup("Failed to submit the form. Please try again.","Failed");
-      setErrorMessage('Failed to submit the form. Please try again.');
+        openPopup(errorData.error, "Failed");
+        setErrorMessage(errorData.error);
+
+        console.log("Error data:", errorData);
+        setSuccessMessage(null);
+      }
+    } else if (submitResponse instanceof Error) {
+      // If an error is thrown, display the error message
+      openPopup(submitResponse.message || "Something went wrong. Please try again.", "Failed");
+      setErrorMessage(submitResponse.message || 'Something went wrong. Please try again.');
       setSuccessMessage(null);
     }
   };
@@ -146,7 +158,7 @@ const Page: React.FC = () => {
 
   return (
     <div className="grid grid-cols-3 h-screen">
-      <Popup isOpen={isPopupOpen} close={closePopup} title={titlePopup} message={messagePopup}/>
+      <Popup isOpen={isPopupOpen} close={closePopup} title={titlePopup} message={messagePopup} />
       <div className="col-span-2 p-6">
         <form onSubmit={handleSubmit} className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg">
           <h2 className="text-xl font-semibold mb-6">Add New Prospect Request</h2>
@@ -348,30 +360,30 @@ const Page: React.FC = () => {
       </div>
 
       <div className="p-3">
-      <Table>
-        <TableHeader>
-          <TableRow>
+        <Table>
+          <TableHeader>
+            <TableRow>
 
-            <TableHead>Company Name</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Submission Date</TableHead>
-            <TableHead>Product Type</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
+              <TableHead>Company Name</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Submission Date</TableHead>
+              <TableHead>Product Type</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
 
             <TableRow key="5">
               <TableCell>Ashan</TableCell>
               <TableCell>
-              Ashan
+                Ashan
               </TableCell>
               <TableCell>Ashan</TableCell>
               <TableCell>Ashan</TableCell>
               <TableCell>Ashan</TableCell>
             </TableRow>
 
-        </TableBody>
-      </Table>
+          </TableBody>
+        </Table>
       </div>
 
 

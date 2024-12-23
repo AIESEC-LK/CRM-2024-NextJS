@@ -85,7 +85,7 @@ const fetchIndustry = async () => {
 };
 
 
-const submitProspect = async (data: FormData): Promise<boolean> => {
+const submitProspect = async (data: FormData): Promise<Response | Error> => {
     try {
         
         const response = await fetch("/api_new/prospects/add_a_prospect", {
@@ -96,14 +96,10 @@ const submitProspect = async (data: FormData): Promise<boolean> => {
             body: JSON.stringify(data),
         });
 
-        if (!response.ok) {
-            throw new Error('Failed to submit form');
-        }
-
-        return true; // Form submitted successfully
-    } catch (error) {
+        return response; // Form submitted successfully
+    } catch (error: any) {
         console.error('Error submitting form:', error);
-        return false; // Submission failed
+        return error; // Submission failed
     }
 };
 
