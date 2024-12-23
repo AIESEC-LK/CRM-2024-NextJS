@@ -77,18 +77,9 @@ const Page: React.FC = () => {
 
 
     const loadMyProspectList = async () => {
-      const myProspectList = await fetctMyProspectList("675dbabf296393f677c5cf21");
+      const myProspectList = await fetctMyProspectList("675dbabf296393f677c5cf21");//TODO: Entity ID Fetch from Auth
       setmyProspectList(myProspectList);
     };
-
-    /*setmyProspectList([{
-      _id: "67694b10855d970eb0dd3712",
-      date_added: "2024-12-23T11:35:44.123Z",
-      date_expires: "2025-03-23T11:35:44.123Z",
-      status: "prospect",
-      company_name: "Sri Lanka Insurance Ltd",
-      product_type_name: "Event"
-    }]);*/
 
     loadMyProspectList();
     loadProducts();
@@ -154,7 +145,7 @@ const Page: React.FC = () => {
       // If the response is successful, you can check for a status or extract a message from the response
       if (submitResponse.ok) {
         const errorData = await submitResponse.json();
-        openPopup(errorData.error, "Caution!");
+        openPopup(errorData.error, "Sucessfull");
         setErrorMessage(errorData.error);
         setErrorMessage(null);
       } else {
@@ -178,7 +169,7 @@ const Page: React.FC = () => {
 
   return (
     <div className="container mx-auto pt-0">
-      <h1 className="text-2xl font-bold mb-6 ml-4">Lead Conversion</h1>
+      <h1 className="text-2xl font-bold mb-6 ml-4">Prospect Request</h1>
       <Popup isOpen={isPopupOpen} close={closePopup} title={titlePopup} message={messagePopup} />
       <div className="grid grid-cols-2 gap-16 pr-6">
         <div className="w-full ml-4 mt-5 pr-6 bg-gray-100 rounded overflow-hidden shadow-lg">
@@ -384,6 +375,7 @@ const Page: React.FC = () => {
         </div>
         <div className="w-full ml-4 mt-5 pr-6 bg-gray-100 rounded overflow-hidden shadow-lg">
           <div className="px-14 py-14">
+          <h2 className="text-xl font-semibold mb-6">Prospect Request History</h2>
 
             <Table>
               <TableHeader>

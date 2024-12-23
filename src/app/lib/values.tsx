@@ -10,6 +10,7 @@ export const PROSPECT_VALUES = [
   { value: "lead", label: "Lead" },
   { value: "promoter", label: "Promoter" },
   { value: "lost", label: "Lost" },
+  { value: "mcvpap", label: "Waiting for MCVP Approvel" }
 ]
 
 export const AUTONOMATION_TABLE_ID = "6769349892a256157cb6142c"
