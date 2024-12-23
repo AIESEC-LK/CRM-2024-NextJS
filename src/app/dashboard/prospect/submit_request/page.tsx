@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { IRequest } from '@/app/models/RequestTypes';
-import { fetchCompany, fetchProducts, fetchIndustry, submitProspect, FormData, Industry, Product, fetchCompanyQuery, ICompanyQuery } from './functions';
+import { fetctMyProspectList, IMyProspectList, fetchCompany, fetchProducts, fetchIndustry, submitProspect, FormData, Industry, Product, fetchCompanyQuery, ICompanyQuery } from './functions';
 import { format } from 'date-fns';
 import {
   Table,
@@ -27,6 +27,8 @@ const Page: React.FC = () => {
   };
 
   const closePopup = (): void => setIsPopupOpen(false);
+
+  const [myProspectList, setmyProspectList] = useState<IMyProspectList[]>([]);
 
   const [products, setProducts] = useState<Product[]>([]);
   const [productsLoading, setProductsLoading] = useState<boolean>(true);
@@ -72,6 +74,22 @@ const Page: React.FC = () => {
       setIndustriesLoading(false);
     };
 
+
+    const loadMyProspectList = async () => {
+      const myProspectList = await fetctMyProspectList("586");
+      //setmyProspectList(myProspectList);
+    };
+
+    setmyProspectList([{
+      _id: "67694b10855d970eb0dd3712",
+      date_added: "2024-12-23T11:35:44.123Z",
+      date_expires: "2025-03-23T11:35:44.123Z",
+      status: "prospect",
+      company_name: "Sri Lanka Insurance Ltd",
+      product_type_name: "Event"
+    }]);
+
+    //loadMyProspectList();
     loadProducts();
     loadIndustries();
   }, []);
@@ -360,6 +378,7 @@ const Page: React.FC = () => {
       </div>
 
       <div className="p-3">
+        {/*
         <Table>
           <TableHeader>
             <TableRow>
@@ -367,23 +386,25 @@ const Page: React.FC = () => {
               <TableHead>Company Name</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Submission Date</TableHead>
+              <TableHead>Submission Expires</TableHead>
               <TableHead>Product Type</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
+            {myProspectList.map((item) => (
 
-            <TableRow key="5">
-              <TableCell>Ashan</TableCell>
-              <TableCell>
-                Ashan
-              </TableCell>
-              <TableCell>Ashan</TableCell>
-              <TableCell>Ashan</TableCell>
-              <TableCell>Ashan</TableCell>
-            </TableRow>
+              <TableRow key={item._id}>
+                <TableCell>{item.company_name}</TableCell>
+                <TableCell>
+                  {item.status}
+                </TableCell>
+                <TableCell>{item.date_added}</TableCell>
+                <TableCell>{item.date_expires}</TableCell>
+                <TableCell>{item.product_type_name}</TableCell>
+              </TableRow>))};
 
           </TableBody>
-        </Table>
+        </Table>*/}
       </div>
 
 
