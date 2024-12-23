@@ -25,7 +25,7 @@ async function getCronScheduleForDeletingExpiredProspects() {
 
   cron.schedule(cronSchedule, async () => {
     try {
-      console.log("Running cron job to move expired prospects to Expired_Prospects...");
+      console.log("Running cron job to detlete PEnding Prospects...");
 
       // Connect to the database
       const client = await clientPromise;
@@ -34,35 +34,33 @@ async function getCronScheduleForDeletingExpiredProspects() {
       // Get today's date to check against expire_date
       const today = new Date();
       today.setHours(0, 0, 0, 0); // Normalize the time to midnight to ensure accurate comparison
-
-      // Find all expired prospects
-      const expiredProspects = await db.collection("Prospects").find(
+ // Find all expired prospects or leads
+      const expiredProspects = await db.collection("Pending_Prospects").find(
         {
-          status: "prospect",
           date_expires: { $lte: today }, // Compare against today
         }
       ).toArray();
 
       if (expiredProspects.length > 0) {
-        console.log(`Found ${expiredProspects.length} expired prospects. Moving to Expired_Prospects...`);
+        console.log(`Found ${expiredProspects.length} expired pending prospects. Moving to deleted_prospects...`);
 
-        // Insert expired prospects into Expired_Prospects collection
+        // Insert expired prospects or leads into deleted_prospects collection
         await db.collection("deleted_prospects").insertMany(expiredProspects);
 
-        // Delete expired prospects from Prospects collection
+        // Delete expired prospects or leads from Prospects collection
         const deleteResult = await db.collection("Prospects").deleteMany({
-          status: "prospect",
-          date_expires: { $lte: today }, // Match the same condition
+          status: { $in: ["prospect", "lead"] }, // Match the same condition
+          date_expires: { $lte: today },
         });
 
-        console.log(`Successfully moved and deleted ${deleteResult.deletedCount} expired prospects.`);
+        console.log(`Successfully moved and deleted ${deleteResult.deletedCount} expired pending prospects.`);
       } else {
-        console.log("No expired prospects found.");
+        console.log("No expired pending prospects or found.");
       }
     } catch (error) {
-      console.error("Error in cron job for deleting expired prospects:", error);
+      console.error("Error in cron job for deleting expired pending prospects:", error);
     }
   });
 
-  console.log(`Cron job for deleting expired prospects is scheduled with schedule: ${cronSchedule}`);
+  console.log(`Cron job for deleting expired pending prospects is scheduled with schedule: ${cronSchedule}`);
 })();
