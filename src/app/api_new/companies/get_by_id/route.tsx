@@ -3,7 +3,7 @@ import clientPromise from "@/app/lib/mongodb";
 import { ObjectId } from "mongodb";
 
 export interface ICompanyData {
-  company_id: String;
+  companyId: String;
   companyName: String;
   companyAddress: String;
   contactPersonName: String;
@@ -33,7 +33,7 @@ export async function GET(req: Request) {
     const company = await db.collection("Companies").findOne({ _id: new ObjectId(companyId) })
     if (company) {
       const companyData: ICompanyData = {
-        company_id: company._id.toString(), // Map _id from fetched data to company_id
+        companyId: company._id.toString(), // Map _id from fetched data to company_id
         companyName: company.companyName || '',
         companyAddress: company.companyAddress || '',
         contactPersonName: company.contactPersonName || '',

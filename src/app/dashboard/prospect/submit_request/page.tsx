@@ -24,13 +24,13 @@ const Page: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<FormData>({
-    company_id: '',
+    companyId: '',
     companyName: '',
     companyAddress: '',
     contactPersonName: '',
     contactPersonNumber: '',
     contactPersonEmail: '',
-    producttype: '',
+    productId: '',
     comment: '',
     partnership: '',
     industry_id: ''
@@ -65,7 +65,7 @@ const Page: React.FC = () => {
 
   const loadCompanyData = async (companyid: string) => {
     const data2 = await fetchCompany(companyid);
-    data2.producttype = industries.find((industry) => industry._id === data2.industry)?._id;
+    data2.productId = industries.find((industry) => industry._id === data2.industry)?._id;
     //setcompanyData(data2);
     console.log("Company data 2:", data2);
     setFormData(data2);
@@ -78,7 +78,7 @@ const Page: React.FC = () => {
     setFormData({
       ...formData,
       [name]: value,
-      company_id: ''
+      //company_id: ''
     });
 
     if (name === "companyName" && value) {
@@ -167,11 +167,11 @@ const Page: React.FC = () => {
                   <div className="ml-4 mt-1 text-sm text-gray-500">
 
                     {result.dateexpiresEvent && (
-                      <div>Event Partnership Expires: {format(result.dateexpiresEvent,"MMMM dd, yyyy hh:mm a")}</div>
+                      <div>Product Partnership Expires: {format(result.dateexpiresEvent,"MMMM dd, yyyy hh:mm a")}</div>
                     )}
 
                     {result.dateexpiresProduct && (
-                      <div>Product Partnership Expires: {format(result.dateexpiresProduct,"MMMM dd, yyyy hh:mm a")}</div>
+                      <div>EventPartnership Expires: {format(result.dateexpiresProduct,"MMMM dd, yyyy hh:mm a")}</div>
                     )}
                   </div>
                 </li>
@@ -278,8 +278,8 @@ const Page: React.FC = () => {
 
           <select
             id="producttype"
-            name="producttype"
-            value={formData.producttype as string} // Bind the dropdown to formData.industry
+            name="productId"
+            value={formData.productId as string} // Bind the dropdown to formData.industry
             onChange={handleChange}   // Update formData when a new industry is selected
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             required

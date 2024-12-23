@@ -1,11 +1,11 @@
 export interface FormData {
-    company_id: String;
+    companyId: String;
     companyName: String;
     companyAddress: String;
     contactPersonName: String;
     contactPersonNumber: String;
     contactPersonEmail: String;
-    producttype: String;
+    productId: String;
     comment: String;
     partnership: String;
     industry_id: String;
@@ -87,6 +87,7 @@ const fetchIndustry = async () => {
 
 const submitProspect = async (data: FormData): Promise<boolean> => {
     try {
+        
         const response = await fetch("/api_new/prospects/add_a_prospect", {
             method: 'POST',
             headers: {
