@@ -39,7 +39,7 @@ export default function AdminView() {
 
   const fetchRequests = async () => {
     try {
-      const response = await fetch("/api/admin");
+      const response = await fetch("/api_new/prospects/get_all_prospects");
       if (!response.ok) {
         throw new Error("Failed to fetch requests");
       }
@@ -89,7 +89,7 @@ export default function AdminView() {
             <TableHead>Company Name</TableHead>
             <TableHead>Industry</TableHead>
             <TableHead>Product Type</TableHead>
-            <TableHead></TableHead>
+            <TableHead>Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
