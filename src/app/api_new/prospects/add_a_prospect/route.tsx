@@ -102,7 +102,7 @@ export async function POST(req: Request) {
               contactPersonName: prospect.contactPersonName,
               contactPersonNumber: prospect.contactPersonNumber,
               contactPersonEmail: prospect.contactPersonEmail,
-              status: PROSPECT_VALUES[0].value,
+              status: PROSPECT_VALUES[1].value,
             });
 
             return NextResponse.json({ error: "The expires on "+prospectExpiresDate+". Prospect Request Added to Queue " },

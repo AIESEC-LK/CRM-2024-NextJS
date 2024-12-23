@@ -13,6 +13,7 @@ import {
   TableRow,
 } from "@/app/components/ui/table";
 import Popup from "@/app/components/popup/Popup";
+import styles from "./styles.module.css";
 
 const Page: React.FC = () => {
 
@@ -76,20 +77,20 @@ const Page: React.FC = () => {
 
 
     const loadMyProspectList = async () => {
-      const myProspectList = await fetctMyProspectList("586");
-      //setmyProspectList(myProspectList);
+      const myProspectList = await fetctMyProspectList("675dbabf296393f677c5cf21");
+      setmyProspectList(myProspectList);
     };
 
-    setmyProspectList([{
+    /*setmyProspectList([{
       _id: "67694b10855d970eb0dd3712",
       date_added: "2024-12-23T11:35:44.123Z",
       date_expires: "2025-03-23T11:35:44.123Z",
       status: "prospect",
       company_name: "Sri Lanka Insurance Ltd",
       product_type_name: "Event"
-    }]);
+    }]);*/
 
-    //loadMyProspectList();
+    loadMyProspectList();
     loadProducts();
     loadIndustries();
   }, []);
@@ -396,20 +397,25 @@ const Page: React.FC = () => {
 
                 </TableRow>
               </TableHeader>
+
               <TableBody>
-                {myProspectList.map((item) => (
-
-                  <TableRow key={item._id}>
-                    <TableCell>{item.company_name}</TableCell>
-                    <TableCell>
-                      {item.status}
-                    </TableCell>
-                    <TableCell>{item.date_added}</TableCell>
-                    <TableCell>{item.date_expires}</TableCell>
-                    <TableCell>{item.product_type_name}</TableCell>
-                  </TableRow>))};
-
+                {myProspectList && myProspectList.length > 0 ? (
+                  myProspectList.map((item) => (
+                    <TableRow key={item._id}>
+                      <TableCell>{item.company_name}</TableCell>
+                      <TableCell>{item.status}</TableCell>
+                      <TableCell>{new Date(item.date_added).toLocaleDateString()}</TableCell>
+                      <TableCell>{new Date(item.date_added).toLocaleDateString()}</TableCell>
+                      <TableCell>{item.product_type_name}</TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5}>No data available</TableCell>
+                  </TableRow>
+                )}
               </TableBody>
+
             </Table>
           </div>
 
