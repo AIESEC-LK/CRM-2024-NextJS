@@ -12,8 +12,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/app/components/ui/table";
+import Popup from "@/app/components/popup/Popup";
 
 const Page: React.FC = () => {
+
+  const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
+  const [titlePopup, setPopupTitle] = useState('This is the default message.');
+  const [messagePopup, setPopupMessage] = useState('This is the default message.');
+
+  const openPopup = (newMessage: string,newTitle:string): void => {
+    setPopupTitle(newTitle);  // Update the title state dynamically
+    setPopupMessage(newMessage);  // Update the message state dynamically
+    setIsPopupOpen(true);    // Open the popup
+  };
+
+  const closePopup = (): void => setIsPopupOpen(false);
 
   const [products, setProducts] = useState<Product[]>([]);
   const [productsLoading, setProductsLoading] = useState<boolean>(true);
@@ -104,6 +117,7 @@ const Page: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
 
     // Validate form data
     /*
@@ -118,10 +132,12 @@ const Page: React.FC = () => {
     const success = await submitProspect(formData);
 
     if (success) {
+      openPopup("Form submitted successfully!","Sucessful");
       setSuccessMessage('Form submitted successfully!');
       setErrorMessage(null);
 
     } else {
+      openPopup("Failed to submit the form. Please try again.","Failed");
       setErrorMessage('Failed to submit the form. Please try again.');
       setSuccessMessage(null);
     }
@@ -130,6 +146,7 @@ const Page: React.FC = () => {
 
   return (
     <div className="grid grid-cols-3 h-screen">
+      <Popup isOpen={isPopupOpen} close={closePopup} title={titlePopup} message={messagePopup}/>
       <div className="col-span-2 p-6">
         <form onSubmit={handleSubmit} className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg">
           <h2 className="text-xl font-semibold mb-6">Add New Prospect Request</h2>
