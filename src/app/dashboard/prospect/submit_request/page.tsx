@@ -23,7 +23,6 @@ const Page: React.FC = () => {
     "Search results:",
     searchResults
   );
-  // const [suggestedPartnership, setSuggestedPartnership] = useState("");
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -47,7 +46,6 @@ const Page: React.FC = () => {
       const res = await fetch(`/api/prospects/search?companyName=${query}`);
       if (res.ok) {
         const data = await res.json();
-        // console.log("Fetched data:", data);
         setSearchResults(data);
         setShowDropdown(data.length > 0);
       }
@@ -55,11 +53,6 @@ const Page: React.FC = () => {
       console.error("Error fetching companies:", error);
     }
   };
-
-  // const handleSelectCompany = (name: string) => {
-  //   setFormData((prev) => ({ ...prev, name: name }));
-  //   setShowDropdown(false);
-  // };
 
   const handleSelectCompany = (company: IRequest) => {
     console.log("Selected Company:", company);
@@ -77,10 +70,6 @@ const Page: React.FC = () => {
     });
     setShowDropdown(false);
     console.log("Updated Form Data:", formData);
-    // const suggestedPartnership =
-    // company.partnership === "event" ? "product" : "event";
-
-    // setSuggestedPartnership(suggestedPartnership);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -96,10 +85,7 @@ const Page: React.FC = () => {
       });
 
       if (res.ok) {
-        // Handle success (e.g., display success message, reset form)
-        // console.log("Form submitted successfully!");
       } else {
-        // Handle error response
         console.error("Form submission failed.");
       }
     } catch (error) {
@@ -153,11 +139,6 @@ const Page: React.FC = () => {
               ))}
             </ul>
           )}
-          {/* {suggestedPartnership && (
-          <p className="text-sm text-gray-600 mt-1">
-            Suggested Partnership: Try a <strong>{suggestedPartnership}</strong> partnership.
-          </p>
-        )} */}
         </div>
         <div className="mb-4">
           <label
