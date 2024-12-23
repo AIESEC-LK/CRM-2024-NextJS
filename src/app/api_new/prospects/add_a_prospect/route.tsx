@@ -37,7 +37,7 @@ export async function POST(req: Request) {
 
     /* TODO*/
     //Fetch from Auth
-    const entity_id = "586";
+    const entity_id = "675dbabf296393f677c5cf21";
 
     // Set date expires to three months from now
     const dateExpires = new Date();
@@ -93,14 +93,20 @@ export async function POST(req: Request) {
 
           if (prospectExpiresDate > currentDate) {
             console.log("The expiration date is in the future.");
-            /*TODO
-            //Integrate with bhanuka`s API for Queue
-            **
-            **
-            **
-            */
-            return NextResponse.json({ error: "The expiration date is in the future." },
-              { status: 400 });
+
+            const prospectResult = await db.collection("Pending_Prospects").insertOne({
+              company_id: prospect.companyId,
+              product_type_id: prospect.productId,
+              entity_id: entity_id,
+              date_added: dateAdded,
+              contactPersonName: prospect.contactPersonName,
+              contactPersonNumber: prospect.contactPersonNumber,
+              contactPersonEmail: prospect.contactPersonEmail,
+              status: PROSPECT_VALUES[0].value,
+            });
+
+            return NextResponse.json({ error: "The expires on "+prospectExpiresDate+". Prospect Request Added to Queue " },
+              { status: 200 });
           }
 
         }

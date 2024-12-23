@@ -152,8 +152,9 @@ const Page: React.FC = () => {
     if (submitResponse instanceof Response) {
       // If the response is successful, you can check for a status or extract a message from the response
       if (submitResponse.ok) {
-        openPopup("Form submitted successfully!", "Successful");
-        setSuccessMessage('Form submitted successfully!');
+        const errorData = await submitResponse.json();
+        openPopup(errorData.error, "Caution!");
+        setErrorMessage(errorData.error);
         setErrorMessage(null);
       } else {
         // Handle response failure if you want to extract error message from the response body
