@@ -11,8 +11,9 @@ import {
   TableRow,
 } from "@/app/components/ui/table";
 import { Search } from "lucide-react";
-import router from "next/router";
 import { Button } from "@/app/components/ui/button";
+import { useRouter } from "next/navigation";
+
 
 const initialProspects = [
   {
@@ -58,10 +59,8 @@ const initialProspects = [
 ];
 
 const ProspectsPage = () => {
-  const handleButtonClick = () => {
-    router.push("/dashboard/prospect/submit_request");
-  };
 
+  const router = useRouter();
   const [prospects] = useState(initialProspects);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -116,8 +115,8 @@ const ProspectsPage = () => {
       <h1 className="text-2xl font-bold mb-6">Partnerships</h1>
 
       <Button
-        onClick={handleButtonClick}
-        className="bg-blue-500 hover:bg-blue-600"
+        onClick={() => router.push("/dashboard/prospect/submit_request")}
+        className="bg-gray-800 hover:bg-gray-600 text-gray-100 mb-5"
       >
         Create New Prospect
       </Button>
