@@ -10,9 +10,6 @@ import ListGroup from "@/app/components/ui/list_groups";
 import Image from "next/image";
 import ToastNotification from "@/app/components/ui/toast"; // Assume you have this component
 import { formatDate, Product } from "./functions";
-import { useRouter } from 'next/router';
-import { useSearchParams } from 'next/navigation';
-
 
 export default function MakeALeadPage() {
   const [companyName, setCompanyName] = useState(String);
@@ -23,23 +20,7 @@ export default function MakeALeadPage() {
   const [leadMouStartDate, setLeadMouStartDate] = useState("");
   const [leadMouEndDate, setLeadMouEndDate] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
-  const [activities, setActivities] = useState<string[]>([]);
-  const [partnershipType, setPartnershipType] = useState('');
-  const [amount, setAmount] = useState('');
-    const [id, setId] = useState('');
-
-  const searchParams = useSearchParams();
-
-
-  useEffect(() => {
-    const id = searchParams.get('id');
-    if (id) {
-      setId(id);
-    }
-  }, [searchParams])
-
-
-   
+   const [activities, setActivities] = useState<string[]>([]);
 
   useEffect(() => {
     async function fetchProducts() {
@@ -87,49 +68,10 @@ export default function MakeALeadPage() {
     fetchProspect();
   }, []);
 
-  const resetForm = () => {
-  setpartnershipCategoryName('');
-  setLeadMouStartDate('');
-  setLeadMouEndDate('');
-  setPartnershipType('');
-  setAmount('');
-};
-
-
-const handleSubmit = async () => {
-    const data = {
-      id,
-      partnershipCategoryName,
-      leadMouStartDate,
-      leadMouEndDate,
-      partnershipType,
-      status: 'customerPending',
-      ...(partnershipType === 'monetary' && { amount }),
-    };
-
-    try {
-      const response = await fetch('/api_new/prospects/update_a_prospect', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      const result = await response.json();
-      if (response.ok) {
-        alert('Form submitted successfully');
-      } else {
-        alert(`Error: ${result.error}`);
-      }
-    } catch (error) {
-      alert(`Error: ${error.message}`);
-    }
-  };
   return (
     <>
       <div className="container mx-auto pt-0 pr-4">
-        <h1 className="text-2xl font-bold mb-6 ml-4">Lead to Customer Pending</h1>
+        <h1 className="text-2xl font-bold mb-6 ml-4">Customer Pending</h1>
 
         {/* Lead Details Row */}
         <div className="w-full ml-4 mb-6 bg-gray-100 rounded overflow-hidden shadow-lg">
@@ -163,11 +105,29 @@ const handleSubmit = async () => {
           {/* Active Stage - Customer */}
           <div className="w-full bg-gray-100 rounded overflow-hidden shadow-lg">
             <div className="px-14 py-14">
-              <h1 className="text-2xl font-bold mb-6">Active Stage</h1>
+              <h1 className="text-2xl font-bold mb-6">Active Stage - Customer</h1>
               <Label htmlFor="category" className="block mb-2">Category:</Label>
               <Input
                 value={partnershipCategoryName}
                 onChange={(e) => setpartnershipCategoryName(e.target.value)}
+                className="w-full mb-4"
+                type="text"
+                disabled
+              />
+              <Label htmlFor="mouStart" className="block mb-2">MOU Start Date:</Label>
+              <Input
+                placeholder="YYYY/MM/DD"
+                value={activeMouStartDate}
+                onChange={(e) => setActiveMouStartDate(e.target.value)}
+                className="w-full mb-4"
+                type="text"
+                disabled
+              />
+              <Label htmlFor="mouEnd" className="block mb-2">MOU End Date:</Label>
+              <Input
+                placeholder="YYYY/MM/DD"
+                value={activeMouEndDate}
+                onChange={(e) => setActiveMouEndDate(e.target.value)}
                 className="w-full mb-4"
                 type="text"
                 disabled
@@ -188,61 +148,37 @@ const handleSubmit = async () => {
           </div>
 
           {/* Lead Stage */}
-<div className="w-full bg-gray-100 rounded overflow-hidden shadow-lg">
-  <div className="px-14 py-14">
-    <h1 className="text-2xl font-bold mb-6">Lead Stage</h1>
-    <Label htmlFor="partnershipType" className="block mb-2">Partnership Type:</Label>
-    <Select
-      value={partnershipType}
-      onChange={(e) => setPartnershipType(e.target.value)}
-      className="w-full mb-4"
-      options={[
-        { value: 'monetary', label: 'Monetary' },
-        { value: 'inkind', label: 'In-Kind' }
-      ]}
-    />
-    {partnershipType === 'monetary' && (
-      <>
-        <Label htmlFor="amount" className="block mb-2">Amount:</Label>
-        <Input
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          className="w-full mb-4"
-          type="text"
-        />
-      </>
-    )}
-    <Label htmlFor="mouStart" className="block mb-2">MOU Start Date:</Label>
-    <Input
-      placeholder="YYYY/MM/DD"
-      value={leadMouStartDate}
-      onChange={(e) => setLeadMouStartDate(e.target.value)}
-      className="w-full mb-4"
-      type="date"
-    />
-    <Label htmlFor="mouEnd" className="block mb-2">MOU End Date:</Label>
-    <Input
-      placeholder="YYYY/MM/DD"
-      value={leadMouEndDate}
-      onChange={(e) => setLeadMouEndDate(e.target.value)}
-      className="w-full mb-4"
-      type="date"
-    />
-
-    <Button 
-      className="bg-gray-900 text-white px-4 py-2 rounded-md mb-4"
-      onClick={handleSubmit}
-    >
-      Proceed
-    </Button>
-    <Button 
-      className="bg-gray-400 text-gray-900 px-4 py-2 rounded-md ml-4"
-      onClick={resetForm}
-    >
-      Reset
-    </Button>
-  </div>
-</div>
+          <div className="w-full bg-gray-100 rounded overflow-hidden shadow-lg">
+            <div className="px-14 py-14">
+              <h1 className="text-2xl font-bold mb-6">Lead Stage</h1>
+              <Label htmlFor="category" className="block mb-2">Category:</Label>
+              <Input
+                value={partnershipCategoryName}
+                onChange={(e) => setpartnershipCategoryName(e.target.value)}
+                className="w-full mb-4"
+                type="text"
+                disabled
+              />
+              <Label htmlFor="mouStart" className="block mb-2">MOU Start Date:</Label>
+              <Input
+                placeholder="YYYY/MM/DD"
+                value={leadMouStartDate}
+                onChange={(e) => setLeadMouStartDate(e.target.value)}
+                className="w-full mb-4"
+                type="text"
+                disabled
+              />
+              <Label htmlFor="mouEnd" className="block mb-2">MOU End Date:</Label>
+              <Input
+                placeholder="YYYY/MM/DD"
+                value={leadMouEndDate}
+                onChange={(e) => setLeadMouEndDate(e.target.value)}
+                className="w-full mb-4"
+                type="text"
+                disabled
+              />
+            </div>
+          </div>
         </div>
       </div>
     </>

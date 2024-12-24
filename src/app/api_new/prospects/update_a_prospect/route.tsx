@@ -14,6 +14,9 @@ const ALLOWED_FIELDS = [
   "status",
   "lead_proof_url",
   "activities",
+  "partnershipType",
+  "mouStartDate",
+  "mouEndDate",
 ];
 
 export async function PATCH(req: Request) {
@@ -35,6 +38,11 @@ export async function PATCH(req: Request) {
       }
     }
 
+    // Conditionally add the amount field if partnershipType is monetary
+    if (updates.partnershipType === 'monetary' && updates.amount !== undefined) {
+      updateFields.amount = updates.amount;
+    }
+
     if (Object.keys(updateFields).length === 0) {
       return NextResponse.json({ error: "No valid fields to update" }, { status: 400 });
     }
@@ -46,11 +54,14 @@ export async function PATCH(req: Request) {
 
     if (result.modifiedCount > 0) {
       return NextResponse.json({ success: true });
+    } else {
+      return NextResponse.json({ error: "No documents were modified" }, { status: 400 });
     }
-
-    return NextResponse.json({ success: false, message: "No records updated" });
-  } catch (e) {
-    console.error("Error updating prospect:", e);
-    return NextResponse.json({ error: "Failed to update prospect" }, { status: 500 });
+  } catch (error) {
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    } else {
+      return NextResponse.json({ error: "An unknown error occurred" }, { status: 500 });
+    }
   }
 }
