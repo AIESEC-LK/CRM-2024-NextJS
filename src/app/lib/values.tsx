@@ -5,13 +5,15 @@ export const BULK_COMPANY_STATUSES = [
 ]
 
 export const PROSPECT_VALUES = [
-  { value: "prospect", label: "Prospect" },
   { value: "pending", label: "Pending" },
+  { value: "prospect", label: "Prospect" },
   { value: "lead", label: "Lead" },
+  { value: "customerPending", label: "Customer Pending" },
+  { value: "customer", label: "Customer" },
   { value: "promoter", label: "Promoter" },
   { value: "lost", label: "Lost" },
-  { value: "customer", label: "Customer" },
-  { value: "customerPending", label: "Customer Pending" },
+ 
+ 
 ]
 
 export const AUTONOMATION_TABLE_ID = "6769349892a256157cb6142c"
@@ -37,7 +39,7 @@ export const LEAD_BAR_COLOR = "blue"
 export const LEAD_BAR_WIDTH = "40%"
 
 // Customer Pending
-export const CUSTOMER_PANDING_BAR_COLOR = "black"
+export const CUSTOMER_PANDING_BAR_COLOR = "green"
 export const CUSTOMER_PANDING_BAR_WIDTH = "60%"
 
 // Customer
