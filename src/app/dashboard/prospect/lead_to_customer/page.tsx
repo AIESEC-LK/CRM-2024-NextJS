@@ -74,7 +74,7 @@ export default function MakeALeadPage() {
       leadMouStartDate,
       leadMouEndDate,
       partnershipType,
-      status: 'customer pending',
+      status: 'customerPending',
       mouUrl: './file.tsx', // Hardcoded for now
       ...(partnershipType === 'monetary' && { amount }),
     };
