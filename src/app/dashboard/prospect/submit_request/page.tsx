@@ -14,6 +14,13 @@ import {
 } from "@/app/components/ui/table";
 import Popup from "@/app/components/popup/Popup";
 import styles from "./styles.module.css";
+import { PROSPECT_VALUES } from "@/app/lib/values";
+
+
+function getLabelByValue(value: string) {
+  const result = PROSPECT_VALUES.find(item => item.value === value);
+  return result?.label;  // Return label if found, otherwise undefined
+}
 
 const Page: React.FC = () => {
 
@@ -182,6 +189,7 @@ const Page: React.FC = () => {
                   Company Name
                 </label>
                 <input
+                  autoComplete="off"
                   id="companyName"
                   type="text"
                   name="companyName"
@@ -250,7 +258,7 @@ const Page: React.FC = () => {
                   onChange={handleChange}
                   rows={3}
                   className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
+
                 />
               </div>
 
@@ -295,7 +303,6 @@ const Page: React.FC = () => {
                   value={formData.contactPersonEmail as string}
                   onChange={handleChange}
                   className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
                 />
               </div>
 
@@ -375,7 +382,7 @@ const Page: React.FC = () => {
         </div>
         <div className="w-full ml-4 mt-5 pr-6 bg-gray-100 rounded overflow-hidden shadow-lg">
           <div className="px-14 py-14">
-          <h2 className="text-xl font-semibold mb-6">Prospect Request History</h2>
+            <h2 className="text-xl font-semibold mb-6">Prospect Request History</h2>
 
             <Table>
               <TableHeader>
@@ -395,9 +402,11 @@ const Page: React.FC = () => {
                   myProspectList.map((item) => (
                     <TableRow key={item._id}>
                       <TableCell>{item.company_name}</TableCell>
-                      <TableCell>{item.status}</TableCell>
+                      <TableCell>{getLabelByValue(item.status)}</TableCell>
                       <TableCell>{new Date(item.date_added).toLocaleDateString()}</TableCell>
-                      <TableCell>{new Date(item.date_added).toLocaleDateString()}</TableCell>
+                      <TableCell>{item.date_expires ?
+                        new Date(item.date_expires).toLocaleDateString() :
+                        "N/A"}</TableCell>
                       <TableCell>{item.product_type_name}</TableCell>
                     </TableRow>
                   ))
