@@ -17,6 +17,7 @@ const ALLOWED_FIELDS = [
   "partnershipType",
   "mouStartDate",
   "mouEndDate",
+  "mouUrl",
 ];
 
 export async function PATCH(req: Request) {

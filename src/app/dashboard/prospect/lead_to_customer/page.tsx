@@ -10,14 +10,12 @@ import ListGroup from "@/app/components/ui/list_groups";
 import Image from "next/image";
 import ToastNotification from "@/app/components/ui/toast"; // Assume you have this component
 import { formatDate, Product } from "./functions";
-import { useRouter } from 'next/router';
 import { useSearchParams } from 'next/navigation';
-
 
 export default function MakeALeadPage() {
   const [companyName, setCompanyName] = useState(String);
   const [selectedProduct, setSelectedProduct] = useState("");
-  const [partnershipCategoryName, setpartnershipCategoryName] = useState(String);
+  const [partnershipCategoryName, setPartnershipCategoryName] = useState(String);
   const [activeMouStartDate, setActiveMouStartDate] = useState("");
   const [activeMouEndDate, setActiveMouEndDate] = useState("");
   const [leadMouStartDate, setLeadMouStartDate] = useState("");
@@ -26,20 +24,20 @@ export default function MakeALeadPage() {
   const [activities, setActivities] = useState<string[]>([]);
   const [partnershipType, setPartnershipType] = useState('');
   const [amount, setAmount] = useState('');
-    const [id, setId] = useState('');
+  const [id, setId] = useState('');
+  const [file, setFile] = useState<File | null>(null);
+  const [filePreview, setFilePreview] = useState<string | null>(null);
 
   const searchParams = useSearchParams();
 
+  
 
   useEffect(() => {
     const id = searchParams.get('id');
     if (id) {
       setId(id);
     }
-  }, [searchParams])
-
-
-   
+  }, [searchParams]);
 
   useEffect(() => {
     async function fetchProducts() {
@@ -51,81 +49,77 @@ export default function MakeALeadPage() {
         const data: Product[] = await response.json();
         setProducts(data);
       } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    }
-
-    async function fetchProspect() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const id = urlParams.get("id");
-
-      if (!id) {
-        console.error("No ID provided in the URL");
-        return;
-      }
-
-      try {
-        const response = await fetch(`/api_new/prospects/get_prospect_in_id?id=${id}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch prospect");
-        }
-        const prospect = await response.json();
-        setCompanyName(prospect.company_name || "");
-        setSelectedProduct(prospect.product_type_id || "");
-        setActiveMouStartDate(formatDate(prospect.date_added) || "");
-        setActiveMouEndDate(formatDate(prospect.date_expires) || "");
-        setLeadMouStartDate(formatDate(prospect.date_added) || "");
-        setLeadMouEndDate(formatDate(prospect.date_expires) || "");
-        setpartnershipCategoryName(prospect.partnership_type || "");
-        setActivities(prospect.activities || []);
-      } catch (error) {
-        console.error("Error fetching prospect:", error);
+        console.error(error);
       }
     }
 
     fetchProducts();
-    fetchProspect();
   }, []);
 
   const resetForm = () => {
-  setpartnershipCategoryName('');
-  setLeadMouStartDate('');
-  setLeadMouEndDate('');
-  setPartnershipType('');
-  setAmount('');
+    setPartnershipCategoryName('');
+    setLeadMouStartDate('');
+    setLeadMouEndDate('');
+    setPartnershipType('');
+    setAmount('');
+    setFile(null);
+    setFilePreview(null);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const selectedFile = e.target.files?.[0] || null;
+  setFile(selectedFile);
+
+  if (selectedFile) {
+    const fileType = selectedFile.type;
+    if (fileType.startsWith('image/')) {
+      setFilePreview(URL.createObjectURL(selectedFile));
+    } else if (fileType === 'application/pdf') {
+      setFilePreview('/pdf_icon.png');
+    } else {
+      setFilePreview(null);
+    }
+  } else {
+    setFilePreview(null);
+  }
 };
 
-
 const handleSubmit = async () => {
-    const data = {
-      id,
-      partnershipCategoryName,
-      leadMouStartDate,
-      leadMouEndDate,
-      partnershipType,
-      status: 'customerPending',
-      ...(partnershipType === 'monetary' && { amount }),
-    };
-
-    try {
-      const response = await fetch('/api_new/prospects/update_a_prospect', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      const result = await response.json();
-      if (response.ok) {
-        alert('Form submitted successfully');
-      } else {
-        alert(`Error: ${result.error}`);
-      }
-    } catch (error) {
-      alert(`Error: ${error.message}`);
-    }
+  const data = {
+    id,
+    partnershipCategoryName,
+    leadMouStartDate,
+    leadMouEndDate,
+    partnershipType,
+    status: 'customerPending',
+    mouUrl: './file.tsx', // Hardcoded for now
+    ...(partnershipType === 'monetary' && { amount }),
   };
+
+  try {
+    const response = await fetch('/api_new/prospects/update_a_prospect', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    const result = await response.json();
+    if (response.ok) {
+      alert('Form submitted successfully');
+    } else {
+      alert(`Error: ${result.error}`);
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      alert(`Error: ${error.message}`);
+    } else {
+      alert('An unknown error occurred');
+    }
+  }
+};
+
   return (
     <>
       <div className="container mx-auto pt-0 pr-4">
@@ -212,6 +206,22 @@ const handleSubmit = async () => {
         />
       </>
     )}
+    <Label htmlFor="mou" className="block mb-2">MOU:</Label>
+<Input
+  placeholder="YYYY/MM/DD"
+  className="w-full mb-4"
+  type="file"
+  onChange={handleFileChange}
+/>
+{filePreview && (
+  <div className="mb-4">
+    {filePreview.endsWith('.png') ? (
+      <Image src={filePreview} alt="PDF Icon" width={50} height={50} />
+    ) : (
+      <Image src={filePreview} alt="File Preview" width={100} height={100} />
+    )}
+  </div>
+)}
     <Label htmlFor="mouStart" className="block mb-2">MOU Start Date:</Label>
     <Input
       placeholder="YYYY/MM/DD"
