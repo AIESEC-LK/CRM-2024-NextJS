@@ -64,7 +64,7 @@ const Page: React.FC = () => {
     productId: '',
     comment: '',
     partnership: '',
-    industry_id: ''
+    industryId: ''
   });
 
   useEffect(() => {
@@ -313,8 +313,8 @@ const Page: React.FC = () => {
 
                 <select
                   id="industry"
-                  name="industry_id"
-                  value={formData.industry_id as string} // Bind the dropdown to formData.industry
+                  name="industryId"
+                  value={formData.industryId as string} // Bind the dropdown to formData.industry
                   onChange={handleChange}   // Update formData when a new industry is selected
                   className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
