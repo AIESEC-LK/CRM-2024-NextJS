@@ -64,7 +64,7 @@ const Page: React.FC = () => {
     productId: '',
     comment: '',
     partnership: '',
-    industry_id: ''
+    industryId: ''
   });
 
   useEffect(() => {
@@ -313,8 +313,8 @@ const Page: React.FC = () => {
 
                 <select
                   id="industry"
-                  name="industry_id"
-                  value={formData.industry_id as string} // Bind the dropdown to formData.industry
+                  name="industryId"
+                  value={formData.industryId as string} // Bind the dropdown to formData.industry
                   onChange={handleChange}   // Update formData when a new industry is selected
                   className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
@@ -380,47 +380,49 @@ const Page: React.FC = () => {
             </form>
           </div>
         </div>
+
         <div className="w-full ml-4 mt-5 pr-6 bg-gray-100 rounded overflow-hidden shadow-lg">
-          <div className="px-14 py-14">
+          <div className="px-5 py-14">
             <h2 className="text-xl font-semibold mb-6">Prospect Request History</h2>
 
-            <Table>
-              <TableHeader>
-                <TableRow>
-
-                  <TableHead>Company Name</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Submission Date</TableHead>
-                  <TableHead>Submission Expires</TableHead>
-                  <TableHead>Product Type</TableHead>
-
-                </TableRow>
-              </TableHeader>
-
-              <TableBody>
-                {myProspectList && myProspectList.length > 0 ? (
-                  myProspectList.map((item) => (
-                    <TableRow key={item._id}>
-                      <TableCell>{item.company_name}</TableCell>
-                      <TableCell>{getLabelByValue(item.status)}</TableCell>
-                      <TableCell>{new Date(item.date_added).toLocaleDateString()}</TableCell>
-                      <TableCell>{item.date_expires ?
-                        new Date(item.date_expires).toLocaleDateString() :
-                        "N/A"}</TableCell>
-                      <TableCell>{item.product_type_name}</TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={5}>No data available</TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-
-            </Table>
+            <div className="overflow-x-auto max-h-80" style={{ maxHeight: '800px' }}>  {/* Add max height and horizontal scroll if needed */}
+              <table className="min-w-full table-auto">
+                <thead className="sticky top-0 bg-gray-200">  {/* Make the header sticky */}
+                  <tr>
+                    <th className="px-4 py-2 text-left">Company Name</th>
+                    <th className="px-4 py-2 text-left">Status</th>
+                    <th className="px-4 py-2 text-left">Submission Date</th>
+                    <th className="px-4 py-2 text-left">Submission Expires</th>
+                    <th className="px-4 py-2 text-left">Product Type</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {myProspectList && myProspectList.length > 0 ? (
+                    myProspectList.map((item) => (
+                      <tr key={item._id}>
+                        <td className="px-4 py-2">{item.company_name}</td>
+                        <td className="px-4 py-2">{getLabelByValue(item.status)}</td>
+                        <td className="px-4 py-2">{new Date(item.date_added).toLocaleDateString()}</td>
+                        <td className="px-4 py-2">
+                          {item.date_expires
+                            ? new Date(item.date_expires).toLocaleDateString()
+                            : "N/A"}
+                        </td>
+                        <td className="px-4 py-2">{item.product_type_name}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={5} className="px-4 py-2 text-center">No data available</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            
           </div>
-
         </div>
+
 
       </div>
     </div>

@@ -8,7 +8,7 @@ export interface FormData {
     productId: String;
     comment: String;
     partnership: String;
-    industry_id: String;
+    industryId: String;
 }
 
 export interface ICompanyQuery {

@@ -10,7 +10,7 @@ export interface ICompanyData {
   contactPersonNumber: String;
   contactPersonEmail: String;
   comment: String;
-  industry_id: String;
+  industryId: String;
 }
 
 
@@ -40,7 +40,7 @@ export async function GET(req: Request) {
         contactPersonNumber: company.contactPersonNumber || '',
         contactPersonEmail: company.contactPersonEmail || '',
         comment: company.comment || '',
-        industry_id: company.industry_id || ''
+        industryId: company.industry_id || ''
       };
 
       return NextResponse.json(companyData);
