@@ -2,7 +2,7 @@ import React from "react";
 
 interface ProgressBarProps {
   text: string; // Label text (e.g., "45%")
-  color: "dark" | "blue" | "red" | "green" | "yellow" | "indigo" | "purple"; // Restricted color selection
+  color: "dark" | "blue" | "red" | "green" | "yellow" | "indigo" | "purple" | "teal"; // Restricted color selection
   width: string; // Width of the progress (as a percentage, e.g., "45%")
   className?: string; // Optional additional styles for the outer container
 }
@@ -15,6 +15,7 @@ const colorClasses: Record<ProgressBarProps["color"], { bg: string; text: string
   yellow: { bg: "bg-yellow-600", text: "text-yellow-900" },
   indigo: { bg: "bg-indigo-600", text: "text-indigo-100" },
   purple: { bg: "bg-purple-600", text: "text-purple-100" },
+  teal: { bg: "bg-teal-600", text: "text-teal-100" },
 };
 
 const ProgressBar: React.FC<ProgressBarProps> = ({ text, color, width, className }) => {
