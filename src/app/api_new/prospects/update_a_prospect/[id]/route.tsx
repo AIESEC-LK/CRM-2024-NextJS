@@ -2,46 +2,21 @@ import clientPromise from "@/app/lib/mongodb";
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 
-const ALLOWED_FIELDS = [
-  "company_id",
-  "product_type_id",
-  "entity_id",
-  "date_added",
-  "date_expires",
-  "contactPersonName",
-  "contactPersonNumber",
-  "contactPersonEmail",
-  "status",
-  "lead_proof_url",
-  "activities",
-];
-
 export async function PATCH(req: Request) {
   try {
-    const { id, ...updates } = await req.json();
-
-    if (!id) {
-      return NextResponse.json({ error: "Missing ID" }, { status: 400 });
-    }
-
+    const { id, productName, abbravation, proof_url } = await req.json();
     const client = await clientPromise;
     const db = client.db(process.env.DB_NAME);
 
-    // Filter out fields that are not allowed
-    const updateFields: { [key: string]: any } = {};
-    for (const key in updates) {
-      if (ALLOWED_FIELDS.includes(key) && updates[key] !== undefined) {
-        updateFields[key] = updates[key];
-      }
-    }
-
-    if (Object.keys(updateFields).length === 0) {
-      return NextResponse.json({ error: "No valid fields to update" }, { status: 400 });
-    }
-
-    const result = await db.collection("Prospects").updateOne(
+    const result = await db.collection("Products").updateOne(
       { _id: new ObjectId(id) },
-      { $set: updateFields }
+      {
+        $set: {
+          productName,
+          abbravation,
+          proof_url,
+        },
+      }
     );
 
     if (result.modifiedCount > 0) {
@@ -50,7 +25,10 @@ export async function PATCH(req: Request) {
 
     return NextResponse.json({ success: false, message: "No records updated" });
   } catch (e) {
-    console.error("Error updating prospect:", e);
-    return NextResponse.json({ error: "Failed to update prospect" }, { status: 500 });
+    console.error("Error updating product:", e);
+    return NextResponse.json(
+      { error: "Failed to update product" },
+      { status: 500 }
+    );
   }
 }
