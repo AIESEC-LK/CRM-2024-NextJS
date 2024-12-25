@@ -76,10 +76,6 @@ export default function EntitiesPage() {
       setEntityToDelete(null);
     } catch (error) {
       console.error("Error deleting entity:", error);
-<<<<<<< HEAD
-=======
-
->>>>>>> 306a7f91a3c6a4c05f3880567a9ce7e82e47a803
     }
   };
 
