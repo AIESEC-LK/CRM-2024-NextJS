@@ -2,20 +2,19 @@ import { NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
 import { ObjectId } from "mongodb";
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
-    const client = await clientPromise;
+    const url = new URL(req.url);
+    const id = url.pathname.split("/").pop();
 
+    const client = await clientPromise;
     const db = client.db(process.env.DB_NAME);
 
-    const prospects = await db
+    const prospect = await db
       .collection("Prospects")
       .aggregate([
-        // Only match prospects where 'newCompany' is true
         {
-          $match: {
-            newCompay: true,
-          },
+          $match: { _id: new ObjectId(id) },
         },
         {
           $lookup: {
@@ -85,13 +84,19 @@ export async function GET() {
       ])
       .toArray();
 
-    return NextResponse.json(prospects);
-  } catch (e) {
-    console.error("Error fetching requests:", e);
+    if (prospect.length === 0) {
+      return NextResponse.json(
+        { error: "Prospect not found" },
+        { status: 404 }
+      );
+    }
 
-    // Return error response
+    return NextResponse.json(prospect[0]);
+  } catch (e) {
+    console.error("Error fetching prospect:", e);
+
     return NextResponse.json(
-      { error: "Failed to fetch requests" },
+      { error: "Failed to fetch prospect details" },
       { status: 500 }
     );
   }

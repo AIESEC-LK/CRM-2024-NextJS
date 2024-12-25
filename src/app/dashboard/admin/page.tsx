@@ -17,16 +17,20 @@ import Link from "next/link";
 
 interface Request {
   _id: string;
-  entity: string;
-  companyName: string;
-  companyAddress: string;
+  company_id: string;
+  product_type_id: string;
+  entity_id: string;
+  lc_name: string;
+  company_name: string;
   contactPersonName: string;
   contactPersonNumber: string;
   contactPersonEmail: string;
-  industry: string;
-  producttype: string;
-  status: "pending" | "approved" | "declined";
-  dateAdded: string;
+  product_type_name: string;
+  status: string;
+  date_added: string;
+  date_expires: string;
+  activities: string[];
+  lead_proof_url: string;
 }
 
 export default function AdminView() {
@@ -50,11 +54,8 @@ export default function AdminView() {
     }
   };
 
-  const filteredRequests = requests.filter(
-    (req) =>
-      req.entity.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      req.industry.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      req.producttype.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredRequests = requests.filter((req) =>
+    req.lc_name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const formatDate = (dateString: string) => {
@@ -95,13 +96,13 @@ export default function AdminView() {
         <TableBody>
           {filteredRequests.map((req) => (
             <TableRow key={req._id}>
-              <TableCell>{formatDate(req.dateAdded)}</TableCell>
-              <TableCell>{req.entity}</TableCell>
+              <TableCell>{formatDate(req.date_added)}</TableCell>
+              <TableCell>{req.lc_name}</TableCell>
               <TableCell>
-                <div className="flex items-center">{req.companyName}</div>
+                <div className="flex items-center">{req.company_name}</div>
               </TableCell>
-              <TableCell>{req.industry}</TableCell>
-              <TableCell>{req.producttype}</TableCell>
+              <TableCell>{""}</TableCell>
+              <TableCell>{req.product_type_name}</TableCell>
               <TableCell>
                 <div className="flex space-x-2">
                   <Link href={`/dashboard/prospect_requests/${req._id}`}>

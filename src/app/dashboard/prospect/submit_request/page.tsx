@@ -1,5 +1,6 @@
 "use client";
 
+<<<<<<< HEAD
 import React, { useEffect, useState } from "react";
 import { IRequest } from "@/app/models/RequestTypes";
 import {
@@ -16,6 +17,46 @@ import {
 import { format } from "date-fns";
 
 const Page: React.FC = () => {
+=======
+import React, { useEffect, useState } from 'react';
+import { IRequest } from '@/app/models/RequestTypes';
+import { fetctMyProspectList, IMyProspectList, fetchCompany, fetchProducts, fetchIndustry, submitProspect, FormData, Industry, Product, fetchCompanyQuery, ICompanyQuery } from './functions';
+import { format } from 'date-fns';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/app/components/ui/table";
+import Popup from "@/app/components/popup/Popup";
+import styles from "./styles.module.css";
+import { PROSPECT_VALUES } from "@/app/lib/values";
+
+
+function getLabelByValue(value: string) {
+  const result = PROSPECT_VALUES.find(item => item.value === value);
+  return result?.label;  // Return label if found, otherwise undefined
+}
+
+const Page: React.FC = () => {
+
+  const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
+  const [titlePopup, setPopupTitle] = useState('This is the default message.');
+  const [messagePopup, setPopupMessage] = useState('This is the default message.');
+
+  const openPopup = (newMessage: string, newTitle: string): void => {
+    setPopupTitle(newTitle);  // Update the title state dynamically
+    setPopupMessage(newMessage);  // Update the message state dynamically
+    setIsPopupOpen(true);    // Open the popup
+  };
+
+  const closePopup = (): void => setIsPopupOpen(false);
+
+  const [myProspectList, setmyProspectList] = useState<IMyProspectList[]>([]);
+
+>>>>>>> f5515301d8bc7bb094be4ebbd8004ad780896886
   const [products, setProducts] = useState<Product[]>([]);
   const [productsLoading, setProductsLoading] = useState<boolean>(true);
 
@@ -34,6 +75,7 @@ const Page: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<FormData>({
+<<<<<<< HEAD
     company_id: "",
     companyName: "",
     companyAddress: "",
@@ -44,6 +86,18 @@ const Page: React.FC = () => {
     comment: "",
     partnership: "",
     industry_id: "",
+=======
+    companyId: '',
+    companyName: '',
+    companyAddress: '',
+    contactPersonName: '',
+    contactPersonNumber: '',
+    contactPersonEmail: '',
+    productId: '',
+    comment: '',
+    partnership: '',
+    industryId: ''
+>>>>>>> f5515301d8bc7bb094be4ebbd8004ad780896886
   });
 
   useEffect(() => {
@@ -61,6 +115,13 @@ const Page: React.FC = () => {
       setIndustriesLoading(false);
     };
 
+
+    const loadMyProspectList = async () => {
+      const myProspectList = await fetctMyProspectList("675dbabf296393f677c5cf21");//TODO: Entity ID Fetch from Auth
+      setmyProspectList(myProspectList);
+    };
+
+    loadMyProspectList();
     loadProducts();
     loadIndustries();
   }, []);
@@ -75,9 +136,13 @@ const Page: React.FC = () => {
 
   const loadCompanyData = async (companyid: string) => {
     const data2 = await fetchCompany(companyid);
+<<<<<<< HEAD
     data2.producttype = industries.find(
       (industry) => industry._id === data2.industry
     )?._id;
+=======
+    data2.productId = industries.find((industry) => industry._id === data2.industry)?._id;
+>>>>>>> f5515301d8bc7bb094be4ebbd8004ad780896886
     //setcompanyData(data2);
     console.log("Company data 2:", data2);
     setFormData(data2);
@@ -93,7 +158,11 @@ const Page: React.FC = () => {
     setFormData({
       ...formData,
       [name]: value,
+<<<<<<< HEAD
       company_id: "",
+=======
+      //company_id: ''
+>>>>>>> f5515301d8bc7bb094be4ebbd8004ad780896886
     });
 
     if (name === "companyName" && value) {
@@ -111,48 +180,86 @@ const Page: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+
     // Validate form data
+    /*
     const validationError = validateFormData(formData);
     if (validationError) {
       setErrorMessage(validationError);
       setSuccessMessage(null);
       return;
-    }
+    }*/
 
     // Submit form data
-    const success = await submitProspect(formData);
+    const submitResponse = await submitProspect(formData);
 
+<<<<<<< HEAD
     if (success) {
       setSuccessMessage("Form submitted successfully!");
       setErrorMessage(null);
     } else {
       setErrorMessage("Failed to submit the form. Please try again.");
+=======
+    if (submitResponse instanceof Response) {
+      // If the response is successful, you can check for a status or extract a message from the response
+      if (submitResponse.ok) {
+        const errorData = await submitResponse.json();
+        openPopup(errorData.error, "Sucessfull");
+        setErrorMessage(errorData.error);
+        setErrorMessage(null);
+      } else {
+        // Handle response failure if you want to extract error message from the response body
+        const errorData = await submitResponse.json(); // Assuming the response returns a JSON error message
+
+        openPopup(errorData.error, "Failed");
+        setErrorMessage(errorData.error);
+
+        console.log("Error data:", errorData);
+        setSuccessMessage(null);
+      }
+    } else if (submitResponse instanceof Error) {
+      // If an error is thrown, display the error message
+      openPopup(submitResponse.message || "Something went wrong. Please try again.", "Failed");
+      setErrorMessage(submitResponse.message || 'Something went wrong. Please try again.');
+>>>>>>> f5515301d8bc7bb094be4ebbd8004ad780896886
       setSuccessMessage(null);
     }
   };
 
   return (
+<<<<<<< HEAD
     <div>
       <form
         onSubmit={handleSubmit}
         className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg"
       >
         <h2 className="text-xl font-semibold mb-6">Add New Prospect Request</h2>
+=======
+    <div className="container mx-auto pt-0">
+      <h1 className="text-2xl font-bold mb-6 ml-4">Prospect Request</h1>
+      <Popup isOpen={isPopupOpen} close={closePopup} title={titlePopup} message={messagePopup} />
+      <div className="grid grid-cols-2 gap-16 pr-6">
+        <div className="w-full ml-4 mt-5 pr-6 bg-gray-100 rounded overflow-hidden shadow-lg">
+          <div className="px-14 py-14">
+            <form onSubmit={handleSubmit} >
+              <h2 className="text-xl font-semibold mb-6">Add New Prospect Request</h2>
+>>>>>>> f5515301d8bc7bb094be4ebbd8004ad780896886
 
-        <div className="mb-4 relative">
-          <label htmlFor="name" className="block text-sm font-medium mb-1">
-            Company Name
-          </label>
-          <input
-            id="companyName"
-            type="text"
-            name="companyName"
-            onChange={handleChange}
-            value={formData.companyName as string}
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-          {/*
+              <div className="mb-4 relative">
+                <label htmlFor="name" className="block text-sm font-medium mb-1">
+                  Company Name
+                </label>
+                <input
+                  autoComplete="off"
+                  id="companyName"
+                  type="text"
+                  name="companyName"
+                  onChange={handleChange}
+                  value={formData.companyName as string}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+                {/*
           {showDropdown && (
             <ul className="absolute bg-white border border-gray-300 rounded-md mt-1 w-full max-h-40 overflow-y-auto">
               {searchResults.map((result) => (
@@ -168,6 +275,7 @@ const Page: React.FC = () => {
             </ul>
           )}*/}
 
+<<<<<<< HEAD
           {showDropdown && (
             <ul className="absolute bg-white border border-gray-300 rounded-md mt-1 w-full max-h-40 overflow-y-auto">
               {searchResults.map((result) => (
@@ -204,12 +312,40 @@ const Page: React.FC = () => {
               ))}
             </ul>
           )}
+=======
+                {showDropdown && (
+                  <ul className="absolute bg-white border border-gray-300 rounded-md mt-1 w-full max-h-40 overflow-y-auto">
+                    {searchResults.map((result) => (
+                      <li
+                        key={result._id}
+                        onClick={() => handleSelectCompany(result._id)}
+                        className="p-2 cursor-pointer hover:bg-blue-500 hover:text-white"
+                      >
+                        <div>
+                          <span className="font-semibold">{result.companyName}</span>
+                        </div>
+                        <div className="ml-4 mt-1 text-sm text-gray-500">
 
-          {/* {suggestedPartnership && (
+                          {result.dateexpiresEvent && (
+                            <div>Product Partnership Expires: {format(result.dateexpiresEvent, "MMMM dd, yyyy hh:mm a")}</div>
+                          )}
+
+                          {result.dateexpiresProduct && (
+                            <div>EventPartnership Expires: {format(result.dateexpiresProduct, "MMMM dd, yyyy hh:mm a")}</div>
+                          )}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+>>>>>>> f5515301d8bc7bb094be4ebbd8004ad780896886
+
+                {/* {suggestedPartnership && (
           <p className="text-sm text-gray-600 mt-1">
             Suggested Partnership: Try a <strong>{suggestedPartnership}</strong> partnership.
           </p>
         )} */}
+<<<<<<< HEAD
         </div>
         <div className="mb-4">
           <label
@@ -359,6 +495,189 @@ const Page: React.FC = () => {
           Submit Request
         </button>
       </form>
+=======
+
+              </div>
+              <div className="mb-4">
+                <label htmlFor="companyAddress" className="block text-sm font-medium mb-1">
+                  Company Address
+                </label>
+                <textarea
+                  autoComplete="off"
+                  id="companyAddress"
+                  name="companyAddress"
+                  value={formData.companyAddress as string}
+                  onChange={handleChange}
+                  rows={3}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+
+                />
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="contactPersonName" className="block text-sm font-medium mb-1">
+                  Contact Person Name
+                </label>
+                <input
+                  id="contactPersonName"
+                  type="text"
+                  name="contactPersonName"
+                  value={formData.contactPersonName as string}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="contactPersonNumber" className="block text-sm font-medium mb-1">
+                  Contact Person Contact Number
+                </label>
+                <input
+                  id="contactPersonNumber"
+                  type="text"
+                  name="contactPersonNumber"
+                  value={formData.contactPersonNumber as string}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="contactPersonEmail" className="block text-sm font-medium mb-1">
+                  Contact Person Email Address
+                </label>
+                <input
+                  id="contactPersonEmail"
+                  type="email"
+                  name="contactPersonEmail"
+                  value={formData.contactPersonEmail as string}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="producttype" className="block text-sm font-medium mb-1">
+                  Select a Industry
+                </label>
+
+                <select
+                  id="industry"
+                  name="industryId"
+                  value={formData.industryId as string} // Bind the dropdown to formData.industry
+                  onChange={handleChange}   // Update formData when a new industry is selected
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                >
+                  <option value="" disabled>
+                    -- Select an Industry --
+                  </option>
+                  {industries.map((industry) => (
+                    <option key={industry._id} value={industry._id} >
+                      {industry.industryName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="producttype" className="block text-sm font-medium mb-1">
+                  Select a Product Type
+                </label>
+
+                <select
+                  id="producttype"
+                  name="productId"
+                  value={formData.productId as string} // Bind the dropdown to formData.industry
+                  onChange={handleChange}   // Update formData when a new industry is selected
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                >
+                  <option value="" disabled>
+                    -- Select an Product Type --
+                  </option>
+                  {products.map((product) => (
+                    <option key={product._id} value={product._id}>
+                      {product.productName}
+                    </option>
+                  ))}
+                </select>
+
+
+
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="comment" className="block text-sm font-medium mb-1">
+                  Comments
+                </label>
+                <textarea
+                  id="comment"
+                  name="comment"
+                  value={formData.comment as string}
+                  onChange={handleChange}
+                  rows={3}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                Submit Request
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div className="w-full ml-4 mt-5 pr-6 bg-gray-100 rounded overflow-hidden shadow-lg">
+          <div className="px-5 py-14">
+            <h2 className="text-xl font-semibold mb-6">Prospect Request History</h2>
+
+            <div className="overflow-x-auto max-h-80" style={{ maxHeight: '800px' }}>  {/* Add max height and horizontal scroll if needed */}
+              <table className="min-w-full table-auto">
+                <thead className="sticky top-0 bg-gray-200">  {/* Make the header sticky */}
+                  <tr>
+                    <th className="px-4 py-2 text-left">Company Name</th>
+                    <th className="px-4 py-2 text-left">Status</th>
+                    <th className="px-4 py-2 text-left">Submission Date</th>
+                    <th className="px-4 py-2 text-left">Submission Expires</th>
+                    <th className="px-4 py-2 text-left">Product Type</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {myProspectList && myProspectList.length > 0 ? (
+                    myProspectList.map((item) => (
+                      <tr key={item._id}>
+                        <td className="px-4 py-2">{item.company_name}</td>
+                        <td className="px-4 py-2">{getLabelByValue(item.status)}</td>
+                        <td className="px-4 py-2">{new Date(item.date_added).toLocaleDateString()}</td>
+                        <td className="px-4 py-2">
+                          {item.date_expires
+                            ? new Date(item.date_expires).toLocaleDateString()
+                            : "N/A"}
+                        </td>
+                        <td className="px-4 py-2">{item.product_type_name}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={5} className="px-4 py-2 text-center">No data available</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            
+          </div>
+        </div>
+
+
+      </div>
+>>>>>>> f5515301d8bc7bb094be4ebbd8004ad780896886
     </div>
   );
 };
