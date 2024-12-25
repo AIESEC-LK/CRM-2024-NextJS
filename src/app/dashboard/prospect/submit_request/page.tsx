@@ -1,6 +1,7 @@
 "use client";
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import React, { useEffect, useState } from "react";
 import { IRequest } from "@/app/models/RequestTypes";
 import {
@@ -18,6 +19,9 @@ import { format } from "date-fns";
 
 const Page: React.FC = () => {
 =======
+=======
+
+>>>>>>> 306a7f91a3c6a4c05f3880567a9ce7e82e47a803
 import React, { useEffect, useState } from 'react';
 import { IRequest } from '@/app/models/RequestTypes';
 import { fetctMyProspectList, IMyProspectList, fetchCompany, fetchProducts, fetchIndustry, submitProspect, FormData, Industry, Product, fetchCompanyQuery, ICompanyQuery } from './functions';
@@ -190,6 +194,10 @@ const Page: React.FC = () => {
       return;
     }*/
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 306a7f91a3c6a4c05f3880567a9ce7e82e47a803
     // Submit form data
     const submitResponse = await submitProspect(formData);
 
@@ -226,6 +234,10 @@ const Page: React.FC = () => {
     }
   };
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 306a7f91a3c6a4c05f3880567a9ce7e82e47a803
   return (
 <<<<<<< HEAD
     <div>
@@ -312,6 +324,7 @@ const Page: React.FC = () => {
               ))}
             </ul>
           )}
+<<<<<<< HEAD
 =======
                 {showDropdown && (
                   <ul className="absolute bg-white border border-gray-300 rounded-md mt-1 w-full max-h-40 overflow-y-auto">
@@ -325,6 +338,9 @@ const Page: React.FC = () => {
                           <span className="font-semibold">{result.companyName}</span>
                         </div>
                         <div className="ml-4 mt-1 text-sm text-gray-500">
+=======
+
+>>>>>>> 306a7f91a3c6a4c05f3880567a9ce7e82e47a803
 
                           {result.dateexpiresEvent && (
                             <div>Product Partnership Expires: {format(result.dateexpiresEvent, "MMMM dd, yyyy hh:mm a")}</div>
@@ -346,6 +362,10 @@ const Page: React.FC = () => {
           </p>
         )} */}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> 306a7f91a3c6a4c05f3880567a9ce7e82e47a803
         </div>
         <div className="mb-4">
           <label
@@ -495,6 +515,7 @@ const Page: React.FC = () => {
           Submit Request
         </button>
       </form>
+<<<<<<< HEAD
 =======
 
               </div>
@@ -678,6 +699,9 @@ const Page: React.FC = () => {
 
       </div>
 >>>>>>> f5515301d8bc7bb094be4ebbd8004ad780896886
+=======
+
+>>>>>>> 306a7f91a3c6a4c05f3880567a9ce7e82e47a803
     </div>
   );
 };
