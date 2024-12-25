@@ -8,7 +8,7 @@ import ProgressBar from '@/app/components/ui/progress';
 import { Input } from '@/app/components/ui/input';
 import ListGroup from '@/app/components/ui/list_groups';
 import styles from "./styles.module.css";
-import { LEAD_EXPIRE_TIME_DURATION } from '@/app/lib/values';
+import { LEAD_BAR_COLOR, LEAD_BAR_WIDTH, LEAD_EXPIRE_TIME_DURATION, PROSPECT_BAR_COLOR, PROSPECT_BAR_WIDTH, PROSPECT_VALUES } from '@/app/lib/values';
 
 interface Product {
   _id: string;
@@ -27,9 +27,9 @@ export default function MakeALeadPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [prospectId, setProspectId] = useState<string | null>(null);
   const [progressBar, setProgressBar] = useState({
-    text: 'Prospect',
-    color: 'yellow',
-    width: '30%',
+    text: PROSPECT_VALUES[1].label,
+    color: PROSPECT_BAR_COLOR,
+    width: PROSPECT_BAR_WIDTH,
   });
   const [isConverted, setIsConverted] = useState(false);
 
@@ -163,7 +163,7 @@ export default function MakeALeadPage() {
 
       if (response.ok && result.success) {
         console.log('Prospect updated successfully');
-        setProgressBar({ text: 'Lead', color: 'blue', width: '60%' });
+        setProgressBar({ text: PROSPECT_VALUES[2].label, color: LEAD_BAR_COLOR, width: LEAD_BAR_WIDTH });
         setIsConverted(true); // Mark as converted
       } else {
         console.error('Failed to update prospect:', result.message || 'Unknown error');
