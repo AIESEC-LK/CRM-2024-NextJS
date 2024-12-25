@@ -15,7 +15,7 @@ import {
 import Popup from "@/app/components/popup/Popup";
 import styles from "./styles.module.css";
 import { PROSPECT_VALUES } from "@/app/lib/values";
-
+import { IUserDetails,AuthService } from '@/app/services/authService';
 
 function getLabelByValue(value: string) {
   const result = PROSPECT_VALUES.find(item => item.value === value);
@@ -84,9 +84,18 @@ const Page: React.FC = () => {
 
 
     const loadMyProspectList = async () => {
-      const myProspectList = await fetctMyProspectList("675dbabf296393f677c5cf21");//TODO: Entity ID Fetch from Auth
+      const myProspectList = await fetctMyProspectList(AuthService.getUserLcId());//TODO: Entity ID Fetch from Auth
       setmyProspectList(myProspectList);
     };
+
+    const loadAuthDetails = async () => {
+      const userDetails:IUserDetails = { UserId: 256, UserLCId: '675dbabf296393f677c5cf21' };
+      AuthService.saveUserDetails(userDetails);
+    };
+
+
+    loadAuthDetails();
+    console.log("User Details:", AuthService.getUserLcId());
 
     loadMyProspectList();
     loadProducts();
@@ -387,7 +396,7 @@ const Page: React.FC = () => {
 
             <div className="overflow-x-auto max-h-80" style={{ maxHeight: '800px' }}>  {/* Add max height and horizontal scroll if needed */}
               <table className="min-w-full table-auto">
-                <thead className="sticky top-0 bg-gray-200">  {/* Make the header sticky */}
+                <thead className="sticky top-0 bg-gray-200">
                   <tr>
                     <th className="px-4 py-2 text-left">Company Name</th>
                     <th className="px-4 py-2 text-left">Status</th>
@@ -396,6 +405,7 @@ const Page: React.FC = () => {
                     <th className="px-4 py-2 text-left">Product Type</th>
                   </tr>
                 </thead>
+
                 <tbody className="divide-y divide-gray-200">
                   {myProspectList && myProspectList.length > 0 ? (
                     myProspectList.map((item) => (
@@ -419,7 +429,7 @@ const Page: React.FC = () => {
                 </tbody>
               </table>
             </div>
-            
+
           </div>
         </div>
 
