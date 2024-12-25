@@ -8,24 +8,26 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableHead,
-  TableHeader,
   TableRow,
 } from "@/app/components/ui/table";
 import { Badge } from "@/app/components/ui/badge";
 
 interface Prospect {
   _id: string;
-  entity: string;
-  companyName: string;
-  companyAddress: string;
+  company_id: string;
+  product_type_id: string;
+  entity_id: string;
+  lc_name: string;
+  company_name: string;
   contactPersonName: string;
   contactPersonNumber: string;
   contactPersonEmail: string;
-  industry: string;
-  producttype: string;
+  product_type_name: string;
   status: string;
-  dateAdded: string;
+  date_added: string;
+  date_expires: string;
+  activities: string[];
+  lead_proof_url: string;
 }
 
 export default function ProspectDetails({
@@ -34,16 +36,19 @@ export default function ProspectDetails({
   params: { id: string };
 }) {
   const [prospect, setProspect] = useState<Prospect | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const { id } = params;
 
   useEffect(() => {
     fetchProspect();
-  }, []);
+  }, [id]); // Added id as a dependency to refetch prospect
 
   const fetchProspect = async () => {
     try {
-      const response = await fetch(`/api/prospect_requests/${id}`);
+      const response = await fetch(
+        `/api_new/prospects/get_all_prospects/${id}`
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch prospect data");
       }
@@ -51,6 +56,7 @@ export default function ProspectDetails({
       setProspect(data);
     } catch (error) {
       console.error("Error fetching prospect:", error);
+      setError("An error occurred while fetching the prospect details.");
     }
   };
 
@@ -60,24 +66,38 @@ export default function ProspectDetails({
     }
 
     try {
-      const response = await fetch(`/api/prospect_requests/${prospect._id}`, {
-        method: "PATCH", // Using PATCH to update the status
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ status }), // Send the updated status
-      });
+      // Update the status via PATCH request
+      const response = await fetch(
+        `/api_new/prospects/update_a_prospect/${prospect._id}`, // Ensure this is the correct API endpoint
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status }), // Send the updated status
+        }
+      );
 
       if (!response.ok) {
-        throw new Error("Failed to update prospect status");
+        const errorData = await response.json(); // Get error details
+        throw new Error(
+          errorData.message || "Failed to update prospect status"
+        );
       }
 
-      router.push("/dashboard/admin"); // Navigate after status change
+      // Navigate after successful status change
+      router.push("/dashboard/admin");
     } catch (error) {
       console.error("Error updating status:", error);
-      alert("An error occurred while updating the prospect status.");
+      alert(
+        error.message || "An error occurred while updating the prospect status."
+      );
     }
   };
+
+  if (error) {
+    return <div>{error}</div>; // Show error message if fetching failed
+  }
 
   if (!prospect) {
     return <div>Loading...</div>;
@@ -96,15 +116,15 @@ export default function ProspectDetails({
           <TableBody>
             <TableRow>
               <TableCell className="font-medium">Entity</TableCell>
-              <TableCell>{prospect.entity}</TableCell>
+              <TableCell>{prospect.lc_name}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell className="font-medium">Company Name</TableCell>
-              <TableCell>{prospect.companyName}</TableCell>
+              <TableCell>{prospect.company_name}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell className="font-medium">Address</TableCell>
-              <TableCell>{prospect.companyAddress}</TableCell>
+              <TableCell>{prospect.company_name}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell className="font-medium">Contact Person</TableCell>
@@ -116,71 +136,37 @@ export default function ProspectDetails({
             </TableRow>
             <TableRow>
               <TableCell className="font-medium">Industry</TableCell>
-              <TableCell>{prospect.industry}</TableCell>
+              <TableCell>{prospect.company_name}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell className="font-medium">Product Type</TableCell>
-              <TableCell>{prospect.producttype}</TableCell>
+              <TableCell>{prospect.product_type_name}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell className="font-medium">Status</TableCell>
-              <TableCell>
-                <Badge
-                  className={
-                    prospect.status === "approved"
-                      ? "bg-green-500"
-                      : prospect.status === "declined"
-                      ? "bg-red-500"
-                      : "bg-yellow-500"
-                  }
-                >
-                  {prospect.status.charAt(0).toUpperCase() +
-                    prospect.status.slice(1)}
-                </Badge>
-              </TableCell>
+              <TableCell></TableCell>
             </TableRow>
             <TableRow>
               <TableCell className="font-medium">Requested At</TableCell>
               <TableCell>
-                {new Date(prospect.dateAdded).toLocaleString()}
+                {new Date(prospect.date_added).toLocaleString()}
               </TableCell>
             </TableRow>
-            {/* <TableRow>
-              <TableCell className="font-medium"> Actions </TableCell>
-              <TableCell>
-                <Button
-                  variant="ghost"
-                  onClick={() => router.back()}
-                  className="mb-1 mr-3 bg-green-500 hover:bg-green-700 p-3"
-                >
-                  Approve
-                </Button>
-                <Button
-                  variant="ghost"
-                  onClick={() => router.back()}
-                  className="mb-1 ml-3 bg-red-500 p-3 hover:bg-red-700 "
-                >
-                  Decline
-                </Button>
-              </TableCell>
-            </TableRow> */}
           </TableBody>
         </Table>
         <div className="flex justify-end p-4">
-          <>
-            <Button
-              className="mr-2 bg-red-500 text-white"
-              onClick={() => handleStatusChange("declined")}
-            >
-              Decline
-            </Button>
-            <Button
-              className="bg-green-500 text-white"
-              onClick={() => handleStatusChange("approved")}
-            >
-              Approve
-            </Button>
-          </>
+          <Button
+            className="mr-2 bg-red-500 text-white"
+            onClick={() => handleStatusChange("declined")}
+          >
+            Decline
+          </Button>
+          <Button
+            className="bg-green-500 text-white"
+            onClick={() => handleStatusChange("approved")}
+          >
+            Approve
+          </Button>
         </div>
       </div>
     </div>

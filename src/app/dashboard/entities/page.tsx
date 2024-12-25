@@ -47,36 +47,41 @@ export default function EntitiesPage() {
     setIsDeleteModalOpen(true);
   };
 
-const confirmDelete = async () => {
-  if (!entityToDelete) return;
+  const confirmDelete = async () => {
+    if (!entityToDelete) return;
 
-  try {
-    const response = await fetch(`/api_new/entities/delete_an_entity`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id: entityToDelete._id }),
-    });
+    try {
+      const response = await fetch(`/api_new/entities/delete_an_entity`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: entityToDelete._id }),
+      });
 
-    if (!response.ok) {
-      throw new Error("Failed to delete entity");
+      if (!response.ok) {
+        throw new Error("Failed to delete entity");
+      }
+
+      const result = await response.json();
+      if (result.success) {
+        setEntities(
+          entities.filter((entity) => entity._id !== entityToDelete._id)
+        );
+      } else {
+        console.error("No records deleted:", result.message);
+      }
+
+      setIsDeleteModalOpen(false);
+      setEntityToDelete(null);
+    } catch (error) {
+      console.error("Error deleting entity:", error);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 306a7f91a3c6a4c05f3880567a9ce7e82e47a803
     }
-
-    const result = await response.json();
-    if (result.success) {
-      setEntities(entities.filter((entity) => entity._id !== entityToDelete._id));
-    } else {
-      console.error("No records deleted:", result.message);
-    }
-
-    setIsDeleteModalOpen(false);
-    setEntityToDelete(null);
-  } catch (error) {
-    console.error("Error deleting entity:", error);
-  }
-};
-
+  };
 
   const closeDeleteModal = () => {
     setIsDeleteModalOpen(false);

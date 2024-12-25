@@ -40,29 +40,40 @@ export async function PATCH(req: Request) {
     }
 
     // Conditionally add the amount field if partnershipType is monetary
-    if (updates.partnershipType === 'monetary' && updates.amount !== undefined) {
+    if (
+      updates.partnershipType === "monetary" &&
+      updates.amount !== undefined
+    ) {
       updateFields.amount = updates.amount;
     }
 
     if (Object.keys(updateFields).length === 0) {
-      return NextResponse.json({ error: "No valid fields to update" }, { status: 400 });
+      return NextResponse.json(
+        { error: "No valid fields to update" },
+        { status: 400 }
+      );
     }
 
-    const result = await db.collection("Prospects").updateOne(
-      { _id: new ObjectId(id) },
-      { $set: updateFields }
-    );
+    const result = await db
+      .collection("Prospects")
+      .updateOne({ _id: new ObjectId(id) }, { $set: updateFields });
 
     if (result.modifiedCount > 0) {
       return NextResponse.json({ success: true });
     } else {
-      return NextResponse.json({ error: "No documents were modified" }, { status: 400 });
+      return NextResponse.json(
+        { error: "No documents were modified" },
+        { status: 400 }
+      );
     }
   } catch (error) {
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     } else {
-      return NextResponse.json({ error: "An unknown error occurred" }, { status: 500 });
+      return NextResponse.json(
+        { error: "An unknown error occurred" },
+        { status: 500 }
+      );
     }
   }
 }
