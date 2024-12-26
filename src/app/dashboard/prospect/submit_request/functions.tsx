@@ -121,12 +121,20 @@ const submitProspect = async (data: FormData): Promise<Response | Error> => {
             body: JSON.stringify(data),
         });
 
+        if (!response.ok) {
+            throw new Error('Failed to submit form');
+        }
         return response; // Form submitted successfully
-    } catch (error: any) {
-        console.error('Error submitting form:', error as string);
-        return error; // Submission failed
+        } catch (error) {
+        if (error instanceof Error) {
+            console.error('Error submitting form:', error.message);
+            return error; // Submission failed
+        } else {
+            console.error('Unexpected error:', error);
+            return new Error('Unexpected error occurred');
+        }
+        }
     }
-};
 
 
 export { fetctMyProspectList,fetchIndustry, fetchProducts, submitProspect, fetchCompanyQuery,fetchCompany };

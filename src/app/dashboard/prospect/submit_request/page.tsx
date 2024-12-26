@@ -45,7 +45,7 @@ const Page: React.FC = () => {
   //const [industriesLoading, setIndustriesLoading] = useState<boolean>(true);
 
   const [searchResults, setSearchResults] = useState<ICompanyQuery[]>([]);
-  const [searchResultsLoading, setsearchResultsLoading] =
+  //const [searchResultsLoading, setsearchResultsLoading] =
     useState<boolean>(true);
   const [showDropdown, setShowDropdown] = useState(false);
   //console.log("Dropdown visibility:", showDropdown, "Search results:", searchResults);
@@ -105,10 +105,10 @@ const Page: React.FC = () => {
   }, []);
 
   const loadsearchResults = async (query: string) => {
-    setsearchResultsLoading(true);
+    //setsearchResultsLoading(true);
     const data2 = await fetchCompanyQuery(query);
     setSearchResults(data2);
-    setsearchResultsLoading(false);
+   // setsearchResultsLoading(false);
     setShowDropdown(true);
   };
 
