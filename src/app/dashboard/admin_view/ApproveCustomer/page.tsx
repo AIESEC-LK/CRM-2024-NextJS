@@ -7,12 +7,15 @@ import ProgressBar from '@/app/components/ui/progress'
 import styles from "./styles.module.css"
 
 export default function ApproveCustomer() {
-  const [progressBar] = useState({
+  const [progressBar] = useState<{
+    text: string;
+    color: "yellow" | "blue" | "green" | "indigo" | "red" | "dark" | "purple" | "teal";
+    width: string;
+  }>({
     text: 'Customer',
     color: 'teal',
     width: '75%',
-  })
-
+  });
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
