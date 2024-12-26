@@ -24,6 +24,7 @@ interface Lead {
   name: string;
   email_from: string;
   phone: string;
+  status?: "pending" | "saved" | "deleted" | "edited";
 }
 
 // Selected Company Interface
@@ -63,17 +64,16 @@ export default function UpdateLeads() {
 
 const handleEdit = (id: number, company_name: string, company_email: string, company_phone: string, company_address: string, company_status: string) => {
   setCurrentRequestId(id);
-    const selectedCompany = [
+  const selectedCompany: SelectedCompany = {
     company_name,
     company_email,
     company_phone,
     company_address,
     company_status,
-  ];
+  };
 
-  //console.log(selectedCompany)
-  setCurrentRequestCompany(selectedCompany)
-  console.log(currentRequestCompany)
+  setCurrentRequestCompany(selectedCompany);
+  console.log(currentRequestCompany);
   setCurrentAction("edit");
   setIsModalOpen(true);
 };
@@ -83,19 +83,19 @@ const handleEdit = (id: number, company_name: string, company_email: string, com
     if (currentAction === "save" && currentRequestId) {
       setRequests((prevRequests) =>
         prevRequests.map((req) =>
-          req.id === currentRequestId ? { ...req, status: "Saved" } : req
+          req.id === currentRequestId ? { ...req, status: "saved" } : req
         )
       );
     } else if (currentAction === "delete" && currentRequestId) {
       setRequests((prevRequests) =>
         prevRequests.map((req) =>
-          req.id === currentRequestId ? { ...req, status: "Deleted" } : req
+          req.id === currentRequestId ? { ...req, status: "deleted" } : req
         )
       );
     } else if (currentAction === "edit" && currentRequestId) {
       setRequests((prevRequests) =>
         prevRequests.map((req) =>
-          req.id === currentRequestId ? { ...req, status: "Edited" } : req
+          req.id === currentRequestId ? { ...req, status: "edited" } : req
         )
       );
     }
@@ -186,7 +186,7 @@ const handleEdit = (id: number, company_name: string, company_email: string, com
                 <Badge
                   variant={
                     lead.status === "saved"
-                      ? "success"
+                      ? "secondary"
                       : lead.status === "deleted"
                       ? "destructive"
                       : "default"
@@ -208,7 +208,7 @@ const handleEdit = (id: number, company_name: string, company_email: string, com
                   </Button>
                   <Button
                     size="sm"
-                    onClick={() => handleEdit(lead.id, lead.name, lead.email_from, lead.phone, lead.street)}
+                    onClick={() => handleEdit(lead.id, lead.name, lead.email_from, lead.phone, lead.street, lead.status || "pending")}
                     disabled={lead.status !== "pending"}
                     variant="ghost"
                     className="bg-amber-500 hover:bg-amber-600"
@@ -247,7 +247,7 @@ const handleEdit = (id: number, company_name: string, company_email: string, com
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           onConfirm={confirmAction}
-          action={currentAction!} values={[currentRequestCompany]}      />
+          action={currentAction!} values={currentRequestCompany ? [[currentRequestCompany.company_name, currentRequestCompany.company_email, currentRequestCompany.company_phone, currentRequestCompany.company_address, currentRequestCompany.company_status]] : []}      />
     </div>
     </>
   );

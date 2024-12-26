@@ -72,6 +72,7 @@ export default function AddEntityPage() {
                 onClick={() => setColor(c)}
                 id="color"
                 value={color}
+                title={`Select color ${c}`}
               />
             ))}
           </div>
