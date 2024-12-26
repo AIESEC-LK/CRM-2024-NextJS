@@ -16,6 +16,8 @@ export default function ApproveCustomer() {
     color: 'teal',
     width: '75%',
   });
+
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -62,6 +64,7 @@ export default function ApproveCustomer() {
             text={progressBar.text}
             color={progressBar.color}
             width={progressBar.width}
+            className="h-6" // Added height to fix rendering issue
           />
         </div>
 
