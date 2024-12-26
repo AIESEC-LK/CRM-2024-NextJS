@@ -1,4 +1,5 @@
 export interface FormData {
+    [x: string]: string;
     companyId: String;
     companyName: String;
     companyAddress: String;
