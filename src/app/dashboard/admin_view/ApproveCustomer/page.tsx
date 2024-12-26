@@ -87,7 +87,7 @@ export default function ApproveCustomer() {
           <div className="mt-4">
             <Label>Category</Label>
             <p className="text-sm text-green-500">External Entity</p>
-            <p className="text-sm text-yellow-500">The submitted MOU is still pending for admin's approval</p>
+            <p className="text-sm text-yellow-500">The submitted MOU is still pending for admin&apos;s approval</p>
           </div>
 
           <div className="flex gap-2 mt-4">
@@ -220,8 +220,9 @@ export default function ApproveCustomer() {
           <div className="mt-4">
             <Label>Category</Label>
             <p className="text-sm text-green-500">External Entity</p>
-            <p className="text-sm text-yellow-500">The submitted MOU is still pending for admin's approval</p>
+            <p className="text-sm text-yellow-500">The submitted MOU is still pending for admin&apos;s approval</p>
           </div>
+
         </div>
       </main>
 

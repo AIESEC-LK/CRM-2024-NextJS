@@ -50,7 +50,7 @@ const UserManagement: React.FC = () => {
                     onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
                     className="border border-gray-300 rounded px-3 py-2"
                 >
-                    <option value="">User's Role</option>
+                    <option value="">User&apos;s Role</option>
                     <option value="member">Member</option>
                     <option value="admin">Admin</option>
                 </select>
@@ -59,7 +59,7 @@ const UserManagement: React.FC = () => {
                     onChange={(e) => setNewUser({ ...newUser, entity: e.target.value })}
                     className="border border-gray-300 rounded px-3 py-2"
                 >
-                    <option value="">User's Entity</option>
+                    <option value="">User&apos;s Entity</option>
                     <option value="Jayewardenepura">Jayewardenepura</option>
                     <option value="NIBM">NIBM</option>
                 </select>
