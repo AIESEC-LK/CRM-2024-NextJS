@@ -4,16 +4,19 @@ import { useState } from 'react'
 import { Label } from '@/app/components/ui/label'
 import { Input } from '@/app/components/ui/input'
 import ProgressBar from '@/app/components/ui/progress'
-import ListGroup from '@/app/components/ui/list_groups'
-import ToastNotification from '@/app/components/ui/toast'
 import styles from "./styles.module.css"
 
 export default function ApproveCustomer() {
-  const [progressBar] = useState({
+  const [progressBar] = useState<{
+    text: string;
+    color: "yellow" | "blue" | "green" | "indigo" | "red" | "dark" | "purple" | "teal";
+    width: string;
+  }>({
     text: 'Customer',
     color: 'teal',
     width: '75%',
-  })
+  });
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -61,6 +64,7 @@ export default function ApproveCustomer() {
             text={progressBar.text}
             color={progressBar.color}
             width={progressBar.width}
+            className="h-6" // Added height to fix rendering issue
           />
         </div>
 
@@ -89,7 +93,7 @@ export default function ApproveCustomer() {
           <div className="mt-4">
             <Label>Category</Label>
             <p className="text-sm text-green-500">External Entity</p>
-            <p className="text-sm text-yellow-500">The submitted MOU is still pending for admin's approval</p>
+            <p className="text-sm text-yellow-500">The submitted MOU is still pending for admin&apos;s approval</p>
           </div>
 
           <div className="flex gap-2 mt-4">
@@ -222,8 +226,9 @@ export default function ApproveCustomer() {
           <div className="mt-4">
             <Label>Category</Label>
             <p className="text-sm text-green-500">External Entity</p>
-            <p className="text-sm text-yellow-500">The submitted MOU is still pending for admin's approval</p>
+            <p className="text-sm text-yellow-500">The submitted MOU is still pending for admin&apos;s approval</p>
           </div>
+
         </div>
       </main>
 

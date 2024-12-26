@@ -12,7 +12,7 @@ import {
   TableRow,
 } from "@/app/components/ui/table";
 
-import { Search, CheckCircle, XCircle, Info, Eye } from "lucide-react";
+import { Search, Eye } from "lucide-react";
 import Link from "next/link";
 
 interface Request {

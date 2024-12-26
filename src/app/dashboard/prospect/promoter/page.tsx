@@ -1,14 +1,10 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
 import { Select } from "@/app/components/ui/select";
-import ProgressBar from "@/app/components/ui/progress";
 import ListGroup from "@/app/components/ui/list_groups";
-import Image from "next/image";
-import ToastNotification from "@/app/components/ui/toast"; // Assume you have this component
 import { formatDate, Product } from "./functions";
 
 export default function MakeALeadPage() {

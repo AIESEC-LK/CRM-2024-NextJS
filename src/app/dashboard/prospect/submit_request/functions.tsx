@@ -1,18 +1,19 @@
 export interface FormData {
-    companyId: String;
-    companyName: String;
-    companyAddress: String;
-    contactPersonName: String;
-    contactPersonNumber: String;
-    contactPersonEmail: String;
-    productId: String;
-    comment: String;
-    partnership: String;
-    industryId: String;
+    [x: string]: string;
+    companyId: string;
+    companyName: string;
+    companyAddress: string;
+    contactPersonName: string;
+    contactPersonNumber: string;
+    contactPersonEmail: string;
+    productId: string;
+    comment: string;
+    partnership: string;
+    industryId: string;
 }
 
 export interface ICompanyQuery {
-    _id: any;
+    _id: string;
     companyName: string;
     dateexpiresEvent:Date;
     dateexpiresProduct:Date;
@@ -120,12 +121,20 @@ const submitProspect = async (data: FormData): Promise<Response | Error> => {
             body: JSON.stringify(data),
         });
 
+        if (!response.ok) {
+            throw new Error('Failed to submit form');
+        }
         return response; // Form submitted successfully
-    } catch (error: any) {
-        console.error('Error submitting form:', error);
-        return error; // Submission failed
+        } catch (error) {
+        if (error instanceof Error) {
+            console.error('Error submitting form:', error.message);
+            return error; // Submission failed
+        } else {
+            console.error('Unexpected error:', error);
+            return new Error('Unexpected error occurred');
+        }
+        }
     }
-};
 
 
 export { fetctMyProspectList,fetchIndustry, fetchProducts, submitProspect, fetchCompanyQuery,fetchCompany };

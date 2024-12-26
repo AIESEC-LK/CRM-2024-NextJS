@@ -32,7 +32,7 @@ export async function PATCH(req: Request) {
     const db = client.db(process.env.DB_NAME);
 
     // Filter out fields that are not allowed
-    const updateFields: { [key: string]: any } = {};
+    const updateFields: { [key: string]: string } = {};
     for (const key in updates) {
       if (ALLOWED_FIELDS.includes(key) && updates[key] !== undefined) {
         updateFields[key] = updates[key];

@@ -18,14 +18,14 @@ interface IProspectRequest {
 
 export async function POST(req: Request) {
   try {
-    var company = null;
-    var newCompany = false;
+    let company = null;
+    let newCompany = false;
     
     const prospect: IProspectRequest = await req.json();
     const client = await clientPromise;
     const db = client.db(process.env.DB_NAME);
 
-    var createCompany = false;
+    let createCompany = false;
 
     //Map all other Product ID to the SameProduct ID except Event(6734053c308fd8d176381e07)
     if (prospect.productId != "6734053c308fd8d176381e07") {
@@ -94,7 +94,7 @@ export async function POST(req: Request) {
           if (prospectExpiresDate > currentDate) {
             console.log("The expiration date is in the future.");
 
-            const prospectResult = await db.collection("Pending_Prospects").insertOne({
+            await db.collection("Pending_Prospects").insertOne({
               company_id: prospect.companyId,
               product_type_id: prospect.productId,
               entity_id: entity_id,
@@ -114,7 +114,7 @@ export async function POST(req: Request) {
       }
 
       //Create Prospect
-      const prospectResult = await db.collection("Prospects").insertOne({
+      await db.collection("Prospects").insertOne({
         company_id: prospect.companyId,
         product_type_id: prospect.productId,
         entity_id: entity_id,

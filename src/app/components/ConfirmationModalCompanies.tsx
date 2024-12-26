@@ -7,7 +7,7 @@ interface ConfirmationModalCompaniesProps {
   onClose: () => void;
   onConfirm: () => void;
   action: string; // Action could be "approve" or "decline"
-  values: any;
+  values: string[][]; // Values to be displayed in the modal
 }
 
 const ConfirmationModalCompanies: React.FC<ConfirmationModalCompaniesProps> = ({

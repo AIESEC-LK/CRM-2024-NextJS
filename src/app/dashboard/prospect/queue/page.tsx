@@ -37,8 +37,8 @@ export default function ProspectQueue() {
   const [requests, setRequests] = useState<Request[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
-  function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  function sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   useEffect(() => {

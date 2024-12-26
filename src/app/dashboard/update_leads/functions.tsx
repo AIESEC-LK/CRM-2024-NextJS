@@ -1,7 +1,7 @@
-export async function upload_leads_to_mongo(company_list: any) {
+export async function upload_leads_to_mongo(company_list: { id: string }[]) {
   try {
-    for (const company of company_list) {/*
-      const modifiedCompany = {
+    for (const company of company_list) {
+     /* const modifiedCompany = {
         ...company,
         product_lc: "",
         product: "",
@@ -23,16 +23,24 @@ export async function upload_leads_to_mongo(company_list: any) {
         });
 
         if (!response.ok) {
-          console.error(`Failed to upload company ID ${company.id}: ${response.statusText}`);
+          console.error(`Failed to upload company ID ${company.id.toString()}: ${response.statusText}`);
         } else {
           const data = await response.json();
-          console.log(`Successfully uploaded company ID ${company.id}:`, data);
+          console.log(`Successfully uploaded company ID ${company.id.toString()}:`, data);
         }
       } catch (error) {
-        console.error(`Error uploading company ID ${company.id}:`, error.message);
+        if (error instanceof Error) {
+          console.error(`Error uploading company ID ${company.id}:`, error.message);
+        } else {
+          console.error(`Error uploading company ID ${company.id}:`, error);
+        }
       }
     }
   } catch (error) {
-    console.error("General error uploading companies:", error.message);
+    if (error instanceof Error) {
+      console.error("General error uploading companies:", error.message);
+    } else {
+      console.error("General error uploading companies:", error);
+    }
   }
 }

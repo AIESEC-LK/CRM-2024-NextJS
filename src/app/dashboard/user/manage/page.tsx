@@ -50,7 +50,7 @@ const UserManagement: React.FC = () => {
                     onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
                     className="border border-gray-300 rounded px-3 py-2"
                 >
-                    <option value="">User's Role</option>
+                    <option value="">User&apos;s Role</option>
                     <option value="member">Member</option>
                     <option value="admin">Admin</option>
                 </select>
@@ -59,7 +59,7 @@ const UserManagement: React.FC = () => {
                     onChange={(e) => setNewUser({ ...newUser, entity: e.target.value })}
                     className="border border-gray-300 rounded px-3 py-2"
                 >
-                    <option value="">User's Entity</option>
+                    <option value="">User&apos;s Entity</option>
                     <option value="Jayewardenepura">Jayewardenepura</option>
                     <option value="NIBM">NIBM</option>
                 </select>
@@ -88,23 +88,23 @@ const UserManagement: React.FC = () => {
                                 value={user.role}
                                 onChange={(e) => handleRoleChange(user.email, e.target.value)}
                                 className="border border-gray-300 rounded px-2 py-1"
-                            >
-                                <option value="member">Member</option>
-                                <option value="admin">Admin</option>
-                            </select>
-                            <button
-                                onClick={() => handleDeleteUser(user.email)}
-                                className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
-                            >
-                                Delete
-                            </button>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-};
-
-export default UserManagement;
+                                >
+                                    <option value="member">Member</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                                <button
+                                    onClick={() => handleDeleteUser(user.email)}
+                                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+                                >
+                                    Delete
+                                </button>
+                                </div>
+                                </div>
+                                ))}
+                                </div>
+                                </div>
+                                );
+                                };
+                                
+                                export default UserManagement;
 

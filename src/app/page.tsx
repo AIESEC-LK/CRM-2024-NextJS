@@ -10,7 +10,7 @@ import { PARTNERHSIPS_UI_PATH } from "./lib/values";
 const LoginPage = () => {
   const router = useRouter();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     // Add login logic here if needed
     router.push(PARTNERHSIPS_UI_PATH);

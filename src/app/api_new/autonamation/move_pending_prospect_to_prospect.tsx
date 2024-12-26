@@ -3,6 +3,11 @@ import clientPromise from "@/app/lib/mongodb"; // Use clientPromise to connect t
 import fetch from "node-fetch"; // Import fetch for API calls if not globally available
 import { BASE_URL } from "@/app/lib/values";
 
+// Define the type for the autonomations response
+type AutonomationsResponse = {
+  pending_to_prospect_conversion?: string;
+}[];
+
 // Function to fetch the cron schedule dynamically from the database
 async function getCronSchedule() {
   try {
@@ -10,7 +15,7 @@ async function getCronSchedule() {
     if (!response.ok) {
       throw new Error(`Failed to fetch cron schedule: ${response.statusText}`);
     }
-    const autonomations = await response.json();
+    const autonomations: AutonomationsResponse = await response.json() as AutonomationsResponse;
 
     // Get the pending_to_prospect_conversion schedule from the first document
     return autonomations[0]?.pending_to_prospect_conversion || "0 0 * * *"; // Default to midnight daily if undefined

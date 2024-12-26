@@ -10,7 +10,7 @@ async function getCronSchedule() {
     if (!response.ok) {
       throw new Error(`Failed to fetch cron schedule: ${response.statusText}`);
     }
-    const autonomations = await response.json();
+    const autonomations = await response.json() as { customer_to_promoter_transformation?: string }[];
 
     // Assuming the first document contains the needed transformation value
     return autonomations[0]?.customer_to_promoter_transformation || "0 0 * * *"; // Default to midnight daily if undefined

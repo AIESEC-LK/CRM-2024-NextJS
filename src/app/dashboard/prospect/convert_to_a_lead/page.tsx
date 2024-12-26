@@ -18,7 +18,13 @@ interface Product {
 export default function MakeALeadPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [prospectDetails, setProspectDetails] = useState<any>(null);
+  interface ProspectDetails {
+    date_expires: string;
+    company_name: string;
+    product_type_id: string;
+  }
+
+  const [prospectDetails, setProspectDetails] = useState<ProspectDetails | null>(null);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [activities, setActivities] = useState<string[]>([]);

@@ -1,5 +1,5 @@
 import React from "react";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 
 interface CalendarProps {
   selectedDate: string; // The selected date in "YYYY-MM-DD" format
@@ -13,9 +13,11 @@ const Calendar: React.FC<CalendarProps> = ({ selectedDate }) => {
   const daysInMonth = endOfMonth.date();
 
   // Create an array of days to display in the calendar
-  const daysArray = Array.from({ length: daysInMonth }, (_, i) => startOfMonth.add(i, "day"));
-  const paddedDays = [
-    ...Array.from({ length: startDayOfWeek }), // Padding for the first row
+  const daysArray: Dayjs[] = Array.from({ length: daysInMonth }, (_, i) =>
+    startOfMonth.add(i, "day")
+  );
+  const paddedDays: (Dayjs | null)[] = [
+    ...Array.from({ length: startDayOfWeek }, () => null), // Padding for the first row
     ...daysArray,
   ];
 
@@ -36,10 +38,9 @@ const Calendar: React.FC<CalendarProps> = ({ selectedDate }) => {
       {/* Calendar Grid */}
       <div className="grid grid-cols-7 text-center">
         {paddedDays.map((day, index) => {
-          const isPadding = !day; // Empty padding cells
+          const isPadding = day === null; // Empty padding cells
           const isSelected =
-            day &&
-            day.format("YYYY-MM-DD") === selectedDate; // Highlight selected date
+            day && day.format("YYYY-MM-DD") === selectedDate; // Highlight selected date
           const isToday =
             day && day.format("YYYY-MM-DD") === today.format("YYYY-MM-DD"); // Highlight today's date
 
