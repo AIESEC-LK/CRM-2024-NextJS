@@ -67,21 +67,21 @@ export default function ProspectDetails({
     try {
       // Update the status via PATCH request
       const response = await fetch(
-        `/api_new/prospects/update_a_prospect/${prospect._id}`, // Ensure this is the correct API endpoint
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ status }), // Send the updated status
-        }
+      `/api_new/prospects/update_a_prospect/${prospect._id}`, // Ensure this is the correct API endpoint
+      {
+        method: "PATCH",
+        headers: {
+        "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status }), // Send the updated status
+      }
       );
 
       if (!response.ok) {
-        const errorData = await response.json(); // Get error details
-        throw new Error(
-          errorData.message || "Failed to update prospect status"
-        );
+      const errorData: { message: string } = await response.json(); // Get error details
+      throw new Error(
+        errorData.message || "Failed to update prospect status"
+      );
       }
 
       // Navigate after successful status change
@@ -89,7 +89,7 @@ export default function ProspectDetails({
     } catch (error) {
       console.error("Error updating status:", error);
       alert(
-        (error as any).message || "An error occurred while updating the prospect status."
+      (error as Error).message || "An error occurred while updating the prospect status."
       );
     }
   };
