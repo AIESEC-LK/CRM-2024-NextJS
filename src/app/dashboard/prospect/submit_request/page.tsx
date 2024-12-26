@@ -64,7 +64,8 @@ const Page: React.FC = () => {
     productId: '',
     comment: '',
     partnership: '',
-    industryId: ''
+    industryId: '',
+    userLcId: AuthService.getUserLcId()
   });
 
   useEffect(() => {
