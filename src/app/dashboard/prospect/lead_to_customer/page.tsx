@@ -95,7 +95,11 @@ export default function MakeALeadPage() {
         alert(`Error: ${result.error}`);
       }
     } catch (error) {
-      alert(`Error: ${error.message}`);
+      if (error instanceof Error) {
+        alert(`Error: ${error.message}`);
+      } else {
+        alert('An unknown error occurred');
+      }
     }
   };
 
