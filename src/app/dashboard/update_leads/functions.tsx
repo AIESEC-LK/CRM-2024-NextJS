@@ -29,10 +29,18 @@ export async function upload_leads_to_mongo(company_list: { id: string }[]) {
           console.log(`Successfully uploaded company ID ${company.id.toString()}:`, data);
         }
       } catch (error) {
-        console.error(`Error uploading company ID ${company.id}:`, error.message);
+        if (error instanceof Error) {
+          console.error(`Error uploading company ID ${company.id}:`, error.message);
+        } else {
+          console.error(`Error uploading company ID ${company.id}:`, error);
+        }
       }
     }
   } catch (error) {
-    console.error("General error uploading companies:", error.message);
+    if (error instanceof Error) {
+      console.error("General error uploading companies:", error.message);
+    } else {
+      console.error("General error uploading companies:", error);
+    }
   }
 }
