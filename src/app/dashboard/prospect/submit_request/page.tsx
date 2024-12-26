@@ -39,10 +39,10 @@ const Page: React.FC = () => {
   const [myProspectList, setmyProspectList] = useState<IMyProspectList[]>([]);
 
   const [products, setProducts] = useState<Product[]>([]);
-  const [productsLoading, setProductsLoading] = useState<boolean>(true);
+  //const [productsLoading, setProductsLoading] = useState<boolean>(true);
 
   const [industries, setIndustries] = useState<Industry[]>([]);
-  const [industriesLoading, setIndustriesLoading] = useState<boolean>(true);
+  //const [industriesLoading, setIndustriesLoading] = useState<boolean>(true);
 
   const [searchResults, setSearchResults] = useState<ICompanyQuery[]>([]);
   const [searchResultsLoading, setsearchResultsLoading] =
@@ -50,8 +50,8 @@ const Page: React.FC = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   //console.log("Dropdown visibility:", showDropdown, "Search results:", searchResults);
 
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  //const [errorMessage, setErrorMessage] = useState<string | null>(null);
+ // const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<FormData>({
     company_id: "",
@@ -71,17 +71,17 @@ const Page: React.FC = () => {
 
   useEffect(() => {
     const loadProducts = async () => {
-      setProductsLoading(true);
+      //setProductsLoading(true);
       const data = await fetchProducts();
       setProducts(data);
-      setProductsLoading(false);
+      //setProductsLoading(false);
     };
 
     const loadIndustries = async () => {
-      setIndustriesLoading(true);
+     // setIndustriesLoading(true);
       const data2 = await fetchIndustry();
       setIndustries(data2);
-      setIndustriesLoading(false);
+     // setIndustriesLoading(false);
     };
 
 
@@ -166,23 +166,23 @@ const Page: React.FC = () => {
       if (submitResponse.ok) {
         const errorData = await submitResponse.json();
         openPopup(errorData.error, "Sucessfull");
-        setErrorMessage(errorData.error);
-        setErrorMessage(null);
+    //    setErrorMessage(errorData.error);
+    //    setErrorMessage(null);
       } else {
         // Handle response failure if you want to extract error message from the response body
         const errorData = await submitResponse.json(); // Assuming the response returns a JSON error message
 
         openPopup(errorData.error, "Failed");
-        setErrorMessage(errorData.error);
+     //   setErrorMessage(errorData.error);
 
         console.log("Error data:", errorData);
-        setSuccessMessage(null);
+       // setSuccessMessage(null);
       }
     } else if (submitResponse instanceof Error) {
       // If an error is thrown, display the error message
       openPopup(submitResponse.message || "Something went wrong. Please try again.", "Failed");
-      setErrorMessage(submitResponse.message || 'Something went wrong. Please try again.');
-      setSuccessMessage(null);
+   //   setErrorMessage(submitResponse.message || 'Something went wrong. Please try again.');
+    //  setSuccessMessage(null);
     }
   };
 

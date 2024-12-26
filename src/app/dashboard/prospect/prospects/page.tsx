@@ -17,7 +17,7 @@ const labelColors: { [key: string]: string } = {
 
 const ProspectsPage = () => {
   const router = useRouter();
-  const [prospects, setProspects] = useState<{ [key: string]: any }[]>([]);
+  const [prospects, setProspects] = useState<{ [key: string]: string }[]>([]);
 
   // Fetch prospects from the API
   useEffect(() => {

@@ -1,7 +1,6 @@
 'use client' // Interact with user
 
 import React, { useEffect, useState } from "react";   // API calls and realtime update
-import { upload_leads_to_mongo } from "./functions";  // API calls for upload leads
 import { Button } from "@/app/components/ui/button";  // Button Component
 import { Input } from "@/app/components/ui/input";    // Input Component
 import {
@@ -51,7 +50,7 @@ export default function UpdateLeads() {
   const [currentRequestId, setCurrentRequestId] = useState<number | null>(null);
   const [currentRequestCompany, setCurrentRequestCompany] = useState<SelectedCompany | null>(null);
 
-  const handleApprove = (id: number, company_name: string, company_email: string, company_phone: string, company_address: string, company_status: string) => {
+  const handleApprove = (id: number) => {
     setCurrentRequestId(id);
     setCurrentAction("save");
     setIsModalOpen(true);
@@ -64,7 +63,7 @@ export default function UpdateLeads() {
 
 const handleEdit = (id: number, company_name: string, company_email: string, company_phone: string, company_address: string, company_status: string) => {
   setCurrentRequestId(id);
-    let selectedCompany = [
+    const selectedCompany = [
     company_name,
     company_email,
     company_phone,
@@ -115,7 +114,7 @@ const handleEdit = (id: number, company_name: string, company_email: string, com
 
 
 
-  const filteredRequests = requests.filter(
+  requests.filter(
     (req) =>
       req.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       req.email_from.toLowerCase().includes(searchTerm.toLowerCase()) ||

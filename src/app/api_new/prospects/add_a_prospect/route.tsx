@@ -114,7 +114,7 @@ export async function POST(req: Request) {
       }
 
       //Create Prospect
-      const prospectResult = await db.collection("Prospects").insertOne({
+      await db.collection("Prospects").insertOne({
         company_id: prospect.companyId,
         product_type_id: prospect.productId,
         entity_id: entity_id,

@@ -10,7 +10,6 @@ import {
   TableCell,
   TableRow,
 } from "@/app/components/ui/table";
-import { Badge } from "@/app/components/ui/badge";
 
 interface Prospect {
   _id: string;
