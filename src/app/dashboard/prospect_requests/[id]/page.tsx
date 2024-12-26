@@ -89,7 +89,7 @@ export default function ProspectDetails({
     } catch (error) {
       console.error("Error updating status:", error);
       alert(
-        error.message || "An error occurred while updating the prospect status."
+        (error as any).message || "An error occurred while updating the prospect status."
       );
     }
   };
