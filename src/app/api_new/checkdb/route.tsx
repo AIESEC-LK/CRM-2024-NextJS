@@ -1,8 +1,11 @@
 import { dbConnect } from "@/app/lib/db";
 import { NextResponse } from "next/server";
 
-
 export async function GET() {
-    const con = await dbConnect();
-    return new NextResponse('Connected');
+    try {
+        await dbConnect();
+        return new NextResponse('Connected');
+    } catch (error) {
+        return new NextResponse('Could not connect', { status: 500 });
+    }
 }

@@ -1,5 +1,5 @@
 "use client";
-import { IRequest } from "@/app/models/RequestTypes";
+
 import React, { useEffect, useState } from 'react';
 import { fetctMyProspectList, 
   IMyProspectList, 
@@ -13,16 +13,7 @@ import { fetctMyProspectList,
   fetchCompanyQuery, 
   ICompanyQuery } from './functions';
 import { format } from 'date-fns';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/app/components/ui/table";
 import Popup from "@/app/components/popup/Popup";
-import styles from "./styles.module.css";
 import { PROSPECT_VALUES } from "@/app/lib/values";
 import { IUserDetails,AuthService } from '@/app/services/authService';
 
@@ -58,8 +49,6 @@ const Page: React.FC = () => {
     useState<boolean>(true);
   const [showDropdown, setShowDropdown] = useState(false);
   //console.log("Dropdown visibility:", showDropdown, "Search results:", searchResults);
-
-  const [companyData, setcompanyData] = useState<FormData>();
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);

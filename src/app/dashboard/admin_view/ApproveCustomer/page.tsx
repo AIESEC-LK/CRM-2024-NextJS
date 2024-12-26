@@ -4,8 +4,6 @@ import { useState } from 'react'
 import { Label } from '@/app/components/ui/label'
 import { Input } from '@/app/components/ui/input'
 import ProgressBar from '@/app/components/ui/progress'
-import ListGroup from '@/app/components/ui/list_groups'
-import ToastNotification from '@/app/components/ui/toast'
 import styles from "./styles.module.css"
 
 export default function ApproveCustomer() {

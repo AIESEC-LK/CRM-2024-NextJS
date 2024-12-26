@@ -2,18 +2,13 @@ import { NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
 
 interface ICompanyQuery {
-  _id: any;
+  _id: string;
   companyName: string;
   dateexpiresEvent:Date;
   dateexpiresProduct:Date;
 }
 
-interface ICompany {
-  _id: any;
-  companyName: string;
-}
-
-async function getCompanyLastProspect(companyId: string,productId:String) {
+async function getCompanyLastProspect(companyId: string,productId:string) {
   const client = await clientPromise;
   const db = client.db("CRM24");
 

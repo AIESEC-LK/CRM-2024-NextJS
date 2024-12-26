@@ -6,10 +6,9 @@ import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
 import { Select } from "@/app/components/ui/select";
 import ProgressBar from "@/app/components/ui/progress";
-import ListGroup from "@/app/components/ui/list_groups";
+//import ListGroup from "@/app/components/ui/list_groups";
 import Image from "next/image";
-import ToastNotification from "@/app/components/ui/toast"; // Assume you have this component
-import { formatDate, Product } from "./functions";
+import { Product } from "./functions";
 import { useSearchParams } from 'next/navigation';
 import { LEAD_BAR_COLOR, LEAD_BAR_WIDTH, CUSTOMER_PANDING_BAR_COLOR, CUSTOMER_PANDING_BAR_WIDTH, PROSPECT_VALUES } from "@/app/lib/values";
 
@@ -17,16 +16,14 @@ export default function MakeALeadPage() {
   const [companyName, setCompanyName] = useState(String);
   const [selectedProduct, setSelectedProduct] = useState("");
   const [partnershipCategoryName, setPartnershipCategoryName] = useState(String);
-  const [activeMouStartDate, setActiveMouStartDate] = useState("");
-  const [activeMouEndDate, setActiveMouEndDate] = useState("");
   const [leadMouStartDate, setLeadMouStartDate] = useState("");
   const [leadMouEndDate, setLeadMouEndDate] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
-  const [activities, setActivities] = useState<string[]>([]);
+  //const [activities, setActivities] = useState<string[]>([]);
   const [partnershipType, setPartnershipType] = useState('');
   const [amount, setAmount] = useState('');
   const [id, setId] = useState('');
-  const [file, setFile] = useState<File | null>(null);
+  //const [file, setFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string | null>(null);
 
   const [progressBarText, setProgressBarText] = useState(PROSPECT_VALUES[2].label);
@@ -104,7 +101,7 @@ export default function MakeALeadPage() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0] || null;
-    setFile(selectedFile);
+    //setFile(selectedFile);
 
     if (selectedFile) {
       const fileType = selectedFile.type;
@@ -184,10 +181,11 @@ export default function MakeALeadPage() {
           <div className="px-14 py-14">
             <h1 className="text-2xl font-bold mb-6">Prospect Stage</h1>
             <Label htmlFor="companyName" className="block mb-2">Activities:</Label>
+            {/*}
             <ListGroup
               values={activities.length > 0 ? activities : ['No activities recorded']}
               className="mt-4 mb-4"
-            />
+            />*/}
           </div>
         </div>
 

@@ -3,14 +3,14 @@ import clientPromise from "@/app/lib/mongodb";
 import { ObjectId } from "mongodb";
 
 export interface ICompanyData {
-  companyId: String;
-  companyName: String;
-  companyAddress: String;
-  contactPersonName: String;
-  contactPersonNumber: String;
-  contactPersonEmail: String;
-  comment: String;
-  industryId: String;
+  companyId: string;
+  companyName: string;
+  companyAddress: string;
+  contactPersonName: string;
+  contactPersonNumber: string;
+  contactPersonEmail: string;
+  comment: string;
+  industryId: string;
 }
 
 
@@ -22,7 +22,6 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const companyId = searchParams.get("company_id");
     // console.log("Received companyName query:", companyName);
-
     if (!companyId) {
       return NextResponse.json(
         { error: "Company name query is required" },

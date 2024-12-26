@@ -88,23 +88,23 @@ const UserManagement: React.FC = () => {
                                 value={user.role}
                                 onChange={(e) => handleRoleChange(user.email, e.target.value)}
                                 className="border border-gray-300 rounded px-2 py-1"
-                            >
-                                <option value="member">Member</option>
-                                <option value="admin">Admin</option>
-                            </select>
-                            <button
-                                onClick={() => handleDeleteUser(user.email)}
-                                className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
-                            >
-                                Delete
-                            </button>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-};
-
-export default UserManagement;
+                                >
+                                    <option value="member">Member</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                                <button
+                                    onClick={() => handleDeleteUser(user.email)}
+                                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+                                >
+                                    Delete
+                                </button>
+                                </div>
+                                </div>
+                                ))}
+                                </div>
+                                </div>
+                                );
+                                };
+                                
+                                export default UserManagement;
 
