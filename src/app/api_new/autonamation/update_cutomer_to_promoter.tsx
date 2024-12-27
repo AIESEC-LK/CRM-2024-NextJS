@@ -1,12 +1,12 @@
 import cron from "node-cron";
 import clientPromise from "@/app/lib/mongodb"; // Use clientPromise to connect to the database
 import fetch from "node-fetch"; // Import fetch for API calls if not globally available
-import { BASE_URL } from "@/app/lib/values";
+//import { BASE_URL } from "@/app/lib/values";
 
 // Function to fetch the cron schedule dynamically from the database
 async function getCronSchedule() {
   try {
-    const response = await fetch(BASE_URL + "/api_new/autonamation/get_all_autonomations");
+    const response = await fetch(process.env.BASE_URL + "/api_new/autonamation/get_all_autonomations");
     if (!response.ok) {
       throw new Error(`Failed to fetch cron schedule: ${response.statusText}`);
     }
