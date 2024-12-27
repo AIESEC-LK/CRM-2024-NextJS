@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetctMyProspectList, 
   IMyProspectList, 
-  fetchCompany, 
+  //fetchCompany, 
   fetchProducts, 
   fetchIndustry, 
   submitProspect, 
@@ -112,13 +112,26 @@ const Page: React.FC = () => {
     setShowDropdown(true);
   };
 
-  const loadCompanyData = async (companyid: string) => {
+  const fetchCompany = async (company_id: string) => {
+    try {
+        const response = await fetch(`/api_new/companies/get_by_id?company_id=${company_id}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch products');
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        return [];
+    }
+};
+
+const loadCompanyData = async (companyid: string) => {
     const data2 = await fetchCompany(companyid);
     data2.productId = industries.find((industry) => industry._id === data2.industry)?._id;
-    //setcompanyData(data2);
     console.log("Company data 2:", data2);
     setFormData(data2);
-  };
+};
 
   const handleChange = (
     e: React.ChangeEvent<
