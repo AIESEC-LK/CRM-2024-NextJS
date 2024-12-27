@@ -11,25 +11,26 @@ import {
   TableHeader,
   TableRow,
 } from "@/app/components/ui/table";
-import { Badge } from "@/app/components/ui/badge";
-import { Search, CheckCircle, XCircle, ChevronDown } from "lucide-react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/app/components/ui/popover";
+
+import { Search, Eye } from "lucide-react";
+import Link from "next/link";
 
 interface Request {
   _id: string;
-  entity: string;
-  companyName: string;
-  companyAddress: string;
+  company_id: string;
+  product_type_id: string;
+  entity_id: string;
+  lc_name: string;
+  company_name: string;
   contactPersonName: string;
   contactPersonNumber: string;
   contactPersonEmail: string;
-  industry: string;
-  producttype: string;
-  status: "pending" | "approved" | "declined";
+  product_type_name: string;
+  status: string;
+  date_added: string;
+  date_expires: string;
+  activities: string[];
+  lead_proof_url: string;
 }
 
 export default function AdminView() {
@@ -42,7 +43,7 @@ export default function AdminView() {
 
   const fetchRequests = async () => {
     try {
-      const response = await fetch("/api/admin");
+      const response = await fetch("/api_new/prospects/get_all_prospects");
       if (!response.ok) {
         throw new Error("Failed to fetch requests");
       }
@@ -53,48 +54,20 @@ export default function AdminView() {
     }
   };
 
-  const handleApprove = async (id: string) => {
-    await updateRequestStatus(id, "approved");
-  };
-
-  const handleDecline = async (id: string) => {
-    await updateRequestStatus(id, "declined");
-  };
-
-  const handleReset = async (id: string) => {
-    await updateRequestStatus(id, "pending");
-  };
-
-  const updateRequestStatus = async (id: string, status: string) => {
-    try {
-      const response = await fetch("/api/admin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id, status }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update request");
-      }
-
-      setRequests((prevRequests) =>
-        prevRequests.map((req) =>
-          req._id === id ? { ...req, status: status as Request["status"] } : req
-        )
-      );
-    } catch (error) {
-      console.error("Error updating request:", error);
-    }
-  };
-
-  const filteredRequests = requests.filter(
-    (req) =>
-      req.entity.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      req.industry.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      req.producttype.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredRequests = requests.filter((req) =>
+    req.lc_name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
   return (
     <div className="container mx-auto pt-0">
@@ -112,120 +85,32 @@ export default function AdminView() {
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead>Time Requested</TableHead>
             <TableHead>Entity</TableHead>
             <TableHead>Company Name</TableHead>
             <TableHead>Industry</TableHead>
             <TableHead>Product Type</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Actions</TableHead>
+            <TableHead>Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {filteredRequests.map((req) => (
             <TableRow key={req._id}>
+              <TableCell>{formatDate(req.date_added)}</TableCell>
+              <TableCell>{req.lc_name}</TableCell>
               <TableCell>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="w-full justify-between"
-                    >
-                      {req.entity}
-                      <ChevronDown className="h-4 w-4 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80">
-                    <div className="grid gap-4">
-                      <div className="space-y-2">
-                        <h4 className="font-medium leading-none">
-                          {req.entity}
-                        </h4>
-                        <p className="text-sm text-muted-foreground">
-                          {req.entity || "No additional information available."}
-                        </p>
-                      </div>
-                    </div>
-                  </PopoverContent>
-                </Popover>
+                <div className="flex items-center">{req.company_name}</div>
               </TableCell>
-              <TableCell>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="w-full justify-between"
-                    >
-                      {req.companyName}
-                      <ChevronDown className="h-4 w-4 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80">
-                    <div className="grid gap-4">
-                      <div className="space-y-5">
-                        <div className="space-y-3">
-                          <h5 className="font-medium">Company Address</h5>
-                          <p>
-                            {req.companyAddress ||
-                              "No additional information available."}
-                          </p>
-                        </div>
-
-                        <div className="space-y-3">
-                          <h5 className="font-medium">Contact Person</h5>
-                          <p>Name : {req.contactPersonName}</p>
-                          <p>Number: {req.contactPersonNumber}</p>
-                          <p>Email : {req.contactPersonEmail}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              </TableCell>
-              <TableCell>{req.industry}</TableCell>
-              <TableCell>{req.producttype}</TableCell>
-              <TableCell>
-                <Badge
-                  variant={
-                    req.status === "approved"
-                      ? "success"
-                      : req.status === "declined"
-                      ? "destructive"
-                      : "default"
-                  }
-                >
-                  {req.status}
-                </Badge>
-              </TableCell>
+              <TableCell>{""}</TableCell>
+              <TableCell>{req.product_type_name}</TableCell>
               <TableCell>
                 <div className="flex space-x-2">
-                  <Button
-                    size="sm"
-                    onClick={() => handleApprove(req._id)}
-                    disabled={req.status !== "pending"}
-                    className="bg-green-500 hover:bg-green-600"
-                  >
-                    <CheckCircle className="h-4 w-4 mr-1" />
-                    Approve
-                  </Button>
-                  <Button
-                    size="sm"
-                    onClick={() => handleDecline(req._id)}
-                    disabled={req.status !== "pending"}
-                    variant="destructive"
-                    className="bg-red-500 hover:bg-red-600"
-                  >
-                    <XCircle className="h-4 w-4 mr-1" />
-                    Decline
-                  </Button>
-                  {req.status !== "pending" && (
-                    <Button
-                      size="sm"
-                      onClick={() => handleReset(req._id)}
-                      variant="outline"
-                    >
-                      Reset
+                  <Link href={`/dashboard/prospect_requests/${req._id}`}>
+                    <Button size="sm" className="bg-gray-400 hover:bg-gray-500">
+                      <Eye className="h-4 w-4 mr-1" />
+                      View
                     </Button>
-                  )}
+                  </Link>
                 </div>
               </TableCell>
             </TableRow>

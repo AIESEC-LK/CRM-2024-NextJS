@@ -11,8 +11,8 @@ import {
   TableRow,
 } from "@/app/components/ui/table";
 import { Search } from "lucide-react";
-import router from "next/router";
 import { Button } from "@/app/components/ui/button";
+import { useRouter } from "next/navigation";
 
 const initialProspects = [
   {
@@ -58,36 +58,31 @@ const initialProspects = [
 ];
 
 const ProspectsPage = () => {
-  const handleButtonClick = () => {
-    router.push("/dashboard/prospect/submit_request");
-  };
-
+  const router = useRouter();
   const [prospects] = useState(initialProspects);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Define filters
   const [industry, setIndustry] = useState("");
   const [product, setProduct] = useState("");
   const [stage, setStage] = useState("");
   const [entity, setEntity] = useState("");
 
   const entityColors: { [key: string]: string } = {
-    "Colombo South": "bg-blue-500",      
-    "Colombo North": "bg-yellow-500",     
-    "Colombo Central": "bg-orange-500",    
-    "Jayawardenapura": "bg-red-500",       
-    "Rajarata": "bg-purple-500",           
-    "Ruhuna": "bg-pink-500",              
-    "NIBM": "bg-teal-500",                 
-    "NSBM": "bg-green-500",                
-    "SLIIT": "bg-indigo-500",              
-    "Kandy": "bg-gray-500",                
-    "MC": "bg-lime-500",                   
-    "MC 01": "bg-emerald-500",             
-    "MC 02": "bg-cyan-500",                
-    "MC 03": "bg-sky-500",                 
-};
-
+    "Colombo South": "bg-blue-500",
+    "Colombo North": "bg-yellow-500",
+    "Colombo Central": "bg-orange-500",
+    Jayawardenapura: "bg-red-500",
+    Rajarata: "bg-purple-500",
+    Ruhuna: "bg-pink-500",
+    NIBM: "bg-teal-500",
+    NSBM: "bg-green-500",
+    SLIIT: "bg-indigo-500",
+    Kandy: "bg-gray-500",
+    MC: "bg-lime-500",
+    "MC 01": "bg-emerald-500",
+    "MC 02": "bg-cyan-500",
+    "MC 03": "bg-sky-500",
+  };
 
   // Filter prospects based on search term and other filters
   const filteredProspects = prospects.filter((prospect) => {
@@ -115,8 +110,8 @@ const ProspectsPage = () => {
       <h1 className="text-2xl font-bold mb-6">Partnerships</h1>
 
       <Button
-        onClick={handleButtonClick}
-        className="bg-blue-500 hover:bg-blue-600"
+        onClick={() => router.push("/dashboard/prospect/submit_request")}
+        className="bg-gray-800 hover:bg-gray-600 text-gray-100 mb-5"
       >
         Create New Prospect
       </Button>
@@ -164,7 +159,6 @@ const ProspectsPage = () => {
           <option value="apparel">Shipping and Logistics</option>
           <option value="apparel">Design and Architecture</option>
           <option value="apparel">Goverment institutes</option>
-
         </select>
 
         {/* Product Filter  */}
@@ -188,10 +182,10 @@ const ProspectsPage = () => {
         >
           <option value="">Select Stage</option>
           <option value="unoccupied">Unoccupied</option>
-           <option value="prospect">Prospect</option>
-           <option value="lead">Lead</option>
-           <option value="customer">Customer</option>
-           <option value="promoter">Promoter</option>
+          <option value="prospect">Prospect</option>
+          <option value="lead">Lead</option>
+          <option value="customer">Customer</option>
+          <option value="promoter">Promoter</option>
         </select>
 
         {/* Entity Filter */}
@@ -221,7 +215,8 @@ const ProspectsPage = () => {
       <Table>
         <TableHeader>
           <TableRow>
-          <TableHead>Company Name</TableHead>
+            <TableHead>Company Name</TableHead>
+
             <TableHead>Entity</TableHead>
             <TableHead>Industry</TableHead>
             <TableHead>Product Type</TableHead>

@@ -1,0 +1,15 @@
+table {
+    width: 100%;
+    table-layout: fixed;
+    /* Ensures the table does not overflow */
+}
+
+th,
+td {
+    word-wrap: break-word;
+    /* Breaks long words */
+    white-space: normal;
+    /* Allows text to wrap */
+    overflow-wrap: break-word;
+    /* Supports all wrapping */
+}

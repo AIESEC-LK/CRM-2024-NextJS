@@ -1,11 +1,13 @@
 // ConfirmationModal.tsx
 import React from "react";
+import { Input } from "./ui/input";
 
 interface ConfirmationModalCompaniesProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
   action: string; // Action could be "approve" or "decline"
+  values: string[][]; // Values to be displayed in the modal
 }
 
 const ConfirmationModalCompanies: React.FC<ConfirmationModalCompaniesProps> = ({
@@ -13,6 +15,7 @@ const ConfirmationModalCompanies: React.FC<ConfirmationModalCompaniesProps> = ({
   onClose,
   onConfirm,
   action,
+  values
 }) => {
   if (!isOpen) return null;
 
@@ -23,8 +26,15 @@ const ConfirmationModalCompanies: React.FC<ConfirmationModalCompaniesProps> = ({
           Are you sure you want to {action} this company?
         </h2>
         {action === "edit" && (
-          <p>Editable</p>
+          <>
+            <Input placeholder="Company Name" className="mb-4" value={values[0][0]}/>
+            <Input placeholder="Company Email" className="mb-4" value={values[0][1]}/>
+            <Input placeholder="Company Phone" className="mb-4" value={values[0][2]}/>
+            <Input placeholder="Company Address" className="mb-4" value={values[0][3]}/>
+          </>
+
         )}
+        <br/>
         <div className="flex justify-end space-x-2">
           <button
             onClick={onClose}
