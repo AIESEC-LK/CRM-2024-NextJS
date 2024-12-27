@@ -40,6 +40,7 @@ const ProspectsPage = () => {
 
   const handleRowClick = (id: number) => {
     setExpandedEntity((prev) => (prev === id ? null : id));
+    console.log(expandedEntity);
   };
 
   return (

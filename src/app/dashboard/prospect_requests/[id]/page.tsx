@@ -39,15 +39,10 @@ export default function ProspectDetails({
   const router = useRouter();
   const { id } = params;
 
-  useEffect(() => {
-    fetchProspect();
-  }, [id]); // Added id as a dependency to refetch prospect
-
+useEffect(() => {
   const fetchProspect = async () => {
     try {
-      const response = await fetch(
-        `/api_new/prospects/get_all_prospects/${id}`
-      );
+      const response = await fetch(`/api_new/prospects/get_all_prospects/${id}`);
       if (!response.ok) {
         throw new Error("Failed to fetch prospect data");
       }
@@ -58,6 +53,10 @@ export default function ProspectDetails({
       setError("An error occurred while fetching the prospect details.");
     }
   };
+
+  fetchProspect();
+}, [id]);
+
 
   const handleStatusChange = async (status: string) => {
     if (!prospect || (status !== "approved" && status !== "declined")) {
