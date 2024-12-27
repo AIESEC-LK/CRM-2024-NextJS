@@ -9,12 +9,26 @@ import { Select } from "@/app/components/ui/select";
 import ProgressBar from "@/app/components/ui/progress";
 //import ListGroup from "@/app/components/ui/list_groups";
 import Image from "next/image";
-import { Product } from "./functions";
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams} from 'next/navigation';
 import { LEAD_BAR_COLOR, LEAD_BAR_WIDTH, CUSTOMER_PANDING_BAR_COLOR, CUSTOMER_PANDING_BAR_WIDTH, PROSPECT_VALUES } from "@/app/lib/values";
 
+  interface Product {
+    _id: string;
+    productName: string;
+    abbravation: string;
+}
+
 export default function MakeALeadPage() {
+  const searchParams = useSearchParams()
   const [companyName, setCompanyName] = useState(String);
+
+  interface ProspectDetails {
+    date_expires: string;
+    company_name: string;
+    product_type_id: string;
+  }
+
+
   const [selectedProduct, setSelectedProduct] = useState("");
   const [partnershipCategoryName, setPartnershipCategoryName] = useState(String);
   const [leadMouStartDate, setLeadMouStartDate] = useState("");
@@ -26,19 +40,43 @@ export default function MakeALeadPage() {
   const [id, setId] = useState('');
   //const [file, setFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string | null>(null);
+  const [prospectDetails, setProspectDetails] = useState<ProspectDetails | null>(null);
 
   const [progressBarText, setProgressBarText] = useState(PROSPECT_VALUES[2].label);
   const [progressBarColor, setProgressBarColor] = useState(LEAD_BAR_COLOR);
   const [progressBarWidth, setProgressBarWidth] = useState(LEAD_BAR_WIDTH);
 
-  const searchParams = useSearchParams();
-
   useEffect(() => {
     const id = searchParams.get('id');
     if (id) {
       setId(id);
+      console.log(prospectDetails)
     }
+    
   }, [searchParams]);
+
+  useEffect(() => {
+    if (id) {
+      const fetchProspectDetails = async () => {
+        try {
+          const response = await fetch(`/api_new/prospects/get_prospect_in_id?id=${id}`);
+          if (!response.ok) {
+            throw new Error('Failed to fetch prospect details');
+          }
+          const data = await response.json();
+          setProspectDetails(data);
+          setCompanyName(data.company_name);
+          setSelectedProduct(data.product_type_id);
+        } catch (error) {
+          console.error('Error fetching prospect details:', error);
+        }
+      };
+
+      fetchProspectDetails();
+    } else {
+      console.error('Prospect ID is not available');
+    }
+  }, [id]);
 
   useEffect(() => {
     async function fetchProducts() {
