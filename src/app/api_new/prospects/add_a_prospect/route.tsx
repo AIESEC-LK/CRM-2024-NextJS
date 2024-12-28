@@ -123,7 +123,7 @@ export async function POST(req: Request) {
         contactPersonName: prospect.contactPersonName,
         contactPersonNumber: prospect.contactPersonNumber,
         contactPersonEmail: prospect.contactPersonEmail,
-        status: PROSPECT_VALUES[5].value,
+        status: PROSPECT_VALUES[1].value,
         newCompay: newCompany
       });
 

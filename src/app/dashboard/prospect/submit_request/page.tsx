@@ -10,7 +10,7 @@ import { fetctMyProspectList,
   FormData, 
   Industry, 
   Product, 
-  fetchCompanyQuery, 
+  //fetchCompanyQuery, 
   ICompanyQuery } from './functions';
 import { format } from 'date-fns';
 import Popup from "@/app/components/popup/Popup";
@@ -103,13 +103,32 @@ const Page: React.FC = () => {
     loadProducts();
     loadIndustries();
   }, []);
-
-  const loadsearchResults = async (query: string) => {
-    //setsearchResultsLoading(true);
-    const data2 = await fetchCompanyQuery(query);
-    setSearchResults(data2);
-   // setsearchResultsLoading(false);
-    setShowDropdown(true);
+const fetchCompanyQuery = async (query: string) => {
+    try {
+        const response = await fetch(`/api_new/companies/get_by_query?companyName=${query}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch products');
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error fetching companies:", error);
+    }
+};
+  const loadsearchResults = async (query: string | null) => {
+    if (query) {
+      const data2 = await fetchCompanyQuery(query);
+      if (data2 && data2.length > 0) {
+        setSearchResults(data2);
+        setShowDropdown(true);
+      } else {
+        console.log("No suggestions found");
+        setShowDropdown(false);
+      }
+    } else {
+      console.log("No suggestions found");
+      setShowDropdown(false);
+    }
   };
 
   const fetchCompany = async (company_id: string) => {
@@ -133,26 +152,13 @@ const loadCompanyData = async (companyid: string) => {
     setFormData(data2);
 };
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value } = e.target;
-    console.log("Name:", name, "Value:", value);
-    setFormData({
-      ...formData,
-      [name]: value,
-      company_id: "",
-    });
-
-    if (name === "companyName" && value) {
-      loadsearchResults(value);
-    } else {
-      setShowDropdown(false);
-    }
-  };
-
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>): void => {
+      const { name, value } = event.target as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement & { name: keyof FormData };
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: value,
+      }));
+    };
   const handleSelectCompany = (companyid: string) => {
     loadCompanyData(companyid);
     setShowDropdown(false);
@@ -218,7 +224,7 @@ const loadCompanyData = async (companyid: string) => {
                   id="companyName"
                   type="text"
                   name="companyName"
-                  onChange={handleChange}
+                  onChange={(e) => { handleChange(e); loadsearchResults(e.target.value); }}
                   value={formData.companyName as string}
                   className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
@@ -297,7 +303,10 @@ const loadCompanyData = async (companyid: string) => {
                           )}
                         </div>
                       </li>
-                    ))}
+                    ),) ||(<>
+      <li>No results found</li>
+      </>
+    )}
                   </ul>
                 )}
 
@@ -389,23 +398,23 @@ const loadCompanyData = async (companyid: string) => {
             Select a Industry
           </label>
 
-          <select
-            id="industry"
-            name="industry_id"
-            value={formData.industryId as string} // Bind the dropdown to formData.industry
-            onChange={handleChange} // Update formData when a new industry is selected
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          >
-            <option value="" disabled>
-              -- Select an Industry --
-            </option>
-            {industries.map((industry) => (
-              <option key={industry._id} value={industry._id}>
-                {industry.industryName}
-              </option>
-            ))}
-          </select>
+<select
+        id="industry"
+        name="industryId"
+        value={formData.industryId} // Bind the dropdown to formData.industryId
+        onChange={handleChange} // Update formData when a new industry is selected
+        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        required
+      >
+        <option value="" disabled>
+          -- Select an Industry --
+        </option>
+        {industries.map((industry) => (
+          <option key={industry._id} value={industry._id}>
+            {industry.industryName}
+          </option>
+        ))}
+      </select>
         </div>
 
         <div className="mb-4">
