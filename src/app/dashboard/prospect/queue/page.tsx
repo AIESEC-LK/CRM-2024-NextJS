@@ -19,7 +19,8 @@ import {
 
 interface Request {
   _id: string;
-  entity: string;
+  entity_id: string;
+  entityName: string;
   companyName: string;
   companyAddress: string;
   contactPersonName: string;
@@ -29,7 +30,7 @@ interface Request {
   producttype: string;
   status: "pending" | "approved" | "declined";
   createdAt: string;
-  dateAdded: string;
+  date_added: string;
   expireDate: string;
 }
 
@@ -48,7 +49,7 @@ export default function ProspectQueue() {
   // Fetch pending prospects from API
   const fetchRequests = async () => {
     try {
-      const response = await fetch("/api/pending_prospects");
+      const response = await fetch("/api_new/pending_prospects/get_all_pending_prospects");
       if (!response.ok) {
         throw new Error("Failed to fetch requests");
       }
@@ -60,6 +61,8 @@ export default function ProspectQueue() {
   };
 
   // Automatically clone each request by calling the API
+
+  /*
 useEffect(() => {
   const cloneRequests = async () => {
     if (requests.length > 0) {
@@ -71,9 +74,11 @@ useEffect(() => {
   };
 
   cloneRequests();
-}, [requests]);
+}, [requests]);*/
 
   // Function to call the clone API
+
+  /*
   const handleClone = async (companyName: string) => {
     try {
       const response = await fetch("/api/pending_prospects/clonning", {
@@ -94,14 +99,13 @@ useEffect(() => {
     } catch (error) {
       console.error(`Error cloning prospect for ${companyName}:`, error);
     }
-  };
-
-  const filteredRequests = requests.filter(
-    (req) =>
-      req.entity.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      req.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      req.companyAddress.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  };*/
+const filteredRequests = requests.filter(
+  (req) =>
+    (req.entity_id && req.entity_id.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (req.companyName && req.companyName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (req.companyAddress && req.companyAddress.toLowerCase().includes(searchTerm.toLowerCase()))
+);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -142,7 +146,7 @@ useEffect(() => {
         <TableBody>
           {filteredRequests.map((request) => (
             <TableRow key={request._id}>
-              <TableCell>{request.entity}</TableCell>
+              <TableCell>{request.entityName}</TableCell>
               <TableCell>
                 <div className="flex items-center">
                   {request.companyName}
@@ -197,8 +201,8 @@ useEffect(() => {
                   {request.status}
                 </span>
               </TableCell>
-              <TableCell>{formatDate(request.dateAdded)}</TableCell>
-              <TableCell>{formatDate(request.expireDate)}</TableCell>
+              <TableCell>{formatDate(request.date_added)}</TableCell>
+              <TableCell>{formatDate(request.date_added + 24 * 60 * 60 * 1000)}</TableCell>
             </TableRow>
           ))}
         </TableBody>
