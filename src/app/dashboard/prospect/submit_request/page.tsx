@@ -129,7 +129,7 @@ const Page: React.FC = () => {
 const loadCompanyData = async (companyid: string) => {
     const data2 = await fetchCompany(companyid);
     data2.productId = industries.find((industry) => industry._id === data2.industry)?._id;
-    console.log("Company data 2:", data2);
+    console.log("Company data 2 : ", data2);
     setFormData(data2);
 };
 
