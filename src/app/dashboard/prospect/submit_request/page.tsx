@@ -126,7 +126,7 @@ const fetchCompanyQuery = async (query: string) => {
         setShowDropdown(false);
       }
     } else {
-      console.log("No suggestions found");
+      console.log("No suggestions founded");
       setShowDropdown(false);
     }
   };
