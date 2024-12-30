@@ -11,24 +11,18 @@ interface IUserCreateRequest {
 
 export async function POST(req: Request) {
     try {
-        let company = null;
-        let newCompany = false;
 
         const userCreateRequest: IUserCreateRequest = await req.json();
         const client = await clientPromise;
         const db = client.db(process.env.DB_NAME);
 
-        let createCompany = false;
-
         // Set current date as the date added
         const dateAdded = new Date();
-        const entity_id = userCreateRequest.userEntityId;
 
-        //Check whether the user already exists
         if (userCreateRequest.userEmail == "" || userCreateRequest.userRole == "" || userCreateRequest.userEntityId == "") {
             return NextResponse.json({ error: "Invalid Body Payload" },
                 { status: 400 });
-        } 
+        }
         else {
             const userEntityId = await db.collection("Entities").findOne({ _id: new ObjectId(userCreateRequest.userEntityId.toString()) });
             if (!userEntityId) {
@@ -48,12 +42,12 @@ export async function POST(req: Request) {
             userEmail: userCreateRequest.userEmail,
             userRole: userCreateRequest.userRole,
             userEntityId: userCreateRequest.userEntityId,
+            dateAdded: dateAdded
         });
 
         return NextResponse.json({ success: true });
 
     } catch (e) {
-        console.error("Error updating request:", e);
         return NextResponse.json(
             { error: "Failed to update request" },
             { status: 500 }
