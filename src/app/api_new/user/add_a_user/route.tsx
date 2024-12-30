@@ -1,5 +1,4 @@
 import clientPromise from "@/app/lib/mongodb";
-import { PROSPECT_VALUES } from "@/app/lib/values";
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 
