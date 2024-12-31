@@ -18,15 +18,16 @@ interface IProspectRequest {
 
 export async function POST(req: Request) {
   try {
-    var company = null;
-    var newCompany = false;
+    let company = null;
+    let newCompany = false;
+    
     const prospect: IProspectRequest = await req.json();
     const client = await clientPromise;
     const db = client.db(process.env.DB_NAME);
 
-    var createCompany = false;
+    let createCompany = false;
 
-    //Map all other Product ID to the SameProduct ID
+    //Map all other Product ID to the SameProduct ID except Event(6734053c308fd8d176381e07)
     if (prospect.productId != "6734053c308fd8d176381e07") {
       prospect.productId = "6734054e308fd8d176381e08";
     }
@@ -34,33 +35,20 @@ export async function POST(req: Request) {
     // Set current date as the date added
     const dateAdded = new Date();
 
-    const entity_id = "586";//Fetch from Auth
+    /* TODO*/
+    //Fetch from Auth
+    const entity_id = "675dbabf296393f677c5cf21";
 
     // Set date expires to three months from now
     const dateExpires = new Date();
     dateExpires.setMonth(dateExpires.getMonth() + 3);
 
-    const result = await db.collection("Prospects").insertOne({
-      company_id: company_id,
-      product_type_id: product_type_id,
-      entity_id: entity_id,
-      date_added: dateAdded,
-      date_expires: dateExpires,
-      status: PROSPECT_VALUES[0].value,
-      proof_url: "" 
-    });
-
-    if (result.insertedId) {
-      return NextResponse.json({ success: true, id: result.insertedId });
     //Check whether the company already exists
     if (prospect.companyId == "" || prospect.companyId == null) {
+      //Create a new company bcz company id is null
       createCompany = true;
     } else {
-      console.log("Test API Company ID " + prospect.companyId);
-
       company = await db.collection("Companies").findOne({ _id: new ObjectId(prospect.companyId.toString()) });
-
-      console.log("Test1 API Company " + company);
       if (!company) {
         createCompany = true;
       }
@@ -77,6 +65,12 @@ export async function POST(req: Request) {
         comment: prospect.comment,
         approved: false
       });
+      /*TODO
+      //Integrate with Raveens`s API for Company Approvel currently prospect will places
+      **
+      **
+      **
+      */
       prospect.companyId = createCompanyResult.insertedId.toString();
       newCompany = true;
       company = await db.collection("Companies").findOne({ _id: new ObjectId(prospect.companyId.toString()) });
@@ -99,21 +93,28 @@ export async function POST(req: Request) {
 
           if (prospectExpiresDate > currentDate) {
             console.log("The expiration date is in the future.");
-            /*TODO
-            //Integrate with bhanuka`s API for Queue
-            **
-            **
-            **
-            */
-            return NextResponse.json({ error: "The expiration date is in the future." },
-              { status: 500 });
+
+            await db.collection("Pending_Prospects").insertOne({
+              company_id: prospect.companyId,
+              product_type_id: prospect.productId,
+              entity_id: entity_id,
+              date_added: dateAdded,
+              contactPersonName: prospect.contactPersonName,
+              contactPersonNumber: prospect.contactPersonNumber,
+              contactPersonEmail: prospect.contactPersonEmail,
+              status: PROSPECT_VALUES[1].value,
+            });
+
+            return NextResponse.json({ error: "The expires on "+prospectExpiresDate+". Prospect Request Added to Queue " },
+              { status: 200 });
           }
 
         }
 
       }
 
-      const prospectResult = await db.collection("Prospects").insertOne({
+      //Create Prospect
+      await db.collection("Prospects").insertOne({
         company_id: prospect.companyId,
         product_type_id: prospect.productId,
         entity_id: entity_id,
@@ -122,7 +123,8 @@ export async function POST(req: Request) {
         contactPersonName: prospect.contactPersonName,
         contactPersonNumber: prospect.contactPersonNumber,
         contactPersonEmail: prospect.contactPersonEmail,
-        status: PROSPECT_VALUES[0].value
+        status: PROSPECT_VALUES[1].value,
+        newCompay: newCompany
       });
 
       return NextResponse.json({ success: true });
@@ -140,6 +142,3 @@ export async function POST(req: Request) {
     );
   }
 }
-
-
-

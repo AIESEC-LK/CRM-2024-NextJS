@@ -2,13 +2,6 @@
 
 import React from "react";
 import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBell,
-  faBullhorn,
-  faQuestion,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons";
 import { usePathname } from "next/navigation";  // Import usePathname
 import { PARTNERHSIPS_UI_PATH } from "@/app/lib/values";
 
@@ -24,9 +17,8 @@ const SideNav = () => {
         <li>
           <Link
             href={PARTNERHSIPS_UI_PATH}
-            className={`flex items-center justify-center p-4 rounded ${
-              isActive(PARTNERHSIPS_UI_PATH) ? "bg-gray-600" : "hover:bg-gray-700"
-            }`}
+            className={`flex items-center justify-center p-4 rounded ${isActive(PARTNERHSIPS_UI_PATH) ? "bg-gray-600" : "hover:bg-gray-700"
+              }`}
           >
             Partnerships
           </Link>
@@ -37,9 +29,8 @@ const SideNav = () => {
         <li>
           <Link
             href="/dashboard/prospect/queue"
-            className={`flex items-center justify-center p-4 rounded ${
-              isActive("/dashboard/prospect/queue") ? "bg-gray-600" : "hover:bg-gray-700"
-            }`}
+            className={`flex items-center justify-center p-4 rounded ${isActive("/dashboard/prospect/queue") ? "bg-gray-600" : "hover:bg-gray-700"
+              }`}
           >
             Waiting List
           </Link>
@@ -50,9 +41,8 @@ const SideNav = () => {
         <li>
           <Link
             href="/dashboard/admin"
-            className={`flex items-center justify-center p-4 rounded ${
-              isActive("/dashboard/admin") ? "bg-gray-600" : "hover:bg-gray-700"
-            }`}
+            className={`flex items-center justify-center p-4 rounded ${isActive("/dashboard/admin") ? "bg-gray-600" : "hover:bg-gray-700"
+              }`}
           >
             Prospect Requests
           </Link>
@@ -60,46 +50,7 @@ const SideNav = () => {
             Prospect Requests (Admin)
           </span>
         </li>
-        <li>
-          <Link
-            href="/dashboard/prospect"
-            className={`flex items-center justify-center p-4 rounded ${
-              isActive("/dashboard/prospect") ? "bg-gray-600" : "hover:bg-gray-700"
-            }`}
-          >
-            Submit Prospect Req
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="/dashboard/update_leads"
-            className={`flex items-center justify-center p-4 rounded ${
-              isActive("/dashboard/update_leads") ? "bg-gray-600" : "hover:bg-gray-700"
-            }`}
-          >
-            Update Leads
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="/dashboard/entities"
-            className={`flex items-center justify-center p-4 rounded ${
-              isActive("/dashboard/entities") ? "bg-gray-600" : "hover:bg-gray-700"
-            }`}
-          >
-            Entities
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="/dashboard/help"
-            className={`flex items-center justify-center p-4 rounded ${
-              isActive("/dashboard/help") ? "bg-gray-600" : "hover:bg-gray-700"
-            }`}
-          >
-            Help
-          </Link>
-        </li>
+      
       </ul>
     </nav>
   );

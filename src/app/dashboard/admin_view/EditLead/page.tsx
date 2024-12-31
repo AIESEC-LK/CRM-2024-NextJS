@@ -4,11 +4,9 @@
 import { Label } from '@/app/components/ui/label'
 import { Input } from '@/app/components/ui/input'
 import ProgressBar from '@/app/components/ui/progress'
-import ListGroup from '@/app/components/ui/list_groups'
 import ToastNotification from '@/app/components/ui/toast'
 import styles from "./styles.module.css"
-import { useState, useEffect, use } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
 
 interface Product {
@@ -18,16 +16,8 @@ interface Product {
 
 export default function EditLead() {
 
-    const [prospectDetails, setProspectDetails] = useState<any>(null);
-    const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-    const [activities, setActivities] = useState<string[]>([]);
-    const [companyName, setCompanyName] = useState('Example Company');
-    const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
-    const [selectedStage, setSelectedStage] = useState<string | null>(null);
     const [stages , setStages] = useState<string[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
-    const [prospectId, setProspectId] = useState<string | null>(null);
   const [progressBar] = useState({
     text: 'Lead',
     color: 'red',

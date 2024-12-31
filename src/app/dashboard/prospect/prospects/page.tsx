@@ -9,9 +9,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 const labelColors: { [key: string]: string } = {
   prospect: "bg-orange-400 text-white",
   promoter: "bg-red-500 text-white",
-  customer: "bg-cyan-800 text-white",
+  customer: "bg-indigo-800 text-white",
   entityPartner: "bg-teal-600 text-white",
   lead: "bg-yellow-400 text-white",
+  customerPending: "bg-gray-800 text-white",
 };
 
 const ProspectsPage = () => {
@@ -39,6 +40,7 @@ const ProspectsPage = () => {
 
   const handleRowClick = (id: number) => {
     setExpandedEntity((prev) => (prev === id ? null : id));
+    console.log(expandedEntity);
   };
 
   return (
@@ -141,7 +143,29 @@ const ProspectsPage = () => {
                     onClick={() => router.push(`/dashboard/prospect/lead_to_customer?id=${prospect._id}`)}
                     className="bg-cyan-800 hover:bg-cyan-700 text-white"
                   >
-                    Convert to Customer
+                    Convert to Customer Pending
+                  </Button>
+                )}
+                 {prospect.status === "promoter" && (
+                  <Button
+                    onClick={() => router.push(`/dashboard/prospect/promoter?id=${prospect._id}`)}
+                    className="bg-red-800 hover:bg-red-700 text-white"
+                  >
+                    View Promoter
+                  </Button>
+                )}{prospect.status === "customerPending" && (
+                  <Button
+                    onClick={() => router.push(`/dashboard/prospect/customer_pending?id=${prospect._id}`)}
+                    className="bg-gray-800 hover:bg-gray-700 text-white"
+                  >
+                    View Customer Pending
+                  </Button>
+                )}{prospect.status === "customer" && (
+                  <Button
+                    onClick={() => router.push(`/dashboard/prospect/customer?id=${prospect._id}`)}
+                    className="bg-indigo-800 hover:bg-indigo-700 text-white"
+                  >
+                    View Customer
                   </Button>
                 )}
               </TableCell>

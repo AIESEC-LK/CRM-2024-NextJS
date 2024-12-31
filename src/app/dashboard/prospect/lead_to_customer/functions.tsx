@@ -1,8 +1,4 @@
-export interface Product {
-    _id: string;
-    productName: string;
-    abbravation: string;
-}
+
 
 export function formatDate(dateString: string): string {
   const date = new Date(dateString);

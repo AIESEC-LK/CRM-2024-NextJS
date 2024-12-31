@@ -1,9 +1,6 @@
 import React from "react";
 import Link from "next/link";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
-
 const Header = () => {
   return (
     <header className="bg-gray-800 text-white p-4">
