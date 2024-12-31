@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { IUserUpdateRequest, createUser, updateUser, deleteUser, fetctAllUserArray, fetchAllEntity } from "@/app/dashboard/user/manage/functions";
 import ConfirmationModal from "@/app/components/ConfirmationModal";
+import { useConfirmation } from "@/app/context/ConfirmationContext";
+
 type User = {
     _id: string;
     userEmail: string;
@@ -23,17 +25,11 @@ const UserManagement: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(true); // Modal state
     const [confirmModalAction, setConfirmModalAction] = useState(0);// 0 Null 1 Add 2 Delete 3 Update
 
-    const openModal = (userId: string) => {
-        setUserToDelete(userId);
-        setIsModalOpen(true);
-    };
+    const { triggerConfirmation } = useConfirmation();
 
-    const handleDeleteConfirm = () => {
-        if (userToDelete) {
-            console.log(`Deleting user with ID: ${userToDelete}`);
-            setIsModalOpen(false);
-            setUserToDelete(null); // Reset the user to delete
-        }
+    const openModal = (userId: string) => {
+        //setUserToDelete(userId);
+        setIsModalOpen(true);
     };
 
     // Function to handle cancel (e.g., close the modal)
@@ -41,16 +37,20 @@ const UserManagement: React.FC = () => {
         setIsModalOpen(false);
     };
 
-    const handleAddUser = () => {
-        setModelText("Add User");
-        setConfirmModalAction(1);
-        setIsModalOpen(false);
-        if (newUser.userEmail && newUser.userRole && newUser.userEntityId) {
-            console.log(newUser);
-            createUser(newUser);
-            //setUsers([...users, { name: "", ...newUser }]);
-            //setNewUser({ userEmail: "", userRole: "", entity:  });
+    const handleAddUser = async () => {
+        if (!newUser.userEmail || !newUser.userRole || !newUser.userEntityId) {
+            alert("Please fill in all fields before adding a user.");
+            return;
         }
+        // Use the centralized confirmation modal
+        triggerConfirmation(
+            "Are you sure you want to add this user?",
+            async () => {
+                await createUser(newUser);
+                //setUsers([...users, { ...newUser, _id: "temp-id", entity: entities.find((e) => e._id === newUser.userEntityId)! }]);
+                setNewUser({ userEmail: "", userRole: "", userEntityId: "" });
+            }
+        );
     };
 
     const ConfirmAddUser = () => {
@@ -61,30 +61,29 @@ const UserManagement: React.FC = () => {
         }
     };
 
-    const confirmHandler = () => {
-        if (confirmModalAction === 1) {
-            handleAddUser();
-        } else if (confirmModalAction === 2) {
-            handleDeleteConfirm();
-        } else if (confirmModalAction === 3) {
-        }else{
-            handleCancel();
-        }
+    const handleDeleteUser = async (userId: string) => {
+        // Use the centralized confirmation modal
+        triggerConfirmation("Are you sure you want to delete this user?", async () => {
+            await deleteUser(userId);
+            setUsers(users.filter((user) => user._id !== userId));
+        });
     };
 
-    const handleDeleteUser = (_id: string) => {
-        deleteUser(_id);
-        //setUsers(users.filter((user) => user.email !== email));
-    };
-
-    const handleRoleChange = (id: string, email: string, newRole: string) => {
+    const handleRoleChange = async (id: string, email: string, newRole: string) => {
         const user: IUserUpdateRequest = { _id: id, userEmail: email, userRole: newRole, userEntityId: "" };
-        updateUser(user)
-        setUsers((users) =>
-            users.map((user) =>
-                user.userEmail === email ? { ...user, userRole: newRole } : user
-            )
-        )
+
+        // Optionally use confirmation for role change as well
+        triggerConfirmation(
+            `Are you sure you want to change the role of this user to "${newRole}"?`,
+            async () => {
+                await updateUser(user);
+                setUsers((users) =>
+                    users.map((user) =>
+                        user.userEmail === email ? { ...user, userRole: newRole } : user
+                    )
+                );
+            }
+        );
     };
 
     useEffect(() => {
@@ -173,12 +172,6 @@ const UserManagement: React.FC = () => {
                     </div>
                 ))}
             </div>
-            <ConfirmationModal
-                isOpen={isModalOpen}
-                onClose={handleCancel}
-                onConfirm={handleDeleteConfirm}
-                action={modelText}
-            />
         </div>
     );
 };
