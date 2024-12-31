@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { IUserUpdateRequest, createUser, updateUser, deleteUser, fetctAllUserArray, fetchAllEntity } from "@/app/dashboard/user/manage/functions";
-
+import ConfirmationModal from "@/app/components/ConfirmationModal";
 type User = {
     _id: string;
     userEmail: string;
@@ -19,13 +19,56 @@ const UserManagement: React.FC = () => {
     const [entities, setEntities] = useState<Entity[]>([]);
 
     const [newUser, setNewUser] = useState({ userEmail: "", userRole: "", userEntityId: "" });
+    const [modelText, setModelText] = useState("");
+    const [isModalOpen, setIsModalOpen] = useState(true); // Modal state
+    const [confirmModalAction, setConfirmModalAction] = useState(0);// 0 Null 1 Add 2 Delete 3 Update
+
+    const openModal = (userId: string) => {
+        setUserToDelete(userId);
+        setIsModalOpen(true);
+    };
+
+    const handleDeleteConfirm = () => {
+        if (userToDelete) {
+            console.log(`Deleting user with ID: ${userToDelete}`);
+            setIsModalOpen(false);
+            setUserToDelete(null); // Reset the user to delete
+        }
+    };
+
+    // Function to handle cancel (e.g., close the modal)
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
 
     const handleAddUser = () => {
+        setModelText("Add User");
+        setConfirmModalAction(1);
+        setIsModalOpen(false);
         if (newUser.userEmail && newUser.userRole && newUser.userEntityId) {
             console.log(newUser);
             createUser(newUser);
             //setUsers([...users, { name: "", ...newUser }]);
             //setNewUser({ userEmail: "", userRole: "", entity:  });
+        }
+    };
+
+    const ConfirmAddUser = () => {
+        setIsModalOpen(false);
+        if (newUser.userEmail && newUser.userRole && newUser.userEntityId) {
+
+            createUser(newUser);
+        }
+    };
+
+    const confirmHandler = () => {
+        if (confirmModalAction === 1) {
+            handleAddUser();
+        } else if (confirmModalAction === 2) {
+            handleDeleteConfirm();
+        } else if (confirmModalAction === 3) {
+        }else{
+            handleCancel();
         }
     };
 
@@ -130,6 +173,12 @@ const UserManagement: React.FC = () => {
                     </div>
                 ))}
             </div>
+            <ConfirmationModal
+                isOpen={isModalOpen}
+                onClose={handleCancel}
+                onConfirm={handleDeleteConfirm}
+                action={modelText}
+            />
         </div>
     );
 };
