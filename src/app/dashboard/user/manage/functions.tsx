@@ -45,7 +45,7 @@ interface IUserCreateRequest {
     userEntityId: string;
 }
 
-interface IUserUpdateRequest {
+export interface IUserUpdateRequest {
     _id: string;
     userEmail: string;
     userRole: string;

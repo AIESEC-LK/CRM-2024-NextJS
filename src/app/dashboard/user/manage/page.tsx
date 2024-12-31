@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { createUser, updateUser, deleteUser, fetctAllUserArray, fetchAllEntity } from "@/app/dashboard/user/manage/functions";
+import { IUserUpdateRequest, createUser, updateUser, deleteUser, fetctAllUserArray, fetchAllEntity } from "@/app/dashboard/user/manage/functions";
 
 type User = {
     _id: string;
@@ -34,9 +34,14 @@ const UserManagement: React.FC = () => {
         //setUsers(users.filter((user) => user.email !== email));
     };
 
-    const handleRoleChange = (email: string, newRole: string) => {
-        //updateUser()
-        //setUsers(users.map((user) => (user.email === email ? { ...user, role: newRole } : user)));
+    const handleRoleChange = (id: string, email: string, newRole: string) => {
+        const user: IUserUpdateRequest = { _id: id, userEmail: email, userRole: newRole, userEntityId: "" };
+        updateUser(user)
+        setUsers((users) =>
+            users.map((user) =>
+                user.userEmail === email ? { ...user, userRole: newRole } : user
+            )
+        )
     };
 
     useEffect(() => {
@@ -113,7 +118,7 @@ const UserManagement: React.FC = () => {
                             <span>{user.entity.entityName}</span>
                             <select
                                 value={user.userRole}
-                                onChange={(e) => handleRoleChange(user._id, e.target.value)}
+                                onChange={(e) => handleRoleChange(user._id, user.userEmail, e.target.value)}
                                 className="border border-gray-300 rounded px-2 py-1"
                             >
                                 <option value="member">Member</option>
