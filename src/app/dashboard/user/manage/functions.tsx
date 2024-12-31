@@ -146,7 +146,31 @@ const updateUser = async (updateUser: IUserUpdateRequest): Promise<Response | Er
     }
 };
 
+const deleteUser = async (userId: string): Promise<Response | Error> => {
+    try {
+        const response = await fetch(`/api_new/user/delete_a_user/${userId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
 
-export { fetctAllUserArray, fetchIndustry, createUser, updateUser,fetchAllEntity /*fetchCompanyQuery/*,fetchCompany*/ };
+        if (!response.ok) {
+            throw new Error('Failed to Delete User');
+        }
+        return response;
+    } catch (error) {
+        if (error instanceof Error) {
+            console.error('Error Failed to Delete User:', error.message);
+            return error;
+        } else {
+            console.error('Unexpected error:', error);
+            return new Error('Unexpected error occurred');
+        }
+    }
+};
+
+
+export { fetctAllUserArray, fetchIndustry, createUser, updateUser, deleteUser, fetchAllEntity /*fetchCompanyQuery/*,fetchCompany*/ };
 
 

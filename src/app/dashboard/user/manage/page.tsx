@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { createUser, updateUser, fetctAllUserArray, fetchAllEntity } from "@/app/dashboard/user/manage/functions";
+import { createUser, updateUser, deleteUser, fetctAllUserArray, fetchAllEntity } from "@/app/dashboard/user/manage/functions";
 
 type User = {
     _id: string;
@@ -29,7 +29,8 @@ const UserManagement: React.FC = () => {
         }
     };
 
-    const handleDeleteUser = (email: string) => {
+    const handleDeleteUser = (_id: string) => {
+        deleteUser(_id);
         //setUsers(users.filter((user) => user.email !== email));
     };
 
