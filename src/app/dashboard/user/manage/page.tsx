@@ -21,21 +21,7 @@ const UserManagement: React.FC = () => {
     const [entities, setEntities] = useState<Entity[]>([]);
 
     const [newUser, setNewUser] = useState({ userEmail: "", userRole: "", userEntityId: "" });
-    const [modelText, setModelText] = useState("");
-    const [isModalOpen, setIsModalOpen] = useState(true); // Modal state
-    const [confirmModalAction, setConfirmModalAction] = useState(0);// 0 Null 1 Add 2 Delete 3 Update
-
     const { triggerConfirmation } = useConfirmation();
-
-    const openModal = (userId: string) => {
-        //setUserToDelete(userId);
-        setIsModalOpen(true);
-    };
-
-    // Function to handle cancel (e.g., close the modal)
-    const handleCancel = () => {
-        setIsModalOpen(false);
-    };
 
     const handleAddUser = async () => {
         if (!newUser.userEmail || !newUser.userRole || !newUser.userEntityId) {
@@ -51,14 +37,6 @@ const UserManagement: React.FC = () => {
                 setNewUser({ userEmail: "", userRole: "", userEntityId: "" });
             }
         );
-    };
-
-    const ConfirmAddUser = () => {
-        setIsModalOpen(false);
-        if (newUser.userEmail && newUser.userRole && newUser.userEntityId) {
-
-            createUser(newUser);
-        }
     };
 
     const handleDeleteUser = async (userId: string) => {
