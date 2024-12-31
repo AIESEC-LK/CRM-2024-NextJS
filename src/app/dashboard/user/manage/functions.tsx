@@ -42,7 +42,14 @@ export interface IEntity {
 interface IUserCreateRequest {
     userEmail: string;
     userRole: string;
-    entity: string;
+    userEntityId: string;
+}
+
+interface IUserUpdateRequest {
+    _id: string;
+    userEmail: string;
+    userRole: string;
+    userEntityId: string;
 }
 
 const fetctAllUserArray = async () => {
@@ -91,7 +98,7 @@ const fetchIndustry = async () => {
 const createUser = async (createUser: IUserCreateRequest): Promise<Response | Error> => {
     try {
 
-        const response = await fetch("/user/add_a_user", {
+        const response = await fetch("/api_new/user/add_a_user", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -114,7 +121,32 @@ const createUser = async (createUser: IUserCreateRequest): Promise<Response | Er
     }
 }
 
+const updateUser = async (updateUser: IUserUpdateRequest): Promise<Response | Error> => {
+    try {
+        const response = await fetch(`/api_new/user/update_a_user`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updateUser),
+        });
 
-export { fetctAllUserArray, fetchIndustry, createUser,fetchAllEntity /*fetchCompanyQuery/*,fetchCompany*/ };
+        if (!response.ok) {
+            throw new Error('Failed to Update User');
+        }
+        return response;
+    } catch (error) {
+        if (error instanceof Error) {
+            console.error('Error Failed to Update User:', error.message);
+            return error;
+        } else {
+            console.error('Unexpected error:', error);
+            return new Error('Unexpected error occurred');
+        }
+    }
+};
+
+
+export { fetctAllUserArray, fetchIndustry, createUser, updateUser,fetchAllEntity /*fetchCompanyQuery/*,fetchCompany*/ };
 
 

@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { fetctAllUserArray, fetchAllEntity } from "@/app/dashboard/user/manage/functions";
+import { createUser, updateUser, fetctAllUserArray, fetchAllEntity } from "@/app/dashboard/user/manage/functions";
 
 type User = {
     _id: string;
@@ -18,12 +18,14 @@ const UserManagement: React.FC = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [entities, setEntities] = useState<Entity[]>([]);
 
-    const [newUser, setNewUser] = useState({ email: "", role: "", entity: "" });
+    const [newUser, setNewUser] = useState({ userEmail: "", userRole: "", userEntityId: "" });
 
     const handleAddUser = () => {
-        if (newUser.email && newUser.role && newUser.entity) {
+        if (newUser.userEmail && newUser.userRole && newUser.userEntityId) {
+            console.log(newUser);
+            createUser(newUser);
             //setUsers([...users, { name: "", ...newUser }]);
-            //setNewUser({ email: "", role: "", entity: "" });
+            //setNewUser({ userEmail: "", userRole: "", entity:  });
         }
     };
 
@@ -32,6 +34,7 @@ const UserManagement: React.FC = () => {
     };
 
     const handleRoleChange = (email: string, newRole: string) => {
+        //updateUser()
         //setUsers(users.map((user) => (user.email === email ? { ...user, role: newRole } : user)));
     };
 
@@ -61,13 +64,13 @@ const UserManagement: React.FC = () => {
                 <input
                     type="email"
                     placeholder="Email"
-                    value={newUser.email}
-                    onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                    value={newUser.userEmail}
+                    onChange={(e) => setNewUser({ ...newUser, userEmail: e.target.value })}
                     className="border border-gray-300 rounded px-3 py-2 flex-1"
                 />
                 <select
-                    value={newUser.role}
-                    onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
+                    value={newUser.userRole}
+                    onChange={(e) => setNewUser({ ...newUser, userRole: e.target.value })}
                     className="border border-gray-300 rounded px-3 py-2"
                 >
                     <option value="">User&apos;s Role</option>
@@ -76,8 +79,8 @@ const UserManagement: React.FC = () => {
                 </select>
 
                 <select
-                    value={newUser.entity}
-                    onChange={(e) => setNewUser({ ...newUser, entity: e.target.value })}
+                    value={newUser.userEntityId}
+                    onChange={(e) => setNewUser({ ...newUser, userEntityId: e.target.value })}
                     className="border border-gray-300 rounded px-3 py-2"
                 >
                     <option value="">User&apos;s Entity</option>
@@ -109,7 +112,7 @@ const UserManagement: React.FC = () => {
                             <span>{user.entity.entityName}</span>
                             <select
                                 value={user.userRole}
-                                onChange={(e) => handleRoleChange(user.userEmail, e.target.value)}
+                                onChange={(e) => handleRoleChange(user._id, e.target.value)}
                                 className="border border-gray-300 rounded px-2 py-1"
                             >
                                 <option value="member">Member</option>
