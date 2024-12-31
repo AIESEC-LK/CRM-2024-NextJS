@@ -46,17 +46,13 @@ const UserManagement: React.FC = () => {
 
     useEffect(() => {
         const fetctAllUsers = async () => {
-            //setProductsLoading(true);
             const data = await fetctAllUserArray();
             setUsers(data);
-            //setProductsLoading(false);
         };
 
         const fetctAllEntity = async () => {
-            //setProductsLoading(true);
             const data = await fetchAllEntity();
             setEntities(data);
-            //setProductsLoading(false);
         };
         fetctAllEntity();
         fetctAllUsers();
@@ -125,7 +121,7 @@ const UserManagement: React.FC = () => {
                                 <option value="admin">Admin</option>
                             </select>
                             <button
-                                onClick={() => handleDeleteUser(user.userEmail)}
+                                onClick={() => handleDeleteUser(user._id)}
                                 className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
                             >
                                 Delete

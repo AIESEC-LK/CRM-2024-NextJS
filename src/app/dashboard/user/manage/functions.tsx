@@ -1,39 +1,3 @@
-export interface FormData {
-    [x: string]: string;
-    companyId: string;
-    companyName: string;
-    companyAddress: string;
-    contactPersonName: string;
-    contactPersonNumber: string;
-    contactPersonEmail: string;
-    productId: string;
-    comment: string;
-    partnership: string;
-    industryId: string;
-}
-
-export interface ICompanyQuery {
-    _id: string;
-    companyName: string;
-    dateexpiresEvent: Date;
-    dateexpiresProduct: Date;
-}
-
-export interface IMyProspectList {
-    _id: string;
-    date_added: string;
-    date_expires: string;
-    status: string;
-    company_name: string;
-    product_type_name: string;
-}
-
-export interface Product {
-    _id: string;
-    productName: string;
-    abbravation: string;
-}
-
 export interface IEntity {
     _id: string;
     entityName: string;
@@ -148,7 +112,7 @@ const updateUser = async (updateUser: IUserUpdateRequest): Promise<Response | Er
 
 const deleteUser = async (userId: string): Promise<Response | Error> => {
     try {
-        const response = await fetch(`/api_new/user/delete_a_user/${userId}`, {
+        const response = await fetch(`/api_new/user/delete_a_user?userId=${userId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
