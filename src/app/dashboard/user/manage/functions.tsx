@@ -44,21 +44,6 @@ const fetchAllEntity = async () => {
     }
 };
 
-const fetchIndustry = async () => {
-    try {
-        const response = await fetch("/api_new/industries/get_all_industries");
-        if (!response.ok) {
-            throw new Error('Failed to fetch products');
-        }
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error fetching products:', error);
-        return [];
-    }
-};
-
-
 const createUser = async (createUser: IUserCreateRequest): Promise<Response | Error> => {
     try {
 
@@ -135,6 +120,6 @@ const deleteUser = async (userId: string): Promise<Response | Error> => {
 };
 
 
-export { fetctAllUserArray, fetchIndustry, createUser, updateUser, deleteUser, fetchAllEntity /*fetchCompanyQuery/*,fetchCompany*/ };
+export { fetctAllUserArray, createUser, updateUser, deleteUser, fetchAllEntity /*fetchCompanyQuery/*,fetchCompany*/ };
 
 
