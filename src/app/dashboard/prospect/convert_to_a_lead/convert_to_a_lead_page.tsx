@@ -133,6 +133,7 @@ export default function ConvertToALeadPage() {
     }
   };
 
+  
   const handleCloseToast = (index: number) => {
     setActivities((prevActivities) => prevActivities.filter((_, i) => i !== index));
   };
