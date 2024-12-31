@@ -15,6 +15,12 @@ export const PROSPECT_VALUES = [
   { value: "mcvpap", label: "Waiting for MCVP Approvel" }
 ]
 
+export const USER_ROLE_VALUES = [
+  { value: "admin", label: "Administrator" },
+  { value: "user", label: "USer" }
+]
+
+
 export const AUTONOMATION_TABLE_ID = "6769349892a256157cb6142c"
 
 export const PROSPECT_EXPIRE_TIME_DURATION = 1000 * 60 * 60 * 24 * 14
