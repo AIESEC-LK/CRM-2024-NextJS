@@ -117,9 +117,13 @@ export async function GET(request: Request) {
             }
           ]
         }
+      },
+      {
+        $sort: {
+          date_added: -1 // Sort by date_added in descending order (newest first)
+        }
       }
     ]).toArray();
-
 
     return NextResponse.json(prospects);
   } catch (e) {
