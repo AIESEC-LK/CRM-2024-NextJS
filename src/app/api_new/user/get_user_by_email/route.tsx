@@ -6,6 +6,7 @@ interface User {
     role: 'member' | 'admin';
     lcId: string;
 }
+export const dynamic = 'force-dynamic';
 
 export async function GET(req: Request) {
   try {
