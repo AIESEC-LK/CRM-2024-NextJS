@@ -29,26 +29,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
-    const loadUserData = async (userEmail: string) => {
-        const client = await clientPromise;
-        const db = client.db(process.env.DB_NAME);
+    const fetchUserByEmail = async (email: string): Promise<User | null> => {
+        try {
+            const response = await fetch(`/api_new/user/get_user_by_email?email=${email}`);
+            if (!response.ok) {
+                console.error("Error fetching user by email:", response.statusText);
+                return null;
+            }
 
-        const user = await db.collection("Users").findOne(
-            { userEmail: userEmail },
-            { projection: { userRole: 1, userEntityId: 1, _id: 0 } }
-        );
-        if (!user) {
+            const userData = await response.json();
+            return userData;
+        } catch (error) {
+            console.error("Error fetching user by email:", error);
             return null;
         }
-
-        // Map the result to the User interface
-        const userObject: User = {
-            email: user.email,
-            role: user.userRole,
-            lcId: user.userEntityId,
-        };
-        return userObject;
-    }
+    };
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -58,9 +53,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setLoading(false);
     }, []);
 
-    const login = (userData: User) => {
-        loadUserData(userData.email).then(user => setUser(user));
-        localStorage.setItem('user', JSON.stringify(userData));
+    const login = async (userData: User) => {
+        const fetchedUser = await fetchUserByEmail(userData.email);
+        if (fetchedUser) {
+            setUser(fetchedUser);
+            localStorage.setItem('user', JSON.stringify(fetchedUser));
+        }
     };
 
     const logout = () => {
