@@ -13,6 +13,7 @@ interface IProspectRequest {
   productId: string;
   comment: string;
   industryId: string;
+  userLcId: string;
 }
 
 
@@ -37,7 +38,7 @@ export async function POST(req: Request) {
 
     /* TODO*/
     //Fetch from Auth
-    const entity_id = "675dbabf296393f677c5cf21";
+    const entity_id = prospect.userLcId;
 
     // Set date expires to three months from now
     const dateExpires = new Date();
