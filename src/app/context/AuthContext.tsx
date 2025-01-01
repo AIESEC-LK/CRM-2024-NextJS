@@ -1,7 +1,5 @@
 "use client";
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
-import clientPromise from "@/app/lib/mongodb";
-import { NextResponse } from "next/server";
 
 // Define types for the user object and context value
 interface User {
@@ -12,7 +10,7 @@ interface User {
 
 interface AuthContextType {
     user: User | null;
-    login: (userData: User) => void;
+    login: (userEmail: string) => void;
     logout: () => void;
     isAuthenticated: () => boolean;
     hasRole: (role: 'member' | 'admin') => boolean;
@@ -53,8 +51,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setLoading(false);
     }, []);
 
-    const login = async (userData: User) => {
-        const fetchedUser = await fetchUserByEmail(userData.email);
+    const login = async (userEmail: string) => {
+        const fetchedUser = await fetchUserByEmail(userEmail);
         if (fetchedUser) {
             setUser(fetchedUser);
             localStorage.setItem('user', JSON.stringify(fetchedUser));

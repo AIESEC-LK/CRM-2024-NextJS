@@ -18,12 +18,7 @@ const LoginPage = () => {
     router.push(PARTNERHSIPS_UI_PATH);
 
     //Mock user login
-    const mockUser = {
-      email: 'ashanmatheesha@aiesec.net',
-      role: "member",
-      lcId: '675dbabf296393f677c5cf21',
-    } as const; // Use `as const` here
-    login(mockUser);
+    login("ashanmatheesha@aiesec.net");
 
   };
 
