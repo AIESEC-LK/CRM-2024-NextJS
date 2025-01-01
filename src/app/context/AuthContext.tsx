@@ -1,5 +1,7 @@
 "use client";
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
+import clientPromise from "@/app/lib/mongodb";
+import { NextResponse } from "next/server";
 
 // Define types for the user object and context value
 interface User {
@@ -27,6 +29,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
+    const loadUserData = async (userEmail: string) => {
+        const client = await clientPromise;
+        const db = client.db(process.env.DB_NAME);
+
+        const user = await db.collection("Users").findOne(
+            { userEmail: userEmail },
+            { projection: { userRole: 1, userEntityId: 1, _id: 0 } }
+        );
+        if (!user) {
+            return null;
+        }
+
+        // Map the result to the User interface
+        const userObject: User = {
+            email: user.email,
+            role: user.userRole,
+            lcId: user.userEntityId,
+        };
+        return userObject;
+    }
+
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
@@ -36,7 +59,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }, []);
 
     const login = (userData: User) => {
-        setUser(userData);
+        loadUserData(userData.email).then(user => setUser(user));
         localStorage.setItem('user', JSON.stringify(userData));
     };
 
