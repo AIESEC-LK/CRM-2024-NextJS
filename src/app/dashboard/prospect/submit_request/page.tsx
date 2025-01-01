@@ -19,6 +19,7 @@ import Popup from "@/app/components/popup/Popup";
 import { PROSPECT_VALUES } from "@/app/lib/values";
 import { IUserDetails, AuthService } from '@/app/services/authService';
 import { useConfirmation } from "@/app/context/ConfirmationContext";
+import { useAuth } from "@/app/context/AuthContext";
 
 function getLabelByValue(value: string) {
   const result = PROSPECT_VALUES.find(item => item.value === value);
@@ -38,6 +39,7 @@ const Page: React.FC = () => {
   };
   const { triggerConfirmation } = useConfirmation();
   const closePopup = (): void => setIsPopupOpen(false);
+  const { user } = useAuth();
 
   const [myProspectList, setmyProspectList] = useState<IMyProspectList[]>([]);
 
@@ -90,18 +92,26 @@ const Page: React.FC = () => {
 
 
     const loadMyProspectList = async () => {
-      const myProspectList = await fetctMyProspectList(AuthService.getUserLcId());//TODO: Entity ID Fetch from Auth
-      setmyProspectList(myProspectList);
+      if (user) {
+        const myProspectList = await fetctMyProspectList(user.lcId); //TODO: Entity ID Fetch from Auth
+        setmyProspectList(myProspectList);
+      } else {
+        console.error("User is null");
+      }
     };
 
     const loadAuthDetails = async () => {
-      const userDetails: IUserDetails = { UserId: 256, UserLCId: '675dbabf296393f677c5cf21' };
-      AuthService.saveUserDetails(userDetails);
+      if (user) {
+        const userDetails: IUserDetails = { UserId: 256, UserLCId: user.lcId };
+        AuthService.saveUserDetails(userDetails);
+      } else {
+        console.error("User is null");
+      }
     };
 
 
-    loadAuthDetails();
-    console.log("User Details:", AuthService.getUserLcId());
+    //loadAuthDetails();
+    //console.log("User Details:", AuthService.getUserLcId());
 
     loadMyProspectList();
     loadProducts();
@@ -173,7 +183,12 @@ const Page: React.FC = () => {
     triggerConfirmation(
       "Are you sure you want to add prospect request?",
       async () => {
-        formData.userLcId = AuthService.getUserLcId();
+        if (user) {
+          formData.userLcId = user.lcId;
+        } else {
+          console.error("User is null");
+          return;
+        }
         const submitResponse = await submitProspect(formData);
 
         if (submitResponse instanceof Response) {
