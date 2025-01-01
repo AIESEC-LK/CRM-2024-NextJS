@@ -13,7 +13,7 @@ interface IProspectRequest {
   productId: string;
   comment: string;
   industryId: string;
-  userLcId: String;
+  userLcId: string;
 }
 
 
