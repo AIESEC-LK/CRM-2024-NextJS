@@ -67,7 +67,7 @@ const Page: React.FC = () => {
     partnership: "",
     industry_id: "",
     industryId: "",
-    userLcId: AuthService.getUserLcId()
+    userLcId: ""
   });
 
   useEffect(() => {
@@ -179,6 +179,7 @@ const loadCompanyData = async (companyid: string) => {
     }*/
 
     // Submit form data
+    formData.userLcId=AuthService.getUserLcId();
     const submitResponse = await submitProspect(formData);
 
     if (submitResponse instanceof Response) {
