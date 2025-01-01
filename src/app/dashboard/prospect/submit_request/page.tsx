@@ -67,6 +67,7 @@ const Page: React.FC = () => {
     partnership: "",
     industry_id: "",
     industryId: "",
+    userLcId: AuthService.getUserLcId()
   });
 
   useEffect(() => {

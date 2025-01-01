@@ -10,6 +10,7 @@ export interface FormData {
     comment: string;
     partnership: string;
     industryId: string;
+    userLcId: string;
 }
 
 export interface ICompanyQuery {
