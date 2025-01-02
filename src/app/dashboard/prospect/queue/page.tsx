@@ -32,7 +32,8 @@ interface Request {
     companyName: string,
     companyAddress: string,
     productName: string,
-    entityName: string
+    entityName: string,
+    entityColor: string
 }
 
 export default function ProspectQueue() {
@@ -103,7 +104,15 @@ const filteredRequests = requests.filter(
         <TableBody>
           {filteredRequests.map((request) => (
             <TableRow key={request._id}>
-              <TableCell>{request.entityName}</TableCell>
+              <TableCell>
+                                      <div
+                        className="rounded-lg text-gray-900 text-lg font-normal px-4 py-4"
+                        style={{ backgroundColor: request.entityColor }}
+                      >
+                        {request.entityName}
+                        {/* Label for status with dynamic background color */}
+                      </div>
+              </TableCell>
               <TableCell>
                 <div className="flex items-center">
                   {request.companyName}

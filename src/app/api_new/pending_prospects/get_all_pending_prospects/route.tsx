@@ -80,6 +80,7 @@ export async function GET() {
         companyAddress: companyDetails.companyAddress,
         productName: productDetails.productName,
         entityName: entityDetails.entityName,
+        entityColor: entityDetails.color,
       };
     });
 
