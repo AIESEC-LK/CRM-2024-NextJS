@@ -26,6 +26,20 @@ export function isPersonIdPresent(): boolean {
   );
 }
 
+export async function getUserEmail(accessToken: string): Promise<string> {
+  const query = gql`
+    {
+      currentPerson {
+        email
+      }
+    }
+  `;
+
+  const response = await runQueryWithAccessToken(accessToken, query);
+
+  return response.currentPerson.email;
+}
+
 export async function getPersonId(accessToken?: string): Promise<number> {
   const personId = cookies().get("person_id");
   if (
