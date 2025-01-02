@@ -18,29 +18,26 @@ import {
 } from "@/app/components/ui/popover";
 
 interface Request {
-  _id: string;
-  entity_id: string;
-  entityName: string;
-  companyName: string;
-  companyAddress: string;
-  contactPersonName: string;
-  contactPersonNumber: string;
-  contactPersonEmail: string;
-  industry: string;
-  producttype: string;
-  status: "pending" | "approved" | "declined";
-  createdAt: string;
-  date_added: string;
-  expireDate: string;
+
+   _id: any,
+    company_id: any,
+    product_type_id: any,
+    entity_id: any,
+    date_added: string,
+    date_expires: string,
+    contactPersonName: string,
+    contactPersonNumber: string,
+    contactPersonEmail: string,
+    status: string,
+    companyName: string,
+    companyAddress: string,
+    productName: string,
+    entityName: string
 }
 
 export default function ProspectQueue() {
   const [requests, setRequests] = useState<Request[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-
-  function sleep(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
 
   useEffect(() => {
     fetchRequests();
@@ -60,46 +57,6 @@ export default function ProspectQueue() {
     }
   };
 
-  // Automatically clone each request by calling the API
-
-  /*
-useEffect(() => {
-  const cloneRequests = async () => {
-    if (requests.length > 0) {
-      for (const request of requests) {
-        await handleClone(request.companyName);
-        await sleep(1000); // 1 second delay
-      }
-    }
-  };
-
-  cloneRequests();
-}, [requests]);*/
-
-  // Function to call the clone API
-
-  /*
-  const handleClone = async (companyName: string) => {
-    try {
-      const response = await fetch("/api/pending_prospects/clonning", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ companyName }), // Pass companyName to clone the prospect
-      });
-
-      if (!response.ok) {
-        console.error(`Failed to clone prospect for ${companyName}`);
-        return;
-      }
-
-      const data = await response.json();
-      console.log(`Prospect for ${companyName} cloned successfully:`, data);
-    } catch (error) {
-      console.error(`Error cloning prospect for ${companyName}:`, error);
-    }
-  };*/
 const filteredRequests = requests.filter(
   (req) =>
     (req.entity_id && req.entity_id.toLowerCase().includes(searchTerm.toLowerCase())) ||
@@ -202,7 +159,7 @@ const filteredRequests = requests.filter(
                 </span>
               </TableCell>
               <TableCell>{formatDate(request.date_added)}</TableCell>
-              <TableCell>{formatDate(request.date_added + 24 * 60 * 60 * 1000)}</TableCell>
+              <TableCell>{formatDate(request.date_expires)}</TableCell>
             </TableRow>
           ))}
         </TableBody>
