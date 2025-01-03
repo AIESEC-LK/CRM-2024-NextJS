@@ -18,28 +18,27 @@ import {
 } from "@/app/components/ui/popover";
 
 interface Request {
-  _id: string;
-  entity: string;
-  companyName: string;
-  companyAddress: string;
-  contactPersonName: string;
-  contactPersonNumber: string;
-  contactPersonEmail: string;
-  industry: string;
-  producttype: string;
-  status: "pending" | "approved" | "declined";
-  createdAt: string;
-  dateAdded: string;
-  expireDate: string;
+
+   _id: any,
+    company_id: any,
+    product_type_id: any,
+    entity_id: any,
+    date_added: string,
+    date_expires: string,
+    contactPersonName: string,
+    contactPersonNumber: string,
+    contactPersonEmail: string,
+    status: string,
+    companyName: string,
+    companyAddress: string,
+    productName: string,
+    entityName: string,
+    entityColor: string
 }
 
 export default function ProspectQueue() {
   const [requests, setRequests] = useState<Request[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-
-  function sleep(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
 
   useEffect(() => {
     fetchRequests();
@@ -48,7 +47,7 @@ export default function ProspectQueue() {
   // Fetch pending prospects from API
   const fetchRequests = async () => {
     try {
-      const response = await fetch("/api/pending_prospects");
+      const response = await fetch("/api_new/pending_prospects/get_all_pending_prospects");
       if (!response.ok) {
         throw new Error("Failed to fetch requests");
       }
@@ -59,49 +58,12 @@ export default function ProspectQueue() {
     }
   };
 
-  // Automatically clone each request by calling the API
-useEffect(() => {
-  const cloneRequests = async () => {
-    if (requests.length > 0) {
-      for (const request of requests) {
-        await handleClone(request.companyName);
-        await sleep(1000); // 1 second delay
-      }
-    }
-  };
-
-  cloneRequests();
-}, [requests]);
-
-  // Function to call the clone API
-  const handleClone = async (companyName: string) => {
-    try {
-      const response = await fetch("/api/pending_prospects/clonning", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ companyName }), // Pass companyName to clone the prospect
-      });
-
-      if (!response.ok) {
-        console.error(`Failed to clone prospect for ${companyName}`);
-        return;
-      }
-
-      const data = await response.json();
-      console.log(`Prospect for ${companyName} cloned successfully:`, data);
-    } catch (error) {
-      console.error(`Error cloning prospect for ${companyName}:`, error);
-    }
-  };
-
-  const filteredRequests = requests.filter(
-    (req) =>
-      req.entity.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      req.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      req.companyAddress.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+const filteredRequests = requests.filter(
+  (req) =>
+    (req.entity_id && req.entity_id.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (req.companyName && req.companyName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (req.companyAddress && req.companyAddress.toLowerCase().includes(searchTerm.toLowerCase()))
+);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -142,7 +104,15 @@ useEffect(() => {
         <TableBody>
           {filteredRequests.map((request) => (
             <TableRow key={request._id}>
-              <TableCell>{request.entity}</TableCell>
+              <TableCell>
+                                      <div
+                        className="rounded-lg text-gray-900 text-lg font-normal px-4 py-4"
+                        style={{ backgroundColor: request.entityColor }}
+                      >
+                        {request.entityName}
+                        {/* Label for status with dynamic background color */}
+                      </div>
+              </TableCell>
               <TableCell>
                 <div className="flex items-center">
                   {request.companyName}
@@ -197,8 +167,8 @@ useEffect(() => {
                   {request.status}
                 </span>
               </TableCell>
-              <TableCell>{formatDate(request.dateAdded)}</TableCell>
-              <TableCell>{formatDate(request.expireDate)}</TableCell>
+              <TableCell>{formatDate(request.date_added)}</TableCell>
+              <TableCell>{formatDate(request.date_expires)}</TableCell>
             </TableRow>
           ))}
         </TableBody>
