@@ -10,6 +10,7 @@ export interface FormData {
     comment: string;
     partnership: string;
     industryId: string;
+    userLcId: string;
 }
 
 export interface ICompanyQuery {
@@ -38,7 +39,7 @@ export interface Industry {
     _id: string;
     industryName: string;
 }
-
+/*
 const fetchCompanyQuery = async (query: string) => {
     try {
         const response = await fetch(`/api_new/companies/get_by_query?companyName=${query}`);
@@ -50,7 +51,7 @@ const fetchCompanyQuery = async (query: string) => {
     } catch (error) {
         console.error("Error fetching companies:", error);
     }
-};
+};*/
 
 
 const fetctMyProspectList = async (entity_id: string) => {
@@ -139,6 +140,6 @@ const submitProspect = async (data: FormData): Promise<Response | Error> => {
     }
 
 
-export { fetctMyProspectList,fetchIndustry, fetchProducts, submitProspect, fetchCompanyQuery/*,fetchCompany*/ };
+export { fetctMyProspectList,fetchIndustry, fetchProducts, submitProspect, /*fetchCompanyQuery/*,fetchCompany*/ };
 
 

@@ -13,6 +13,7 @@ interface IProspectRequest {
   productId: string;
   comment: string;
   industryId: string;
+  userLcId: string;
 }
 
 
@@ -37,7 +38,7 @@ export async function POST(req: Request) {
 
     /* TODO*/
     //Fetch from Auth
-    const entity_id = "675dbabf296393f677c5cf21";
+    const entity_id = prospect.userLcId;
 
     // Set date expires to three months from now
     const dateExpires = new Date();
@@ -102,7 +103,7 @@ export async function POST(req: Request) {
               contactPersonName: prospect.contactPersonName,
               contactPersonNumber: prospect.contactPersonNumber,
               contactPersonEmail: prospect.contactPersonEmail,
-              status: PROSPECT_VALUES[1].value,
+              status: PROSPECT_VALUES[0].value,
             });
 
             return NextResponse.json({ error: "The expires on "+prospectExpiresDate+". Prospect Request Added to Queue " },
@@ -123,7 +124,7 @@ export async function POST(req: Request) {
         contactPersonName: prospect.contactPersonName,
         contactPersonNumber: prospect.contactPersonNumber,
         contactPersonEmail: prospect.contactPersonEmail,
-        status: PROSPECT_VALUES[5].value,
+        status: PROSPECT_VALUES[1].value,
         newCompay: newCompany
       });
 
