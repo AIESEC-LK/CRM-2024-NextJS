@@ -50,7 +50,38 @@ const SideNav = () => {
             Prospect Requests (Admin)
           </span>
         </li>
-      
+        <li>
+          <Link
+            href="/dashboard/prospect"
+            className={`flex items-center justify-center p-4 rounded ${isActive("/dashboard/prospect") ? "bg-gray-600" : "hover:bg-gray-700"
+              }`}
+          >
+            Submit Prospect Req
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="/dashboard/update_leads"
+            className={`flex items-center justify-center p-4 rounded ${isActive("/dashboard/update_leads") ? "bg-gray-600" : "hover:bg-gray-700"
+              }`}
+          >
+            Update Leads
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="/dashboard/entities"
+            className={`flex items-center justify p-4 rounded ${isActive("/dashboard/entities") ? "bg-gray-600" : "hover:bg-gray-700"
+              }`}
+          >Entities</Link>
+        </li>
+        <li>
+          <Link
+            href="/dashboard/help"
+            className={`flex items-center justify p-4 rounded ${isActive("/dashboard/help") ? "bg-gray-600" : "hover:bg-gray-700"
+              }`}
+          >Help</Link>
+        </li>
       </ul>
     </nav>
   );
