@@ -81,10 +81,6 @@ export async function GET() {
             lead_proof_url: 1,
           },
         },
-        // Sort by date_added in descending order (most recent first)
-        {
-          $sort: { date_added: -1 },
-        },
       ])
       .toArray();
 
