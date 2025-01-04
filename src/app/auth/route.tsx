@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
     } else {
       return NextResponse.json(
         { error: "Unauthorized Access" },
-        { status: 404 }
+        { status: 401 }
       );
     }
   } catch (e) {
@@ -60,3 +60,5 @@ export async function GET(request: NextRequest) {
 
   return response;
 }
+
+

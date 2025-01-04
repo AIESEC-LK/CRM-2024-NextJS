@@ -45,7 +45,7 @@ export async function getAccessTokenFromOauth(code: string): Promise<GetTokenRes
 }
 
 export async function refreshAccessToken(): Promise<GetTokenResponse> {
-    let refresh_token = cookies().get("refresh_token");
+    const refresh_token = cookies().get("refresh_token");
     if (!(refresh_token && refresh_token.value && refresh_token.value !== "" && refresh_token.value !== null)) {
         throw new Error("No refresh token found");
     }
