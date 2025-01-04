@@ -6,14 +6,20 @@ import { Input } from "./components/ui/input";
 import { Button } from "./components/ui/button";
 import { Label } from "./components/ui/label";
 import { PARTNERHSIPS_UI_PATH } from "./lib/values";
+import { useAuth } from "./context/AuthContext";
 
 const LoginPage = () => {
   const router = useRouter();
+  const { login } = useAuth();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     // Add login logic here if needed
     router.push(PARTNERHSIPS_UI_PATH);
+
+    //Mock user login
+    login("ashanmatheesha@aiesec.net");
+
   };
 
   return (
