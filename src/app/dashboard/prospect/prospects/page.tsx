@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "../../../components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/app/components/ui/table";
+import { useAuth } from "@/app/context/AuthContext";
+import { IUserDetails, AuthService } from '@/app/services/authService';
 
 // Define label color schema
 const labelColors: { [key: string]: string } = {
@@ -19,6 +21,8 @@ const ProspectsPage = () => {
   const router = useRouter();
   const [prospects, setProspects] = useState<any[]>([]);
   const [expandedEntity, setExpandedEntity] = useState<number | null>(null);
+  const { user } = useAuth();
+  
 
   // Fetch prospects from the API
   useEffect(() => {
@@ -35,7 +39,11 @@ const ProspectsPage = () => {
       }
     };
 
+
+    console.log(user?.lcId)
+  
     fetchProspects();
+    console.log(prospects)
   }, []);
 
   const handleRowClick = (id: number) => {
@@ -129,46 +137,55 @@ const ProspectsPage = () => {
               )}
 
               {/* Action buttons */}
-              <TableCell>
-                {prospect.status === "prospect" && (
-                  <Button
-                    onClick={() => router.push(`/dashboard/prospect/convert_to_a_lead?id=${prospect._id}`)}
-                    className="bg-yellow-400 hover:bg-yellow-500 text-white"
-                  >
-                    Convert to Lead
-                  </Button>
-                )}
-                {prospect.status === "lead" && (
-                  <Button
-                    onClick={() => router.push(`/dashboard/prospect/lead_to_customer?id=${prospect._id}`)}
-                    className="bg-cyan-800 hover:bg-cyan-700 text-white"
-                  >
-                    Convert to Customer Pending
-                  </Button>
-                )}
-                 {prospect.status === "promoter" && (
-                  <Button
-                    onClick={() => router.push(`/dashboard/prospect/promoter?id=${prospect._id}`)}
-                    className="bg-red-800 hover:bg-red-700 text-white"
-                  >
-                    View Promoter
-                  </Button>
-                )}{prospect.status === "customerPending" && (
-                  <Button
-                    onClick={() => router.push(`/dashboard/prospect/customer_pending?id=${prospect._id}`)}
-                    className="bg-gray-800 hover:bg-gray-700 text-white"
-                  >
-                    View Customer Pending
-                  </Button>
-                )}{prospect.status === "customer" && (
-                  <Button
-                    onClick={() => router.push(`/dashboard/prospect/customer?id=${prospect._id}`)}
-                    className="bg-indigo-800 hover:bg-indigo-700 text-white"
-                  >
-                    View Customer
-                  </Button>
-                )}
+              
+              {prospect.entity_id ==user?.lcId && (              
+                <TableCell>
+
+                <>
+                  {prospect.status === "prospect" && (
+                    <Button
+                      onClick={() => router.push(`/dashboard/prospect/convert_to_a_lead?id=${prospect._id}`)}
+                      className="bg-yellow-400 hover:bg-yellow-500 text-white"
+                    >
+                      Convert to Lead
+                    </Button>
+                  )}
+                  {prospect.status === "lead" && (
+                    <Button
+                      onClick={() => router.push(`/dashboard/prospect/lead_to_customer?id=${prospect._id}`)}
+                      className="bg-cyan-800 hover:bg-cyan-700 text-white"
+                    >
+                      Convert to Customer Pending
+                    </Button>
+                  )}
+                  {prospect.status === "promoter" && (
+                    <Button
+                      onClick={() => router.push(`/dashboard/prospect/promoter?id=${prospect._id}`)}
+                      className="bg-red-800 hover:bg-red-700 text-white"
+                    >
+                      View Promoter
+                    </Button>
+                  )}
+                  {prospect.status === "customerPending" && (
+                    <Button
+                      onClick={() => router.push(`/dashboard/prospect/customer_pending?id=${prospect._id}`)}
+                      className="bg-gray-800 hover:bg-gray-700 text-white"
+                    >
+                      View Customer Pending
+                    </Button>
+                  )}
+                  {prospect.status === "customer" && (
+                    <Button
+                      onClick={() => router.push(`/dashboard/prospect/customer?id=${prospect._id}`)}
+                      className="bg-indigo-800 hover:bg-indigo-700 text-white"
+                    >
+                      View Customer
+                    </Button>
+                  )}
+                </>
+              
               </TableCell>
+              )}
             </TableRow>
           ))}
         </TableBody>

@@ -9,7 +9,9 @@ import ProgressBar from '@/app/components/ui/progress';
 import { Input } from '@/app/components/ui/input';
 import ListGroup from '@/app/components/ui/list_groups';
 import styles from "./styles.module.css";
+
 import { LEAD_BAR_COLOR, LEAD_BAR_WIDTH, LEAD_EXPIRE_TIME_DURATION, PROSPECT_BAR_COLOR, PROSPECT_BAR_WIDTH, PROSPECT_VALUES } from '@/app/lib/values';
+import { useAuth } from '@/app/context/AuthContext';
 
 interface Product {
   _id: string;
@@ -23,6 +25,7 @@ export default function ConvertToALeadPage() {
     date_expires: string;
     company_name: string;
     product_type_id: string;
+    entity_id: string;
   }
 
   const [prospectDetails, setProspectDetails] = useState<ProspectDetails | null>(null);
@@ -39,6 +42,7 @@ export default function ConvertToALeadPage() {
     width: PROSPECT_BAR_WIDTH,
   });
   const [isConverted, setIsConverted] = useState(false);
+  const {user} = useAuth();
 
   useEffect(() => {
     const id = searchParams.get('id');
@@ -191,7 +195,9 @@ export default function ConvertToALeadPage() {
       console.error('Error updating prospect:', error);
     }
   };
-
+  if (user?.lcId !== prospectDetails?.entity_id) {
+    return <div className="container mx-auto p-4">Access Denied</div>;
+  }else{
   return (
     <div className="container mx-auto pt-0">
       <h1 className="text-2xl font-bold mb-6 ml-4">Lead Conversion</h1>
@@ -322,4 +328,5 @@ export default function ConvertToALeadPage() {
       </div>
     </div>
   );
+}
 }
