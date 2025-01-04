@@ -6,7 +6,7 @@ import { Label } from '@/app/components/ui/label'
 import { Input } from '@/app/components/ui/input'
 import ProgressBar from '@/app/components/ui/progress'
 import styles from "./styles.module.css"
-import { PROSPECT_BAR_COLOR, PROSPECT_BAR_WIDTH, PROSPECT_VALUES,CUSTOMER_PANDING_BAR_COLOR,CUSTOMER_PANDING_BAR_WIDTH,PROSPECT_EXPIRE_TIME_DURATION ,LEAD_EXPIRE_TIME_DURATION,LEAD_BAR_WIDTH,LEAD_BAR_COLOR ,CUSTOMER_BAR_COLOR,CUSTOMER_BAR_WIDTH} from '@/app/lib/values';
+import { PROSPECT_BAR_COLOR, PROSPECT_BAR_WIDTH, PROSPECT_VALUES,CUSTOMER_PANDING_BAR_COLOR,CUSTOMER_PANDING_BAR_WIDTH,PROSPECT_EXPIRE_TIME_DURATION ,LEAD_EXPIRE_TIME_DURATION,LEAD_BAR_WIDTH,LEAD_BAR_COLOR ,CUSTOMER_BAR_COLOR,CUSTOMER_BAR_WIDTH ,PROMOTER_BAR_COLOR,PROMOTER_BAR_WIDTH} from '@/app/lib/values';
 import ToastNotification from '@/app/components/ui/toast';
 export default function ApproveCustomer() {
   const searchParams = useSearchParams();
@@ -55,6 +55,11 @@ const [amount,setAmount] = useState<number | null>(null);
 const [mouStartDate,setMouStartDate] = useState<Date>();
 const [mouEndDate,setMouEndDate] = useState<Date>();
 const [category,setCategory] = useState<string | null>(null);
+const [expiryDate,setExpiryDate] = useState<Date>();
+const [dateAdded,setDateAdded] = useState<Date>();
+const [nextStage,SetNextStage] = useState<string|null>(null)
+const [stageDropwDown,setStageDropDown] = useState<string[]>([]);
+
     
   
 
@@ -100,7 +105,7 @@ const [category,setCategory] = useState<string | null>(null);
     if (true) {
       const fetchProspectDetails = async () => {
         try {
-          const response = await fetch(`/api_new/prospects/get_prospect_in_id?id=676964f5855d970eb0dd3717`);
+          const response = await fetch(`/api_new/prospects/get_prospect_in_id?id=67694b10855d970eb0dd3712`);
           if (!response.ok) {
             throw new Error('Failed to fetch prospect details');
           }
@@ -118,6 +123,10 @@ const [category,setCategory] = useState<string | null>(null);
           setMouStartDate(data.date_added);
           setMouEndDate(data.date_expires);
           setCategory(data.partnershipType);
+          setExpiryDate(data.date_expires);
+          setDateAdded(data.date_added);
+          
+          
    
 
    
@@ -247,6 +256,39 @@ const getEntityById = (id: string | null): string => {
   return entity.entityName;
 }
 
+
+const getNextStage = (currentStage: string | null) => {
+  if (!currentStage) return { value: 'Unknown', label: 'Unknown Stage' };
+
+  const currentIndex = PROSPECT_VALUES.findIndex((prospect) => prospect.value === currentStage);
+
+  if (currentIndex === -1 || currentIndex === PROSPECT_VALUES.length - 1) {
+    console.warn(`Next stage for ${currentStage} not found.`);
+    return { value: 'Unknown', label: 'Unknown Stage' };
+  }
+
+  return PROSPECT_VALUES[currentIndex + 1].label;
+};
+
+
+const getPreviousStages = (currentStage: string | null) => {
+
+if(!currentStage) return { value: 'Unknown', label: 'Unknown Stage'};
+
+const currentIndex = PROSPECT_VALUES.findIndex((prospect) => prospect.value === currentStage);
+
+if(currentIndex === -1 || currentIndex === 0){
+  console.warn(`Previous stage for ${currentStage} not found.`);
+  return { value: 'Unknown', label: 'Unknown Stage'};
+}
+
+
+const previousStages = PROSPECT_VALUES.slice(0, currentIndex).map(stage => stage);
+return previousStages;
+
+}
+
+``
 const [progressBar, setProgressBar] = useState({
   text: '',
   color: '',
@@ -306,7 +348,7 @@ const HandleSwapProduct = async () => {
   }
 };
 
-const HandleOverwriteDate = async () => {
+const HandleOverwriteMoUDate = async () => {
 
 
   try {
@@ -362,10 +404,10 @@ const handleOverwriteStage = async () => {
         onClose: () => {}
       });
       setProgressBar({
-        text: currentStage === 'prospect' ? PROSPECT_VALUES[1].label : currentStage === 'lead' ? PROSPECT_VALUES[2].label : '',
-        color: currentStage === 'prospect' ? PROSPECT_BAR_COLOR : currentStage === 'lead' ? LEAD_BAR_COLOR : '',
-        width: currentStage === 'prospect' ? PROSPECT_BAR_WIDTH : currentStage === 'lead' ? LEAD_BAR_WIDTH : '',
-      });    
+        text: currentStage === 'prospect' ? PROSPECT_VALUES[1].label : currentStage === 'lead' ? PROSPECT_VALUES[2].label : currentStage === 'customerPending' ? PROSPECT_VALUES[3].label : currentStage === 'lead' ? PROSPECT_VALUES[2].label : currentStage === 'customer' ? PROSPECT_VALUES[4].label : currentStage=== 'promoter' ? PROSPECT_VALUES[5].label :  '',
+          color: currentStage === 'prospect' ? PROSPECT_BAR_COLOR : currentStage === 'lead' ? LEAD_BAR_COLOR :currentStage === 'customerPending' ? CUSTOMER_PANDING_BAR_COLOR :currentStage === 'customer' ? CUSTOMER_BAR_COLOR : currentStage === 'promoter' ? PROMOTER_BAR_COLOR : '',
+          width: currentStage === 'prospect' ? PROSPECT_BAR_WIDTH : currentStage === 'lead' ? LEAD_BAR_WIDTH :currentStage === 'customerPending' ? CUSTOMER_PANDING_BAR_WIDTH :currentStage === 'customer' ? CUSTOMER_BAR_WIDTH : currentStage === 'promoter' ? PROMOTER_BAR_WIDTH : '',
+      }); 
       
     } else {
       console.error('Failed to update stage ' + response.statusText);
@@ -403,9 +445,9 @@ const HandleAprooveMou = async () => {
         onClose: () => {}
       });
       setProgressBar({
-        text: currentStage === 'prospect' ? PROSPECT_VALUES[1].label : currentStage === 'lead' ? PROSPECT_VALUES[2].label : currentStage === 'customerPending' ? PROSPECT_VALUES[3].label : currentStage === 'lead' ? PROSPECT_VALUES[2].label : currentStage === 'customer' ? PROSPECT_VALUES[4].label :'',
-        color: currentStage === 'prospect' ? PROSPECT_BAR_COLOR : currentStage === 'lead' ? LEAD_BAR_COLOR :currentStage === 'customerPending' ? CUSTOMER_PANDING_BAR_COLOR :currentStage === 'customer' ? CUSTOMER_BAR_COLOR : '',
-        width: currentStage === 'prospect' ? PROSPECT_BAR_WIDTH : currentStage === 'lead' ? LEAD_BAR_WIDTH :currentStage === 'customerPending' ? CUSTOMER_PANDING_BAR_WIDTH :currentStage === 'customer' ? CUSTOMER_BAR_WIDTH : '',
+        text: currentStage === 'prospect' ? PROSPECT_VALUES[1].label : currentStage === 'lead' ? PROSPECT_VALUES[2].label : currentStage === 'customerPending' ? PROSPECT_VALUES[3].label : currentStage === 'lead' ? PROSPECT_VALUES[2].label : currentStage === 'customer' ? PROSPECT_VALUES[4].label : currentStage=== 'promoter' ? PROSPECT_VALUES[5].label :  '',
+          color: currentStage === 'prospect' ? PROSPECT_BAR_COLOR : currentStage === 'lead' ? LEAD_BAR_COLOR :currentStage === 'customerPending' ? CUSTOMER_PANDING_BAR_COLOR :currentStage === 'customer' ? CUSTOMER_BAR_COLOR : currentStage === 'promoter' ? PROMOTER_BAR_COLOR : '',
+          width: currentStage === 'prospect' ? PROSPECT_BAR_WIDTH : currentStage === 'lead' ? LEAD_BAR_WIDTH :currentStage === 'customerPending' ? CUSTOMER_PANDING_BAR_WIDTH :currentStage === 'customer' ? CUSTOMER_BAR_WIDTH : currentStage === 'promoter' ? PROMOTER_BAR_WIDTH : '',
       });
     } else {
       console.error('Failed to approve MOU ' + response.statusText);
@@ -415,12 +457,63 @@ const HandleAprooveMou = async () => {
   }
 }
 
+
+const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const newDate = new Date(event.target.value);
+  setExpiryDate(newDate);
+  
+  console.log(newDate);
+
+
+}
+
+const calculateStageDueDate = (date: string): string => {
+
+  
+  const dueDate = new Date(date);
+  dueDate.setDate(dueDate.getDate() -1);
+  return dueDate.toISOString().split('T')[0];
+
+}
+
+
+const HandleOverwriteDate = async () => {
+
+
+  try {
+    const response = await fetch('/api_new/prospects/update_a_prospect', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: "67694b10855d970eb0dd3712",
+        date_expires: expiryDate,
+      }),
+    });
+
+    if (response.ok) {
+      console.log('Date updated successfully');
+      setExpiryDate(expiryDate);
+      ToastNotification({
+        message: 'Date updated successfully',
+        onClose: () => {}
+      });
+    } else {
+      console.error('Failed to update date ' + response.statusText);
+    }
+  } catch (error) {
+    console.error('An error occurred while updating the date:', error);
+  }
+}
+
+
 useEffect(() => {
   if (currentStage) {
     setProgressBar({
-      text: currentStage === 'prospect' ? PROSPECT_VALUES[1].label : currentStage === 'lead' ? PROSPECT_VALUES[2].label : currentStage === 'customerPending' ? PROSPECT_VALUES[3].label : currentStage === 'lead' ? PROSPECT_VALUES[2].label : currentStage === 'customer' ? PROSPECT_VALUES[4].label :'',
-        color: currentStage === 'prospect' ? PROSPECT_BAR_COLOR : currentStage === 'lead' ? LEAD_BAR_COLOR :currentStage === 'customerPending' ? CUSTOMER_PANDING_BAR_COLOR :currentStage === 'customer' ? CUSTOMER_BAR_COLOR : '',
-        width: currentStage === 'prospect' ? PROSPECT_BAR_WIDTH : currentStage === 'lead' ? LEAD_BAR_WIDTH :currentStage === 'customerPending' ? CUSTOMER_PANDING_BAR_WIDTH :currentStage === 'customer' ? CUSTOMER_BAR_WIDTH : '',
+      text: currentStage === 'prospect' ? PROSPECT_VALUES[1].label : currentStage === 'lead' ? PROSPECT_VALUES[2].label : currentStage === 'customerPending' ? PROSPECT_VALUES[3].label : currentStage === 'lead' ? PROSPECT_VALUES[2].label : currentStage === 'customer' ? PROSPECT_VALUES[4].label : currentStage=== 'promoter' ? PROSPECT_VALUES[5].label :  '',
+        color: currentStage === 'prospect' ? PROSPECT_BAR_COLOR : currentStage === 'lead' ? LEAD_BAR_COLOR :currentStage === 'customerPending' ? CUSTOMER_PANDING_BAR_COLOR :currentStage === 'customer' ? CUSTOMER_BAR_COLOR : currentStage === 'promoter' ? PROMOTER_BAR_COLOR : '',
+        width: currentStage === 'prospect' ? PROSPECT_BAR_WIDTH : currentStage === 'lead' ? LEAD_BAR_WIDTH :currentStage === 'customerPending' ? CUSTOMER_PANDING_BAR_WIDTH :currentStage === 'customer' ? CUSTOMER_BAR_WIDTH : currentStage === 'promoter' ? PROMOTER_BAR_WIDTH : '',
     });
   }
 }, [currentStage]);
@@ -447,7 +540,7 @@ useEffect(() => {
       </header>
 
       <main className="container mx-auto p-6">
-        {/* Partnership Title */}
+        {/* Common For ALL*/}
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-2xl font-medium">{getEntityById(prospectEntity)} - {getCompanyNameById(companyId)}  Partnership</h2>
@@ -476,7 +569,33 @@ useEffect(() => {
           />
         </div>
 
-        {/* Active Stage */}
+         {/* EditLead +EditProspect*/}
+        {(currentStage === 'prospect' || currentStage === 'lead') && (
+          <div className="bg-gray-100 rounded-lg shadow-lg p-6 mb-6">
+            <h3 className="text-lg font-medium mb-4">Active Stage - {currentStage}</h3>
+            <ToastNotification
+              message={`Due date to go to the ${getNextStage(currentStage)} stage - ${expiryDate ? new Date(expiryDate).toLocaleDateString() : 'N/A'}`}
+              onClose={() => {}}
+            />
+          </div>
+        )}
+
+        
+
+      {/* Promoter */}
+      {(currentStage === 'promoter') && (
+        <div className="bg-gray-100 rounded-lg shadow-lg p-6 mb-6">
+          <h3 className="text-lg font-medium mb-4">Active Stage - {getStageByValue(currentStage)}</h3>
+          <ToastNotification
+            message= {`Promoter stage end date - ${expiryDate ? new Date(expiryDate).toLocaleDateString() : 'N/A'}`}
+           
+            onClose={() => {}}
+          />
+        </div>
+      )}
+
+        {/* Show in EditCustomer+ApproveCustomer */}
+        {(currentStage === 'customer' || currentStage === 'customerPending') && (
         <div className="bg-gray-100 rounded-lg shadow-lg p-6 mb-6">
           <h3 className="text-lg font-medium mb-4">Active Stage - {getStageByValue(currentStage)}</h3>
           <div className="grid grid-cols-2 gap-6">
@@ -492,10 +611,7 @@ useEffect(() => {
           
           <div className="mt-4">
             <Label>MOU</Label>
-            {/* <button className="flex items-center gap-2 mt-2 bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded">
-              <img src="/pdf_icon.png" alt="PDF" className="w-6 h-6"  />
-              VIEW PDF
-            </button> */}
+            
           {proofDocument && (
             <a href={proofDocument} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 mt-2 bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded ">
               <img src="/pdf_icon.png" alt="PDF" className="w-6 h-6" />
@@ -510,6 +626,10 @@ useEffect(() => {
             <p className="text-sm text-yellow-500">The submitted MOU is still pending for admin&apos;s approval</p>
           </div>
 
+          
+
+          {/* Show in ApproveCustomer */}
+          {(currentStage === 'customerPending') && (
           <div className="flex gap-2 mt-4">
             <button className="bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 rounded" onClick={HandleAprooveMou}>
               APPROVE MOU
@@ -518,18 +638,17 @@ useEffect(() => {
               REJECT MOU
             </button>
           </div>
+          )}
         </div>
+        )}
 
-        {/* Product Selection */}
+        {/* Show in EditProspect+EditLead+EditCustomer+ApproveMoU+EditPromoter */}
         <div className="bg-gray-100 rounded-lg shadow-lg p-6 mb-6">
           <h3 className="text-lg font-medium mb-4">Overwrite Product of The Partnership</h3>
           <select className="w-full p-2 border rounded mb-4" onChange={handleProductChange}>
           <option value="selectedProduct" selected >
                 {getProductNameById(selectedProduct)}
               </option>
-
-
-              
           {products.map((product) => (
             <option key={product._id} value={product._id}>
               {product.productName}
@@ -541,59 +660,41 @@ useEffect(() => {
           </button>
         </div>
 
-        {/* Partnership Details */}
+        {/* Show in EditLead+EditCustomer+ApproveMoU */}
+       
+
         <div className="bg-gray-100 rounded-lg shadow-lg p-6 mb-6">
-          <h3 className="text-lg font-medium mb-4">Overwrite Partnership Details</h3>
-          <select className="w-full p-2 border rounded mb-6" onChange={handleStageChange}>
-          <option value="currentStage" selected >
-                {getStageByValue(currentStage)}
-              </option>
+
+          
+          {(currentStage === 'lead' || currentStage === 'customerPending' || currentStage === 'customer') && (
+            <>
+              <h3 className="text-lg font-medium mb-4">Overwrite Partnership Details</h3>
+              <select className="w-full p-2 border rounded mb-6" onChange={handleStageChange}>
+                <option value="currentStage" selected>
+                  {getStageByValue(currentStage)}
+                </option>
+
+                
 
 
-            {PROSPECT_VALUES.filter(stage => stage.value == 'prospect' || stage.value=='lead').map((stage) => (
-              <option key={stage.value} value={stage.value}>
-              {stage.label}
-              </option>
-            ))}
 
-          </select>
-          <button className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded mb-6" onClick={handleOverwriteStage}>
-            OVERWRITE STAGE
-          </button>
+                {PROSPECT_VALUES.filter(stage => stage.value == 'prospect' || stage.value == 'lead').map((stage) => (
+                  <option key={stage.value} value={stage.value}>
+                    {stage.label}
+                  </option>
+                ))}
+              </select>
+              <button className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded mb-6" onClick={handleOverwriteStage}>
+                OVERWRITE STAGE
+              </button>
+            </>
+          )}
          
           <div className="grid grid-cols-2 gap-6">
-            {/* <div>
-              <Label>Prospect Due Date</Label>
-              <Input
-                type="date"
-                defaultValue="2024-10-18"
-                className={`w-full mt-2 ${styles.mr4}`}
-              />
-            </div>
-            <div>
-              <Label>Prospect Final Due Date</Label>
-              <Input
-                type="date"
-                defaultValue="2024-10-19"
-                className={`w-full mt-2 ${styles.mr4}`}
-              />
-            </div>
-            <div>
-              <Label>Lead Due Date</Label>
-              <Input
-                type="date"
-                defaultValue="2024-11-18"
-                className={`w-full mt-2 ${styles.mr4}`}
-              />
-            </div>
-            <div>
-              <Label>Lead Final Due Date</Label>
-              <Input
-                type="date"
-                defaultValue="2024-11-19"
-                className={`w-full mt-2 ${styles.mr4}`}
-              />
-            </div> */}
+            
+
+            {/* EditCustomer + Approve Mou */}
+            {(currentStage === 'customer' || currentStage === 'customerPending') && (
             <div>
               <Label>MOU Start Date</Label>
               <Input
@@ -603,6 +704,11 @@ useEffect(() => {
                 onChange={handleMouStartDateChange}
               />
             </div>
+
+            )}
+
+            {/* EditCustomer + Approve Mou */}
+            {(currentStage === 'customer' || currentStage === 'customerPending') && (
             <div>
               <Label>MOU End Date</Label>
               <Input
@@ -612,13 +718,56 @@ useEffect(() => {
                 onChange={handleMouEndDateChange}
               />
             </div>
+            )}
+
+            {/* Show in EditProspect + EditLead  */}
+            {(currentStage === 'prospect' || currentStage === 'lead') && (
+            <div>
+              <Label>{getStageByValue(currentStage)} Due Date</Label>
+              <Input
+               id="lead-due"
+               type="date"
+               value={expiryDate ? calculateStageDueDate(new Date(expiryDate).toISOString()) : ''}
+               className={`w-full mt-5 ${styles.mr4} mb-4`}
+               readOnly
+              />
+            </div>
+            )}
+
+              {/* Show in EditProspect + EditLead  */}
+            {(currentStage === 'prospect' || currentStage === 'lead') && (
+            <div>
+              <Label>{getStageByValue(currentStage)} Final Due Date</Label>
+              <Input
+                 id="lead-final"
+                 type="date"
+                 value={expiryDate ? new Date(expiryDate).toISOString().split('T')[0] : ''}
+                 className={`w-full mt-5 ${styles.mr4} mb-4`}
+                 onChange={handleDateChange}
+              />
+            </div>
+            )}
           </div>
+          
+
+            {/* show in EditCustomer + Approve Mou */}
+            {(currentStage === 'customer' || currentStage === 'customerPending') && (
+          <button className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded mt-6" onClick={HandleOverwriteMoUDate}>
+            OVERWRITE DATES
+          </button>
+            )}
+
+          {/* show in EditProspect + EdiLead */}
+          {(currentStage === 'prospect' || currentStage === 'lead') && (
           <button className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded mt-6" onClick={HandleOverwriteDate}>
             OVERWRITE DATES
           </button>
+          )}
         </div>
 
-        {/* Prospect Stage */}
+
+        {/* Show in Lead + Approve Customer + EditCustomer + EditPromoter */}
+        {(currentStage === 'promoter' || currentStage === 'lead' || currentStage ==='customerPending' || currentStage==='customer') && (
         <div className="bg-gray-100 rounded-lg shadow-lg p-6 mb-6">
           <h3 className="text-lg font-medium mb-4">Prospect Stage</h3>
           <div className="grid grid-cols-2 gap-6">
@@ -654,8 +803,10 @@ useEffect(() => {
             </div>
           </div>
         </div>
+        )}
 
-        {/* Lead Stage */}
+        {/* Show in Apporve MoU + EditCustomer + EditPromoter */}
+        {(currentStage === 'customer' || currentStage === 'customerPending' || currentStage === 'promoter') && (
         <div className="bg-gray-100 rounded-lg shadow-lg p-6 mb-6">
           <h3 className="text-lg font-medium mb-4">Lead Stage</h3>
           <div className="grid grid-cols-2 gap-6">
@@ -686,6 +837,9 @@ useEffect(() => {
           </div>
 
         </div>
+        )}
+
+      
       </main>
 
      
