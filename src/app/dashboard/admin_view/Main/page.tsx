@@ -8,6 +8,7 @@ import ProgressBar from '@/app/components/ui/progress'
 import styles from "./styles.module.css"
 import { PROSPECT_BAR_COLOR, PROSPECT_BAR_WIDTH, PROSPECT_VALUES,CUSTOMER_PANDING_BAR_COLOR,CUSTOMER_PANDING_BAR_WIDTH,PROSPECT_EXPIRE_TIME_DURATION ,LEAD_EXPIRE_TIME_DURATION,LEAD_BAR_WIDTH,LEAD_BAR_COLOR ,CUSTOMER_BAR_COLOR,CUSTOMER_BAR_WIDTH ,PROMOTER_BAR_COLOR,PROMOTER_BAR_WIDTH} from '@/app/lib/values';
 import ToastNotification from '@/app/components/ui/toast';
+import { useAuth } from '@/app/context/AuthContext';
 export default function ApproveCustomer() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -59,7 +60,7 @@ const [expiryDate,setExpiryDate] = useState<Date>();
 const [dateAdded,setDateAdded] = useState<Date>();
 const [nextStage,SetNextStage] = useState<string|null>(null)
 const [stageDropwDown,setStageDropDown] = useState<string[]>([]);
-
+const {user} =useAuth();
     
   
 
@@ -288,7 +289,7 @@ return previousStages;
 
 }
 
-``
+
 const [progressBar, setProgressBar] = useState({
   text: '',
   color: '',
@@ -518,23 +519,16 @@ useEffect(() => {
   }
 }, [currentStage]);
 
-
+if (user?.role !== "admin") {
+  return <div className="container mx-auto p-4">Access Denied</div>;
+}else{
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b px-6 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="bg-blue-600 text-white w-8 h-8 flex items-center justify-center rounded">
-              A
-            </div>
-            <h1 className="text-xl font-medium">AIESEC Sri Lanka Partners CRM</h1>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="bg-yellow-500 rounded-full w-8 h-8 flex items-center justify-center text-white">
-              Y
-            </div>
-            <span>Yasanjith Rajapathirane</span>
+           
           </div>
         </div>
       </header>
@@ -845,5 +839,6 @@ useEffect(() => {
      
     </div>
   )
+}
 }
 

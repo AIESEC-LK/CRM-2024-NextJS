@@ -14,6 +14,7 @@ import {
 
 import { Search, Eye } from "lucide-react";
 import Link from "next/link";
+import { useAuth } from "@/app/context/AuthContext";
 
 interface Request {
   _id: string;
@@ -36,7 +37,7 @@ interface Request {
 export default function AdminView() {
   const [requests, setRequests] = useState<Request[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-
+  const { user } = useAuth();
   useEffect(() => {
     fetchRequests();
   }, []);
@@ -68,8 +69,14 @@ export default function AdminView() {
       minute: "2-digit",
     });
   };
-
+  if (user?.role !== "admin") {
+    return <div className="container mx-auto p-4">Access Denied</div>;
+  }else{
   return (
+
+
+
+    
     <div className="container mx-auto pt-0">
       <h1 className="text-2xl font-bold mb-6 ml-4">Prospect Requests</h1>
       <div className="mb-4 relative">
@@ -119,4 +126,5 @@ export default function AdminView() {
       </Table>
     </div>
   );
+}
 }

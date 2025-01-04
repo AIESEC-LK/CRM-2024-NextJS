@@ -13,6 +13,7 @@ import {
 import { Trash2 } from "lucide-react";
 import Link from "next/link";
 import ConfirmationModal from "@/app/components/ConfirmationModal";
+import { useAuth } from "@/app/context/AuthContext";
 
 interface Entity {
   _id: string;
@@ -24,6 +25,7 @@ export default function EntitiesPage() {
   const [entities, setEntities] = useState<Entity[]>([]);
   const [entityToDelete, setEntityToDelete] = useState<Entity | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const {user} = useAuth();
 
   useEffect(() => {
     fetchEntities();
@@ -83,8 +85,12 @@ export default function EntitiesPage() {
     setIsDeleteModalOpen(false);
     setEntityToDelete(null);
   };
-
+  if (user?.role !== "admin") {
+    return <div className="container mx-auto p-4">Access Denied</div>;
+  }else{
   return (
+
+    
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Manage Entities</h1>
       <Link href="/dashboard/add_entity">
@@ -135,4 +141,5 @@ export default function EntitiesPage() {
       />
     </div>
   );
+}
 }

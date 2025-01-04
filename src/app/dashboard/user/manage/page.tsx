@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { IUserUpdateRequest, createUser, updateUser, deleteUser, fetctAllUserArray, fetchAllEntity } from "@/app/dashboard/user/manage/functions";
 import ConfirmationModal from "@/app/components/ConfirmationModal";
 import { useConfirmation } from "@/app/context/ConfirmationContext";
+import { useAuth } from "@/app/context/AuthContext";
 
 type User = {
     _id: string;
@@ -22,6 +23,7 @@ const UserManagement: React.FC = () => {
 
     const [newUser, setNewUser] = useState({ userEmail: "", userRole: "", userEntityId: "" });
     const { triggerConfirmation } = useConfirmation();
+    const {user} = useAuth();
 
     const handleAddUser = async () => {
         if (!newUser.userEmail || !newUser.userRole || !newUser.userEntityId) {
@@ -78,6 +80,9 @@ const UserManagement: React.FC = () => {
         fetctAllUsers();
     }, []);
 
+    if (user?.role !== "admin") {
+        return <div className="container mx-auto p-4">Access Denied</div>;
+      }else{
     return (
         <div className="p-6 mx-auto font-sans">
             {/* Add User Section */}
@@ -152,6 +157,7 @@ const UserManagement: React.FC = () => {
             </div>
         </div>
     );
+    }
 };
 
 export default UserManagement;
