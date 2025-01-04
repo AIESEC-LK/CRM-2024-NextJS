@@ -1,5 +1,7 @@
 import SideNav from "@/app/components/ui/sidenav";
 import Header from "../components/ui/header";
+import Footer from "../components/ui/footer";
+
 import { ConfirmationProvider } from "@/app/context/ConfirmationContext";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -14,6 +16,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </div>
             <div className="flex-grow p-6 md:overflow-y-auto md:p-6">
               {children}
+                 <Footer/>
             </div>
           </div>
         </div>
