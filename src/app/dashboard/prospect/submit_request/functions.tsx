@@ -1,5 +1,5 @@
 export interface FormData {
-    [x: string]: string;
+    [x: string]: string | undefined;
     companyId: string;
     companyName: string;
     companyAddress: string;
@@ -11,6 +11,7 @@ export interface FormData {
     partnership: string;
     industryId: string;
     userLcId: string;
+    producttype: string | undefined;
 }
 
 export interface ICompanyQuery {
@@ -18,6 +19,7 @@ export interface ICompanyQuery {
     companyName: string;
     dateexpiresEvent:Date;
     dateexpiresProduct:Date;
+    approved: boolean;
 }
 
 export interface IMyProspectList{
@@ -124,8 +126,12 @@ const submitProspect = async (data: FormData): Promise<Response | Error> => {
             body: JSON.stringify(data),
         });
 
+        console.log(data.producttype);
+        console.log(data.productId);
         if (!response.ok) {
-            throw new Error('Failed to submit form');
+            const errorData = await response.json();
+            console.error('Error details:', errorData);
+            throw new Error('Failed to submit form: ' + response.statusText);
         }
         return response; // Form submitted successfully
         } catch (error) {

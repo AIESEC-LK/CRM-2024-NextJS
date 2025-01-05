@@ -32,14 +32,24 @@ interface Request {
   date_expires: string;
   activities: string[];
   lead_proof_url: string;
+  newCompay:boolean;
+}
+
+interface Industry {
+
+  _id: string;
+  industryName: string;
 }
 
 export default function AdminView() {
+
   const [requests, setRequests] = useState<Request[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [industry, setIndustry] = useState<Industry[]>([]);
   const { user } = useAuth();
   useEffect(() => {
     fetchRequests();
+    fetchIndustry();
   }, []);
 
   const fetchRequests = async () => {
@@ -49,15 +59,40 @@ export default function AdminView() {
         throw new Error("Failed to fetch requests");
       }
       const data = await response.json();
-      setRequests(data);
+
+      const filteredData = data.filter((req: Request) => req.newCompay === true);
+       setRequests(filteredData);
+      
     } catch (error) {
       console.error("Error fetching requests:", error);
     }
   };
 
+  const fetchIndustry = async () => {
+    try {
+        const response = await fetch("/api_new/industries/get_all_industries");
+        if (!response.ok) {
+            throw new Error('Failed to fetch products');
+        }
+        const data = await response.json();
+        setIndustry(data);
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        return [];
+    }
+};
+
   const filteredRequests = requests.filter((req) =>
-    req.lc_name?.toLowerCase().includes(searchTerm.toLowerCase())
+    req.lc_name?.toLowerCase().includes(searchTerm.toLowerCase()) || req.company_name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+
+  const getIndustryName = (industry_id: string) => {
+    const industryName = industry.find((ind) => ind._id === industry_id);
+    return industryName?.industryName;
+
+  }
+
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -95,7 +130,7 @@ export default function AdminView() {
             <TableHead>Time Requested</TableHead>
             <TableHead>Entity</TableHead>
             <TableHead>Company Name</TableHead>
-            <TableHead>Industry</TableHead>
+            {/* <TableHead>Industry</TableHead> */}
             <TableHead>Product Type</TableHead>
             <TableHead>Action</TableHead>
           </TableRow>
@@ -108,7 +143,7 @@ export default function AdminView() {
               <TableCell>
                 <div className="flex items-center">{req.company_name}</div>
               </TableCell>
-              <TableCell>{""}</TableCell>
+              {/* <TableCell>{""}</TableCell> */}
               <TableCell>{req.product_type_name}</TableCell>
               <TableCell>
                 <div className="flex space-x-2">

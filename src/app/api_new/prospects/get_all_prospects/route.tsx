@@ -11,11 +11,11 @@ export async function GET() {
       .collection("Prospects")
       .aggregate([
         // Only match prospects where 'newCompany' is true
-        {
-          $match: {
-            newCompay: true,
-          },
-        },
+        // {
+        //   $match: {
+        //     newCompay: false,
+        //   },
+        // },
         {
           $lookup: {
             from: "Entities",
@@ -79,6 +79,7 @@ export async function GET() {
             lc_color: { $arrayElemAt: ["$entity.color", 0] },
             activities: 1,
             lead_proof_url: 1,
+            newCompay: 1,
           },
         },
         // Sort by date_added in descending order (most recent first)
