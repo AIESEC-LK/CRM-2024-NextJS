@@ -18,6 +18,7 @@ const ALLOWED_FIELDS = [
   "mouStartDate",
   "mouEndDate",
   "mouUrl",
+  "newCompay"
 ];
 
 export async function PATCH(req: Request) {

@@ -17,7 +17,7 @@ export const PROSPECT_VALUES = [
 
 export const USER_ROLE_VALUES = [
   { value: "admin", label: "Administrator" },
-  { value: "user", label: "USer" }
+  { value: "user", label: "User" }
 ]
 
 

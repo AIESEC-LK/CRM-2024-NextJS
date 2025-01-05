@@ -42,6 +42,7 @@ export async function GET(req: Request) {
 
     const company = await db.collection("Companies").find({
       companyName: { $regex: `^${companyName}`, $options: "i" },
+      approved: true
     }).limit(10).toArray();
 
     const companyQueryResult: ICompanyQuery[] = await Promise.all(
