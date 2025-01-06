@@ -12,7 +12,8 @@ export const PROSPECT_VALUES = [
   { value: "customer", label: "Customer" },
   { value: "promoter", label: "Promoter" },
   { value: "lost", label: "Lost" },
-  { value: "mcvpap", label: "Waiting for MCVP Approvel" }
+  { value: "mcvpap", label: "Waiting for MCVP Approvel" },
+  {value : "customerPendingMoURejected", label :"Customer Pending - MoU Rejected"}
 ]
 
 export const USER_ROLE_VALUES = [
@@ -52,5 +53,8 @@ export const CUSTOMER_BAR_COLOR = "indigo"
 export const CUSTOMER_BAR_WIDTH = "80%"
 
 // Promoter
-export const PROMOTER_BAR_COLOR = "red"
+export const PROMOTER_BAR_COLOR = "green"
 export const PROMOTER_BAR_WIDTH = "100%"
+
+export const  CUSTOMER_PENDING_MOU_REJECTED_BAR_COLOR = "red"
+export const  CUSTOMER_PENDING_MOU_REJECTED_BAR_WIDTH = "60%"

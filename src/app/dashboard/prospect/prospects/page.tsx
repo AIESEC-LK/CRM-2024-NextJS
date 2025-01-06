@@ -19,7 +19,6 @@ interface Prospect {
   entity_id: string;
 }
 
-// Define label color schema
 const labelColors: { [key: string]: string } = {
   prospect: "bg-orange-400 text-white",
   promoter: "bg-red-500 text-white",
@@ -27,6 +26,7 @@ const labelColors: { [key: string]: string } = {
   entityPartner: "bg-teal-600 text-white",
   lead: "bg-yellow-400 text-white",
   customerPending: "bg-gray-800 text-white",
+  customerPendingMoURejected: "bg-red-500 text-white",
 };
 
 const ProspectsPage = () => {
@@ -191,121 +191,150 @@ const ProspectsPage = () => {
 
       {/* Prospects List */}
       <div className="bg-white rounded-lg shadow">
+        {/* Header */}
+        <div className="grid grid-cols-4 gap-4 p-4 bg-gray-50 border-b font-medium text-gray-700">
+          <div>Company</div>
+          <div>Event</div>
+          <div>Products</div>
+          <div className="text-right">Actions</div>
+        </div>
+
         {currentItems.map((prospect) => (
           <div key={prospect.id} className="border-b last:border-b-0">
-            <div 
-              onClick={() => toggleRow(prospect.id)}
-              className="flex items-center p-4 cursor-pointer hover:bg-gray-50"
-            >
-              <div className={`mr-2 transition-transform ${expandedRows[prospect.id] ? 'rotate-90' : ''}`}>
-                <ChevronRight className="w-5 h-5 text-gray-400" />
-              </div>
-              
-              <div className="flex-1 grid grid-cols-3 gap-4 items-center">
-                <div className="font-medium text-gray-900">{prospect.company_name}</div>
-                
-                <div className="relative">
-                  {prospect.product_type_name === "Event" && (
-                    <div
-                      className="rounded-lg text-gray-900 text-sm font-normal px-3 py-2"
-                      style={{ backgroundColor: prospect.lc_color }}
-                    >
-                      {prospect.lc_name}
-                      <span className={`absolute top-0 right-0 text-xs font-semibold py-1 px-2 rounded-tl-lg ${labelColors[prospect.status]}`}>
-                        {GetStatusLabel(prospect.status)}
-                      </span>
-                    </div>
-                  )}
-                </div>
-                
-                <div className="relative">
-                  {prospect.product_type_name !== "Event" && (
-                    <div
-                      className="rounded-lg text-gray-900 text-sm font-normal px-3 py-2"
-                      style={{ backgroundColor: prospect.lc_color }}
-                    >
-                      {prospect.lc_name}
-                      <span className={`absolute top-0 right-0 text-xs font-semibold py-1 px-2 rounded-tl-lg ${labelColors[prospect.status]}`}>
-                        {GetStatusLabel(prospect.status)}
-                      </span>
-                    </div>
-                  )}
+            <div className="grid grid-cols-4 gap-4 p-4 hover:bg-gray-50">
+              {/* Company Name Column */}
+              <div className="flex items-center">
+                <div 
+                  onClick={() => toggleRow(prospect.id)}
+                  className="cursor-pointer flex items-center"
+                >
+                  <div className={`mr-2 transition-transform ${expandedRows[prospect.id] ? 'rotate-90' : ''}`}>
+                    <ChevronRight className="w-5 h-5 text-gray-400" />
+                  </div>
+                  <span className="font-medium text-gray-900">{prospect.company_name}</span>
                 </div>
               </div>
 
-              {prospect.entity_id === user?.lcId && (
-                <div className="ml-4">
-                  {prospect.status === "prospect" && (
+              {/* Event Products Column */}
+              <div className="relative">
+                {prospect.product_type_name === "Event" && (
+                  <div
+                    className="rounded-lg text-gray-900 text-sm font-normal px-3 py-2"
+                    style={{ backgroundColor: prospect.lc_color }}
+                  >
+                    {prospect.lc_name}
+                    <span className={`absolute top-0 right-0 text-xs font-semibold py-1 px-2 rounded-tl-lg ${labelColors[prospect.status]}`}>
+                      {GetStatusLabel(prospect.status)}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Other Products Column */}
+              <div className="relative">
+                {prospect.product_type_name !== "Event" && (
+                  <div
+                    className="rounded-lg text-gray-900 text-sm font-normal px-3 py-2"
+                    style={{ backgroundColor: prospect.lc_color }}
+                  >
+                    {prospect.lc_name}
+                    <span className={`absolute top-0 right-0 text-xs font-semibold py-1 px-2 rounded-tl-lg ${labelColors[prospect.status]}`}>
+                      {GetStatusLabel(prospect.status)}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Actions Column */}
+              <div className="flex justify-end">
+                {prospect.entity_id === user?.lcId && user.role === "member" &&(
+                  <div>
+                    {prospect.status === "prospect" && (
+                      <Button
+                        onClick={() => router.push(`/dashboard/prospect/convert_to_a_lead?id=${prospect._id}`)}
+                        className="bg-yellow-400 hover:bg-yellow-500 text-white"
+                      >
+                        Convert to Lead
+                      </Button>
+                    )}
+                    {prospect.status === "lead" && (
+                      <Button
+                        onClick={() => router.push(`/dashboard/prospect/lead_to_customer?id=${prospect._id}`)}
+                        className="bg-cyan-800 hover:bg-cyan-700 text-white"
+                      >
+                        Convert to Customer Pending
+                      </Button>
+                    )}
+{prospect.status === "customerPendingMoURejected" && (
+                      <Button
+                        onClick={() => router.push(`/dashboard/prospect/lead_to_customer?id=${prospect._id}`)}
+                        className="bg-cyan-800 hover:bg-cyan-700 text-white"
+                      >
+                        Convert to Customer Pending
+                      </Button>
+                    )}
+
+
+                    {prospect.status === "promoter" && (
+                      <Button
+                        onClick={() => router.push(`/dashboard/prospect/promoter?id=${prospect._id}`)}
+                        className="bg-red-800 hover:bg-red-700 text-white"
+                      >
+                        View Promoter
+                      </Button>
+                    )}
+                    {prospect.status === "customerPending" && (
+                      <Button
+                        onClick={() => router.push(`/dashboard/prospect/customer_pending?id=${prospect._id}`)}
+                        className="bg-gray-800 hover:bg-gray-700 text-white"
+                      >
+                        View Customer Pending
+                      </Button>
+                    )}
+                    {prospect.status === "customer" && (
+                      <Button
+                        onClick={() => router.push(`/dashboard/prospect/customer?id=${prospect._id}`)}
+                        className="bg-indigo-800 hover:bg-indigo-700 text-white"
+                      >
+                        View Customer
+                      </Button>
+                    )}
+                    
+                  </div>
+                )}
+
+
+
+{user?.role === "admin" &&(
+                  <div>
                     <Button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        router.push(`/dashboard/prospect/convert_to_a_lead?id=${prospect._id}`);
-                      }}
-                      className="bg-yellow-400 hover:bg-yellow-500 text-white"
-                    >
-                      Convert to Lead
-                    </Button>
-                  )}
-                  {prospect.status === "lead" && (
-                    <Button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        router.push(`/dashboard/prospect/lead_to_customer?id=${prospect._id}`);
-                      }}
-                      className="bg-cyan-800 hover:bg-cyan-700 text-white"
-                    >
-                      Convert to Customer Pending
-                    </Button>
-                  )}
-                  {prospect.status === "promoter" && (
-                    <Button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        router.push(`/dashboard/prospect/promoter?id=${prospect._id}`);
-                      }}
-                      className="bg-red-800 hover:bg-red-700 text-white"
-                    >
-                      View Promoter
-                    </Button>
-                  )}
-                  {prospect.status === "customerPending" && (
-                    <Button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        router.push(`/dashboard/prospect/customer_pending?id=${prospect._id}`);
-                      }}
-                      className="bg-gray-800 hover:bg-gray-700 text-white"
-                    >
-                      View Customer Pending
-                    </Button>
-                  )}
-                  {prospect.status === "customer" && (
-                    <Button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        router.push(`/dashboard/prospect/customer?id=${prospect._id}`);
-                      }}
-                      className="bg-indigo-800 hover:bg-indigo-700 text-white"
-                    >
-                      View Customer
-                    </Button>
-                  )}
-                </div>
-              )}
+                        onClick={() => router.push(`/dashboard/admin_view/Main?id=${prospect._id}`)}
+                        className="bg-yellow-400 hover:bg-yellow-500 text-white"
+                      >
+                        View
+                      </Button>                   
+                  </div>
+                )}
+                
+              </div>
             </div>
             
             {/* Expanded content */}
             {expandedRows[prospect.id] && (
-              <div className="bg-gray-50 p-4 pl-11">
-                <div className="space-y-2">
-                  <div className="font-medium text-sm text-gray-600">Products:</div>
-                  <div className="flex flex-wrap gap-2">
-                    {prospect.product_type_name && (
-                      <ProductBadge name={prospect.product_type_name} />
-                    )}
-                  </div>
-                  <div className="text-sm text-gray-500">
-                    Status: {GetStatusLabel(prospect.status)}
+              <div className="col-span-4 bg-gray-50">
+                <div className="grid grid-cols-4 gap-4">
+                  <div className="col-span-4 p-4 pl-11">
+                    <div className="space-y-2">
+                      <div className="font-medium text-sm text-gray-600">Products:</div>
+                      <div className="flex flex-wrap gap-2">
+                        {prospect.product_type_name && (
+                          <ProductBadge name={prospect.product_type_name} />
+                        )}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        Status: {GetStatusLabel(prospect.status)}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
