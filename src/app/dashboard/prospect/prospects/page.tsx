@@ -9,7 +9,8 @@ import { PROSPECT_VALUES } from "@/app/lib/values";
 import { ChevronDown, ChevronRight } from "lucide-react";
 
 interface Prospect {
-  id: string;
+
+
   _id: string;
   company_name: string;
   product_type_name: string;
@@ -17,9 +18,11 @@ interface Prospect {
   lc_name: string;
   lc_color: string;
   entity_id: string;
+
 }
 
 const labelColors: { [key: string]: string } = {
+
   prospect: "bg-orange-400 text-white",
   promoter: "bg-red-500 text-white",
   customer: "bg-indigo-800 text-white",
@@ -27,6 +30,7 @@ const labelColors: { [key: string]: string } = {
   lead: "bg-yellow-400 text-white",
   customerPending: "bg-gray-800 text-white",
   customerPendingMoURejected: "bg-red-500 text-white",
+
 };
 
 const ProspectsPage = () => {
@@ -98,10 +102,14 @@ const ProspectsPage = () => {
   }, [companyFilter, productFilter, statusFilter, entityFilter, prospects]);
 
   const toggleRow = (id: string) => {
-    setExpandedRows(prev => ({
-      ...prev,
-      [id]: !prev[id]
-    }));
+    setExpandedRows((prev: Record<string, boolean>) => {
+      const newExpandedRows: Record<string, boolean> = {};
+      Object.keys(prev).forEach((key) => {
+        newExpandedRows[key] = false;
+      });
+      newExpandedRows[id] = !prev[id];
+      return newExpandedRows;
+    });
   };
 
   const GetStatusLabel = (status: string) => {
@@ -200,15 +208,15 @@ const ProspectsPage = () => {
         </div>
 
         {currentItems.map((prospect) => (
-          <div key={prospect.id} className="border-b last:border-b-0">
+          <div key={prospect._id} className="border-b last:border-b-0">
             <div className="grid grid-cols-4 gap-4 p-4 hover:bg-gray-50">
               {/* Company Name Column */}
               <div className="flex items-center">
                 <div 
-                  onClick={() => toggleRow(prospect.id)}
+                  onClick={() => toggleRow(prospect._id)}
                   className="cursor-pointer flex items-center"
                 >
-                  <div className={`mr-2 transition-transform ${expandedRows[prospect.id] ? 'rotate-90' : ''}`}>
+                  <div className={`mr-2 transition-transform ${expandedRows[prospect._id] ? 'rotate-90' : ''}`}>
                     <ChevronRight className="w-5 h-5 text-gray-400" />
                   </div>
                   <span className="font-medium text-gray-900">{prospect.company_name}</span>
@@ -320,25 +328,25 @@ const ProspectsPage = () => {
             </div>
             
             {/* Expanded content */}
-            {expandedRows[prospect.id] && (
-              <div className="col-span-4 bg-gray-50">
-                <div className="grid grid-cols-4 gap-4">
-                  <div className="col-span-4 p-4 pl-11">
-                    <div className="space-y-2">
-                      <div className="font-medium text-sm text-gray-600">Products:</div>
-                      <div className="flex flex-wrap gap-2">
-                        {prospect.product_type_name && (
-                          <ProductBadge name={prospect.product_type_name} />
-                        )}
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        Status: {GetStatusLabel(prospect.status)}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            {expandedRows[prospect._id] && (
+  <div className="col-span-4 bg-gray-50">
+    <div className="grid grid-cols-4 gap-4">
+      <div className="col-span-4 p-4 pl-11">
+        <div className="space-y-2">
+          <div className="font-medium text-sm text-gray-600">Products:</div>
+          <div className="flex flex-wrap gap-2">
+            {prospect.product_type_name && (
+              <ProductBadge name={prospect.product_type_name} />
             )}
+          </div>
+          <div className="text-sm text-gray-500">
+            Status: {GetStatusLabel(prospect.status)}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
           </div>
         ))}
       </div>

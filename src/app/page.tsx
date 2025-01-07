@@ -29,7 +29,7 @@ const LoginPage = () => {
   useEffect(() => {
     async function setEmail() {
       try {
-        const response = await fetch('/api_new/cookie');
+        const response = await fetch('/api_new/cookie/get_email');
         const data = await response.json();
       
         if (data.email) {
