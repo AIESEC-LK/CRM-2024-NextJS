@@ -3,6 +3,7 @@ import { PROSPECT_VALUES } from "@/app/lib/values";
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import { error } from "console";
+import { PROSPECT_EXPIRE_TIME_DURATION } from "@/app/lib/values";
 
 interface IProspectRequest {
   companyId: string;
@@ -61,7 +62,7 @@ export async function POST(req: Request) {
    
     // Set date expires to three months from now
     const dateExpires = new Date();
-    dateExpires.setMonth(dateExpires.getMonth() + 3);
+    dateExpires.setTime(dateAdded.getTime() + PROSPECT_EXPIRE_TIME_DURATION);
     //correct this
 
     //Check whether the company already exists

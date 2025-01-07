@@ -6,7 +6,7 @@ import { Label } from '@/app/components/ui/label'
 import { Input } from '@/app/components/ui/input'
 import ProgressBar from '@/app/components/ui/progress'
 import styles from "./styles.module.css"
-import { PROSPECT_BAR_COLOR, PROSPECT_BAR_WIDTH, PROSPECT_VALUES,CUSTOMER_PANDING_BAR_COLOR,CUSTOMER_PANDING_BAR_WIDTH,PROSPECT_EXPIRE_TIME_DURATION ,LEAD_EXPIRE_TIME_DURATION,LEAD_BAR_WIDTH,LEAD_BAR_COLOR ,CUSTOMER_BAR_COLOR,CUSTOMER_BAR_WIDTH ,PROMOTER_BAR_COLOR,PROMOTER_BAR_WIDTH} from '@/app/lib/values';
+import { PROSPECT_BAR_COLOR, PROSPECT_BAR_WIDTH, PROSPECT_VALUES,CUSTOMER_PANDING_BAR_COLOR,CUSTOMER_PANDING_BAR_WIDTH,PROSPECT_EXPIRE_TIME_DURATION ,LEAD_EXPIRE_TIME_DURATION,LEAD_BAR_WIDTH,LEAD_BAR_COLOR ,CUSTOMER_BAR_COLOR,CUSTOMER_BAR_WIDTH ,PROMOTER_BAR_COLOR,PROMOTER_BAR_WIDTH ,CUSTOMER_PENDING_MOU_REJECTED_BAR_COLOR,CUSTOMER_PENDING_MOU_REJECTED_BAR_WIDTH,PARTNERHSIPS_UI_PATH} from '@/app/lib/values';
 import ToastNotification from '@/app/components/ui/toast';
 import { useAuth } from '@/app/context/AuthContext';
 export default function ApproveCustomer() {
@@ -38,6 +38,7 @@ export default function ApproveCustomer() {
 
   const [prospectDetails, setProspectDetails] = useState<ProspectDetails | null>(null);
   const [companyId, setCompanyId] = useState('Example Company');
+
   
   const[newProduct, setNewProduct] = useState<string | null>(null);
 
@@ -62,7 +63,12 @@ const [nextStage,SetNextStage] = useState<string|null>(null)
 const [stageDropwDown,setStageDropDown] = useState<string[]>([]);
 const {user} =useAuth();
     
-  
+useEffect(() => {
+  const id = searchParams.get('id');
+  if (id) {
+    setProspectId(id);
+  }
+}, [searchParams]);
 
 
   useEffect(() => {
@@ -105,8 +111,12 @@ const {user} =useAuth();
   useEffect(() => {
     if (true) {
       const fetchProspectDetails = async () => {
+        if (!prospectId) {
+          console.warn('Prospect ID is null');
+          return;
+        }
         try {
-          const response = await fetch(`/api_new/prospects/get_prospect_in_id?id=67694b10855d970eb0dd3712`);
+          const response = await fetch(`/api_new/prospects/get_prospect_in_id?id=${prospectId}`);
           if (!response.ok) {
             throw new Error('Failed to fetch prospect details');
           }
@@ -329,7 +339,7 @@ const HandleSwapProduct = async () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        id: "676964f5855d970eb0dd3717",
+        id: {prospectId},
         product_type_id: newProduct,
       }),
     });
@@ -337,6 +347,7 @@ const HandleSwapProduct = async () => {
     if (response.ok) {
       console.log('Product updated successfully');
       setSelectedProduct(newProduct);
+      loadUpdatedProspect();
       ToastNotification({
         message: 'Product updated successfully',
         onClose: () => {}
@@ -359,7 +370,7 @@ const HandleOverwriteMoUDate = async () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        id: "676964f5855d970eb0dd3717",
+        id: {prospectId},
         date_added: mouStartDate,
         date_expires: mouEndDate,
       }),
@@ -369,6 +380,8 @@ const HandleOverwriteMoUDate = async () => {
       console.log('Date updated successfully');
       setMouStartDate(mouStartDate);
       setMouEndDate(mouEndDate);
+      loadUpdatedProspect();
+
       ToastNotification({
         message: 'Date updated successfully',
         onClose: () => {}
@@ -381,7 +394,48 @@ const HandleOverwriteMoUDate = async () => {
   }
 }
 
+const loadUpdatedProspect = async()=>{
 
+  if (!prospectId) {
+    console.warn('Prospect ID is null');
+    return;
+  }
+  try {
+    const response = await fetch(`/api_new/prospects/get_prospect_in_id?id=${prospectId}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch prospect details');
+    }
+    const data = await response.json();
+    setProspectDetails(data);
+    setCompanyId(data.company_id);
+  
+    setSelectedProduct(data.product_type_id);
+    SetprospectEntity(data.entity_id)
+    setCurrentStage(data.status);
+    setActivities(data.activities);
+    setProofDocument(data.lead_proof_url);
+    setMouUrl(data.mouUrl);
+    setAmount(data.amount);
+    setMouStartDate(data.date_added);
+    setMouEndDate(data.date_expires);
+    setCategory(data.partnershipType);
+    setExpiryDate(data.date_expires);
+    setDateAdded(data.date_added);
+    
+    
+
+  
+
+  } catch (error) {
+    console.error(error);
+
+  }
+
+
+
+
+
+}
 
 const handleOverwriteStage = async () => {
 
@@ -392,7 +446,7 @@ const handleOverwriteStage = async () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        id: "676964f5855d970eb0dd3717",
+        id:{prospectId},
         status: currentStage,
       }),
     });
@@ -405,10 +459,11 @@ const handleOverwriteStage = async () => {
         onClose: () => {}
       });
       setProgressBar({
-        text: currentStage === 'prospect' ? PROSPECT_VALUES[1].label : currentStage === 'lead' ? PROSPECT_VALUES[2].label : currentStage === 'customerPending' ? PROSPECT_VALUES[3].label : currentStage === 'lead' ? PROSPECT_VALUES[2].label : currentStage === 'customer' ? PROSPECT_VALUES[4].label : currentStage=== 'promoter' ? PROSPECT_VALUES[5].label :  '',
-          color: currentStage === 'prospect' ? PROSPECT_BAR_COLOR : currentStage === 'lead' ? LEAD_BAR_COLOR :currentStage === 'customerPending' ? CUSTOMER_PANDING_BAR_COLOR :currentStage === 'customer' ? CUSTOMER_BAR_COLOR : currentStage === 'promoter' ? PROMOTER_BAR_COLOR : '',
-          width: currentStage === 'prospect' ? PROSPECT_BAR_WIDTH : currentStage === 'lead' ? LEAD_BAR_WIDTH :currentStage === 'customerPending' ? CUSTOMER_PANDING_BAR_WIDTH :currentStage === 'customer' ? CUSTOMER_BAR_WIDTH : currentStage === 'promoter' ? PROMOTER_BAR_WIDTH : '',
-      }); 
+        text: currentStage === 'prospect' ? PROSPECT_VALUES[1].label : currentStage === 'lead' ? PROSPECT_VALUES[2].label : currentStage === 'customerPending' ? PROSPECT_VALUES[3].label : currentStage === 'lead' ? PROSPECT_VALUES[2].label : currentStage === 'customer' ? PROSPECT_VALUES[4].label : currentStage=== 'promoter' ? PROSPECT_VALUES[5].label :  currentStage === 'customerPendingMoURejected' ? PROSPECT_VALUES[8].label : '',
+          color: currentStage === 'prospect' ? PROSPECT_BAR_COLOR : currentStage === 'lead' ? LEAD_BAR_COLOR :currentStage === 'customerPending' ? CUSTOMER_PANDING_BAR_COLOR :currentStage === 'customer' ? CUSTOMER_BAR_COLOR : currentStage === 'promoter' ? PROMOTER_BAR_COLOR : currentStage === 'customerPendingMoURejected' ? CUSTOMER_PENDING_MOU_REJECTED_BAR_COLOR : '',
+          width: currentStage === 'prospect' ? PROSPECT_BAR_WIDTH : currentStage === 'lead' ? LEAD_BAR_WIDTH :currentStage === 'customerPending' ? CUSTOMER_PANDING_BAR_WIDTH :currentStage === 'customer' ? CUSTOMER_BAR_WIDTH : currentStage === 'promoter' ? PROMOTER_BAR_WIDTH : currentStage === 'customerPendingMoURejected' ? CUSTOMER_PENDING_MOU_REJECTED_BAR_WIDTH : '',
+      });
+      loadUpdatedProspect();
       
     } else {
       console.error('Failed to update stage ' + response.statusText);
@@ -430,11 +485,11 @@ const HandleAprooveMou = async () => {
     const response = await fetch('/api_new/prospects/update_a_prospect', {
       method: 'PATCH',
       headers: {
-        'Content-Type': 'application/json',
+      'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        id: "676964f5855d970eb0dd3717",
-        status: 'customer',
+      id: prospectId,
+      status: 'customer',
       }),
     });
 
@@ -446,10 +501,48 @@ const HandleAprooveMou = async () => {
         onClose: () => {}
       });
       setProgressBar({
-        text: currentStage === 'prospect' ? PROSPECT_VALUES[1].label : currentStage === 'lead' ? PROSPECT_VALUES[2].label : currentStage === 'customerPending' ? PROSPECT_VALUES[3].label : currentStage === 'lead' ? PROSPECT_VALUES[2].label : currentStage === 'customer' ? PROSPECT_VALUES[4].label : currentStage=== 'promoter' ? PROSPECT_VALUES[5].label :  '',
-          color: currentStage === 'prospect' ? PROSPECT_BAR_COLOR : currentStage === 'lead' ? LEAD_BAR_COLOR :currentStage === 'customerPending' ? CUSTOMER_PANDING_BAR_COLOR :currentStage === 'customer' ? CUSTOMER_BAR_COLOR : currentStage === 'promoter' ? PROMOTER_BAR_COLOR : '',
-          width: currentStage === 'prospect' ? PROSPECT_BAR_WIDTH : currentStage === 'lead' ? LEAD_BAR_WIDTH :currentStage === 'customerPending' ? CUSTOMER_PANDING_BAR_WIDTH :currentStage === 'customer' ? CUSTOMER_BAR_WIDTH : currentStage === 'promoter' ? PROMOTER_BAR_WIDTH : '',
+        text: currentStage === 'prospect' ? PROSPECT_VALUES[1].label : currentStage === 'lead' ? PROSPECT_VALUES[2].label : currentStage === 'customerPending' ? PROSPECT_VALUES[3].label : currentStage === 'lead' ? PROSPECT_VALUES[2].label : currentStage === 'customer' ? PROSPECT_VALUES[4].label : currentStage=== 'promoter' ? PROSPECT_VALUES[5].label :  currentStage === 'customerPendingMoURejected' ? PROSPECT_VALUES[8].label : '',
+          color: currentStage === 'prospect' ? PROSPECT_BAR_COLOR : currentStage === 'lead' ? LEAD_BAR_COLOR :currentStage === 'customerPending' ? CUSTOMER_PANDING_BAR_COLOR :currentStage === 'customer' ? CUSTOMER_BAR_COLOR : currentStage === 'promoter' ? PROMOTER_BAR_COLOR : currentStage === 'customerPendingMoURejected' ? CUSTOMER_PENDING_MOU_REJECTED_BAR_COLOR : '',
+          width: currentStage === 'prospect' ? PROSPECT_BAR_WIDTH : currentStage === 'lead' ? LEAD_BAR_WIDTH :currentStage === 'customerPending' ? CUSTOMER_PANDING_BAR_WIDTH :currentStage === 'customer' ? CUSTOMER_BAR_WIDTH : currentStage === 'promoter' ? PROMOTER_BAR_WIDTH : currentStage === 'customerPendingMoURejected' ? CUSTOMER_PENDING_MOU_REJECTED_BAR_WIDTH : '',
       });
+      loadUpdatedProspect();
+    } else {
+      console.error('Failed to approve MOU ' + response.statusText);
+    }
+  } catch (error) {
+    console.error('An error occurred while approving the MOU:', error);
+  }
+}
+
+
+
+const HandleRejectAprooveMou = async () => {
+  
+  try {
+    const response = await fetch('/api_new/prospects/update_a_prospect', {
+      method: 'PATCH',
+      headers: {
+      'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+      id: prospectId,
+      status: 'customerPendingMoURejected',
+      }),
+    });
+
+    if (response.ok) {
+      console.log('MOU approved successfully');
+      setCurrentStage(currentStage);
+      ToastNotification({
+        message: 'MOU approved successfully',
+        onClose: () => {}
+      });
+      setProgressBar({
+        text: currentStage === 'prospect' ? PROSPECT_VALUES[1].label : currentStage === 'lead' ? PROSPECT_VALUES[2].label : currentStage === 'customerPending' ? PROSPECT_VALUES[3].label : currentStage === 'lead' ? PROSPECT_VALUES[2].label : currentStage === 'customer' ? PROSPECT_VALUES[4].label : currentStage=== 'promoter' ? PROSPECT_VALUES[5].label :  currentStage === 'customerPendingMoURejected' ? PROSPECT_VALUES[8].label : '',
+          color: currentStage === 'prospect' ? PROSPECT_BAR_COLOR : currentStage === 'lead' ? LEAD_BAR_COLOR :currentStage === 'customerPending' ? CUSTOMER_PANDING_BAR_COLOR :currentStage === 'customer' ? CUSTOMER_BAR_COLOR : currentStage === 'promoter' ? PROMOTER_BAR_COLOR : currentStage === 'customerPendingMoURejected' ? CUSTOMER_PENDING_MOU_REJECTED_BAR_COLOR : '',
+          width: currentStage === 'prospect' ? PROSPECT_BAR_WIDTH : currentStage === 'lead' ? LEAD_BAR_WIDTH :currentStage === 'customerPending' ? CUSTOMER_PANDING_BAR_WIDTH :currentStage === 'customer' ? CUSTOMER_BAR_WIDTH : currentStage === 'promoter' ? PROMOTER_BAR_WIDTH : currentStage === 'customerPendingMoURejected' ? CUSTOMER_PENDING_MOU_REJECTED_BAR_WIDTH : '',
+      });
+      loadUpdatedProspect();
     } else {
       console.error('Failed to approve MOU ' + response.statusText);
     }
@@ -488,7 +581,7 @@ const HandleOverwriteDate = async () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        id: "67694b10855d970eb0dd3712",
+        id: {prospectId},
         date_expires: expiryDate,
       }),
     });
@@ -499,7 +592,9 @@ const HandleOverwriteDate = async () => {
       ToastNotification({
         message: 'Date updated successfully',
         onClose: () => {}
+        
       });
+      loadUpdatedProspect();
     } else {
       console.error('Failed to update date ' + response.statusText);
     }
@@ -508,13 +603,48 @@ const HandleOverwriteDate = async () => {
   }
 }
 
+const DeletePartnership = async () => {
+
+  try {
+    const response = await fetch(`/api_new/prospects/delete_a_prospect`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id:prospectId}),
+
+    });
+
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Failed to delete prospect");
+    }
+    const data = await response.json();
+    if (data.success) {
+      console.log("Prospect deleted successfully!");
+    router.push(PARTNERHSIPS_UI_PATH);
+
+      return { success: true, message: "Prospect deleted successfully!" };
+    } else {
+      console.warn("No documents were deleted:", data.error);
+      return { success: false, message: data.error || "No changes made." };
+    }
+  } catch (error) {
+    console.error("Error deleting prospect:", error);
+    return { success: false || "An unknown error occurred." };
+  }
+
+
+}
+
 
 useEffect(() => {
   if (currentStage) {
     setProgressBar({
-      text: currentStage === 'prospect' ? PROSPECT_VALUES[1].label : currentStage === 'lead' ? PROSPECT_VALUES[2].label : currentStage === 'customerPending' ? PROSPECT_VALUES[3].label : currentStage === 'lead' ? PROSPECT_VALUES[2].label : currentStage === 'customer' ? PROSPECT_VALUES[4].label : currentStage=== 'promoter' ? PROSPECT_VALUES[5].label :  '',
-        color: currentStage === 'prospect' ? PROSPECT_BAR_COLOR : currentStage === 'lead' ? LEAD_BAR_COLOR :currentStage === 'customerPending' ? CUSTOMER_PANDING_BAR_COLOR :currentStage === 'customer' ? CUSTOMER_BAR_COLOR : currentStage === 'promoter' ? PROMOTER_BAR_COLOR : '',
-        width: currentStage === 'prospect' ? PROSPECT_BAR_WIDTH : currentStage === 'lead' ? LEAD_BAR_WIDTH :currentStage === 'customerPending' ? CUSTOMER_PANDING_BAR_WIDTH :currentStage === 'customer' ? CUSTOMER_BAR_WIDTH : currentStage === 'promoter' ? PROMOTER_BAR_WIDTH : '',
+      text: currentStage === 'prospect' ? PROSPECT_VALUES[1].label : currentStage === 'lead' ? PROSPECT_VALUES[2].label : currentStage === 'customerPending' ? PROSPECT_VALUES[3].label : currentStage === 'lead' ? PROSPECT_VALUES[2].label : currentStage === 'customer' ? PROSPECT_VALUES[4].label : currentStage=== 'promoter' ? PROSPECT_VALUES[5].label :  currentStage === 'customerPendingMoURejected' ? PROSPECT_VALUES[8].label : '',
+        color: currentStage === 'prospect' ? PROSPECT_BAR_COLOR : currentStage === 'lead' ? LEAD_BAR_COLOR :currentStage === 'customerPending' ? CUSTOMER_PANDING_BAR_COLOR :currentStage === 'customer' ? CUSTOMER_BAR_COLOR : currentStage === 'promoter' ? PROMOTER_BAR_COLOR : currentStage === 'customerPendingMoURejected' ? CUSTOMER_PENDING_MOU_REJECTED_BAR_COLOR : '',
+        width: currentStage === 'prospect' ? PROSPECT_BAR_WIDTH : currentStage === 'lead' ? LEAD_BAR_WIDTH :currentStage === 'customerPending' ? CUSTOMER_PANDING_BAR_WIDTH :currentStage === 'customer' ? CUSTOMER_BAR_WIDTH : currentStage === 'promoter' ? PROMOTER_BAR_WIDTH : currentStage === 'customerPendingMoURejected' ? CUSTOMER_PENDING_MOU_REJECTED_BAR_WIDTH : '',
     });
   }
 }, [currentStage]);
@@ -544,10 +674,10 @@ if (user?.role !== "admin") {
             <button className="bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 rounded">
               Acc Management
             </button>
-            <button className="bg-yellow-500 hover:bg-yellow-400 text-white font-bold py-2 px-4 rounded">
+            {/* <button className="bg-yellow-500 hover:bg-yellow-400 text-white font-bold py-2 px-4 rounded">
               End Partnership
-            </button>
-            <button className="bg-red-500 hover:bg-red-400 text-white font-bold py-2 px-4 rounded">
+            </button> */}
+            <button className="bg-red-500 hover:bg-red-400 text-white font-bold py-2 px-4 rounded" onClick={DeletePartnership}>
               Delete Partnership
             </button>
           </div>
@@ -564,7 +694,7 @@ if (user?.role !== "admin") {
         </div>
 
          {/* EditLead +EditProspect*/}
-        {(currentStage === 'prospect' || currentStage === 'lead') && (
+        {(currentStage === 'prospect' || currentStage === 'lead' ) && (
           <div className="bg-gray-100 rounded-lg shadow-lg p-6 mb-6">
             <h3 className="text-lg font-medium mb-4">Active Stage - {currentStage}</h3>
             <ToastNotification
@@ -589,7 +719,7 @@ if (user?.role !== "admin") {
       )}
 
         {/* Show in EditCustomer+ApproveCustomer */}
-        {(currentStage === 'customer' || currentStage === 'customerPending') && (
+        {(currentStage === 'customer' || currentStage === 'customerPending'|| currentStage ==='customerPendingMoURejected') && (
         <div className="bg-gray-100 rounded-lg shadow-lg p-6 mb-6">
           <h3 className="text-lg font-medium mb-4">Active Stage - {getStageByValue(currentStage)}</h3>
           <div className="grid grid-cols-2 gap-6">
@@ -623,12 +753,12 @@ if (user?.role !== "admin") {
           
 
           {/* Show in ApproveCustomer */}
-          {(currentStage === 'customerPending') && (
+          {(currentStage === 'customerPending' || currentStage ==='customerPendingMoURejected') && (
           <div className="flex gap-2 mt-4">
             <button className="bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 rounded" onClick={HandleAprooveMou}>
               APPROVE MOU
             </button>
-            <button className="bg-red-500 hover:bg-red-400 text-white font-bold py-2 px-4 rounded">
+            <button className="bg-red-500 hover:bg-red-400 text-white font-bold py-2 px-4 rounded" onClick={HandleRejectAprooveMou}>
               REJECT MOU
             </button>
           </div>
@@ -660,7 +790,7 @@ if (user?.role !== "admin") {
         <div className="bg-gray-100 rounded-lg shadow-lg p-6 mb-6">
 
           
-          {(currentStage === 'lead' || currentStage === 'customerPending' || currentStage === 'customer') && (
+          {(currentStage === 'lead' || currentStage === 'customerPending' || currentStage === 'customer' || currentStage ==='customerPendingMoURejected') && (
             <>
               <h3 className="text-lg font-medium mb-4">Overwrite Partnership Details</h3>
               <select className="w-full p-2 border rounded mb-6" onChange={handleStageChange}>
@@ -688,7 +818,7 @@ if (user?.role !== "admin") {
             
 
             {/* EditCustomer + Approve Mou */}
-            {(currentStage === 'customer' || currentStage === 'customerPending') && (
+            {(currentStage === 'customer' || currentStage === 'customerPending' || currentStage ==='customerPendingMoURejected') && (
             <div>
               <Label>MOU Start Date</Label>
               <Input
@@ -702,7 +832,7 @@ if (user?.role !== "admin") {
             )}
 
             {/* EditCustomer + Approve Mou */}
-            {(currentStage === 'customer' || currentStage === 'customerPending') && (
+            {(currentStage === 'customer' || currentStage === 'customerPending' || currentStage ==='customerPendingMoURejected') && (
             <div>
               <Label>MOU End Date</Label>
               <Input
@@ -745,7 +875,7 @@ if (user?.role !== "admin") {
           
 
             {/* show in EditCustomer + Approve Mou */}
-            {(currentStage === 'customer' || currentStage === 'customerPending') && (
+            {(currentStage === 'customer' || currentStage === 'customerPending' || currentStage ==='customerPendingMoURejected') && (
           <button className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded mt-6" onClick={HandleOverwriteMoUDate}>
             OVERWRITE DATES
           </button>
@@ -761,17 +891,17 @@ if (user?.role !== "admin") {
 
 
         {/* Show in Lead + Approve Customer + EditCustomer + EditPromoter */}
-        {(currentStage === 'promoter' || currentStage === 'lead' || currentStage ==='customerPending' || currentStage==='customer') && (
+        {(currentStage === 'promoter' || currentStage === 'lead' || currentStage ==='customerPending' || currentStage==='customer'|| currentStage ==='customerPendingMoURejected') && (
         <div className="bg-gray-100 rounded-lg shadow-lg p-6 mb-6">
           <h3 className="text-lg font-medium mb-4">Prospect Stage</h3>
           <div className="grid grid-cols-2 gap-6">
             <div>
               <Label>Remark by entity members</Label>
               {
-                              
-                              activities.map((element, index) => (
-                                 <p className="text-sm text-muted-foreground mt-2" key={index} >{element}</p>
-                              ))}
+                activities && activities.map((element, index) => (
+                  <p className="text-sm text-muted-foreground mt-2" key={index}>{element}</p>
+                ))
+              }
             </div>
             <div>
               <Label>Proof Document</Label>
@@ -800,7 +930,7 @@ if (user?.role !== "admin") {
         )}
 
         {/* Show in Apporve MoU + EditCustomer + EditPromoter */}
-        {(currentStage === 'customer' || currentStage === 'customerPending' || currentStage === 'promoter') && (
+        {(currentStage === 'customer' || currentStage === 'customerPending' || currentStage === 'promoter' || currentStage ==='customerPendingMoURejected') && (
         <div className="bg-gray-100 rounded-lg shadow-lg p-6 mb-6">
           <h3 className="text-lg font-medium mb-4">Lead Stage</h3>
           <div className="grid grid-cols-2 gap-6">

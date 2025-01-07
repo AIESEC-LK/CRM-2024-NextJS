@@ -101,7 +101,7 @@ const UserManagement: React.FC = () => {
                     className="border border-gray-300 rounded px-3 py-2"
                 >
                     <option value="">User&apos;s Role</option>
-                    <option value="user">User</option>
+                    <option value="member">Member</option>
                     <option value="admin">Admin</option>
                 </select>
 
