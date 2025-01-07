@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { getAccessTokenFromOauth } from "@/app/auth/auth-utils";
 import { GetTokenResponse } from "@/app/auth/auth-types";
-import { getUserEmail } from "@/utils/person-utils";
+import { getUserDetails } from "@/utils/person-utils";
 import clientPromise from "../lib/mongodb";
 
 export async function GET(request: NextRequest) {
@@ -16,13 +16,13 @@ export async function GET(request: NextRequest) {
       : `${process.env.NEXT_PUBLIC_BASE_URL}/`;
   console.log("Redirect URI:", redirect_uri);
 
-  const userEmail = await getUserEmail(authResponse.access_token);
-  console.log("📩 User Email:", userEmail);
+  const userDetails = await getUserDetails(authResponse.access_token);
+ 
 
   try {
     const client = await clientPromise;
     const db = client.db(process.env.DB_NAME);
-    const user = await db.collection("Users").findOne({ userEmail: userEmail });
+    const user = await db.collection("Users").findOne({ userEmail: userDetails.email });
 
     if (user) {
       console.log("✅ User found:", user);
@@ -42,7 +42,13 @@ export async function GET(request: NextRequest) {
 
   const response = NextResponse.redirect(redirect_uri, { status: 302 });
 
-  response.cookies.set("email", userEmail, {
+  response.cookies.set("email", userDetails.email, {
+    httpOnly: true,
+    secure: true,
+    maxAge: authResponse.expires_in,
+  });
+
+  response.cookies.set("full_name", userDetails.full_name, {
     httpOnly: true,
     secure: true,
     maxAge: authResponse.expires_in,
