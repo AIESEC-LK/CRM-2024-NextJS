@@ -1,12 +1,59 @@
+'use client'
 import React from "react";
 import Link from "next/link";
 import { useAuth } from "@/app/context/AuthContext";
+import { useEffect,useState } from "react";
+
 
 
 const Header = () => {
 
+const [name,setName] = useState<String>("")
+  useEffect(() => {
+
+const fetchName = async () => {
+
+  try {
+    const response = await fetch('/api_new/cookie/get_full_name');
+    const data = await response.json();
+    
+    setName(data.full_name);
+    console.log(data);
+    console.log(name);
+
+  } catch (error) {
+    console.error('Error fetching email:', error);
+
+}
+}
+
+fetchName();
+
+  }, []);
 
 
+  const HandleLogOut = async () => {
+    try {
+      const response = await fetch(`https://auth.aiesec.org/users/sign_out`, {
+        method: 'POST',  
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+  
+      if (response.ok) {
+        console.log('Logout successful');
+      
+      } else {
+        console.log(response);
+        throw new Error('Logout failed'); 
+      }
+  
+    } catch (error) {
+      console.error('Error logging out:', error);
+
+    }
+  };
  
 
   return (
@@ -22,11 +69,11 @@ const Header = () => {
         <div className="flex items-center space-x-4">
         <div className="flex items-center gap-2">
             <div className="bg-yellow-500 rounded-full w-8 h-8 flex items-center justify-center text-white">
-              Y
+              {name.charAt(0)}
             </div>
-            <span>Yasanjith Rajapathirane</span>
+            <span>{name}</span>
           </div>
-          <button className="bg-red-600 px-3 py-1 rounded hover:bg-red-700">
+          <button className="bg-red-600 px-3 py-1 rounded hover:bg-red-700" onClick={HandleLogOut}>
             Logout
           </button>
         </div>
