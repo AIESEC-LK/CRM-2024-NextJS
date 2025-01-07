@@ -8,7 +8,7 @@ import { useEffect,useState } from "react";
 
 const Header = () => {
 
-const [name,setName] = useState<String>("")
+const [name,setName] = useState("")
   useEffect(() => {
 
 const fetchName = async () => {
@@ -33,26 +33,26 @@ fetchName();
 
 
   const HandleLogOut = async () => {
-    try {
-      const response = await fetch(`https://auth.aiesec.org/users/sign_out`, {
-        method: 'POST',  
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
+    // try {
+    //   const response = await fetch(`https://auth.aiesec.org/users/sign_out`, {
+    //     method: 'POST',  
+    //     headers: {
+    //       'Content-Type': 'application/json'
+    //     }
+    //   });
   
-      if (response.ok) {
-        console.log('Logout successful');
+    //   if (response.ok) {
+    //     console.log('Logout successful');
       
-      } else {
-        console.log(response);
-        throw new Error('Logout failed'); 
-      }
+    //   } else {
+    //     console.log(response);
+    //     throw new Error('Logout failed'); 
+    //   }
   
-    } catch (error) {
-      console.error('Error logging out:', error);
+    // } catch (error) {
+    //   console.error('Error logging out:', error);
 
-    }
+    // }
   };
  
 
