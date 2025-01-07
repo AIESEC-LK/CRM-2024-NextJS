@@ -16,6 +16,12 @@ const WHITELISTED_ENTITIES = [
   1559, // Tunisia
 ];
 
+interface Person {
+  id: number;
+  email: string;
+  full_name: string;
+}
+
 export function isPersonIdPresent(): boolean {
   const personId = cookies().get("person_id");
   return !!(
@@ -26,18 +32,20 @@ export function isPersonIdPresent(): boolean {
   );
 }
 
-export async function getUserEmail(accessToken: string): Promise<string> {
+export async function getUserDetails(accessToken: string): Promise<Person> {
   const query = gql`
     {
       currentPerson {
+        id
         email
+        full_name
       }
     }
   `;
 
   const response = await runQueryWithAccessToken(accessToken, query);
 
-  return response.currentPerson.email;
+  return response.currentPerson;
 }
 
 export async function getPersonId(accessToken?: string): Promise<number> {
