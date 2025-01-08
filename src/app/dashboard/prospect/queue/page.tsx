@@ -78,8 +78,11 @@ const filteredRequests = requests.filter(
 
   return (
     <div className="container mx-auto pt-0">
-      <h1 className="text-2xl font-bold mb-6 ml-4">Prospect Waiting List</h1>
-      <div className="mb-4 relative">
+      <div className="w-full ml-4 mb-6 bg-gray-100 rounded overflow-hidden shadow-lg flex items-center pt-3 pb-3">
+        <h1 className="text-2xl font-bold ml-4"><i className="fa-regular fa-clock mr-4"></i>Prospect Waiting List</h1>
+      </div>
+      <div className="w-full ml-4 bg-gray-100 rounded overflow-hidden shadow-lg flex items-center pt-3 pb-3 pl-3 pr-3">
+      <div className="relative w-full">
         <Input
           type="text"
           placeholder="Search requests..."
@@ -89,6 +92,9 @@ const filteredRequests = requests.filter(
         />
         <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
       </div>
+      </div>
+      <br/>
+      <div className="w-full ml-4 mb-6 bg-gray-100 rounded overflow-hidden shadow-lg flex items-center pt-3 pb-3">
       <Table>
         <TableHeader>
           <TableRow>
@@ -106,7 +112,7 @@ const filteredRequests = requests.filter(
             <TableRow key={request._id}>
               <TableCell>
                                       <div
-                        className="rounded-lg text-gray-900 text-lg font-normal px-4 py-4"
+                        className="rounded-lg text-gray-900 text-sm font-normal px-2 py-2"
                         style={{ backgroundColor: request.entityColor }}
                       >
                         {request.entityName}
@@ -173,6 +179,7 @@ const filteredRequests = requests.filter(
           ))}
         </TableBody>
       </Table>
+    </div>
     </div>
   );
 }
