@@ -187,9 +187,16 @@ return item?.label
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ id:company?._id, approved : true }),
+        body: JSON.stringify({ 
+          id: prospect.company_id, // Convert ObjectId to string
+          approved: true 
+        }),
       });
 
+      if (!responseforcompanyUpdate.ok) {
+        const error = await responseforcompanyUpdate.json();
+        console.error('Update failed:', error);
+      }
 
       if(!responseforcompanyUpdate.ok){
 
