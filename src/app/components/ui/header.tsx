@@ -3,11 +3,13 @@ import React from "react";
 import Link from "next/link";
 import { useAuth } from "@/app/context/AuthContext";
 import { useEffect,useState } from "react";
+import { useRouter } from "next/navigation";
 
 
 
 const Header = () => {
 
+  const router = useRouter();
 const [name,setName] = useState("")
   useEffect(() => {
 
@@ -33,26 +35,30 @@ fetchName();
 
 
   const HandleLogOut = async () => {
-    // try {
-    //   const response = await fetch(`https://auth.aiesec.org/users/sign_out`, {
-    //     method: 'POST',  
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     }
-    //   });
-  
-    //   if (response.ok) {
-    //     console.log('Logout successful');
+    try {
+      const response = await fetch(`https://auth.aiesec.org/users/sign_out`, {
+        method: 'GET',  
       
-    //   } else {
-    //     console.log(response);
-    //     throw new Error('Logout failed'); 
-    //   }
+      });
   
-    // } catch (error) {
-    //   console.error('Error logging out:', error);
+      if (response.ok) {
 
-    // }
+        await fetch('/api_new/cookie/clear_cookies', {
+
+          method: 'DELETE',
+        });
+        router.push('/');
+        console.log('Logout successful');
+      
+      } else {
+        console.log(response);
+        throw new Error('Logout failed'); 
+      }
+  
+    } catch (error) {
+      console.error('Error logging out:', error);
+
+    }
   };
  
 
