@@ -76,8 +76,12 @@ export default function MakeALeadPage() {
   return (
     <>
       <div className="container mx-auto pt-0 pr-4">
-        <h1 className="text-2xl font-bold mb-6 ml-4">{companyName + " - "}<span style={{ color: lc_color }}>{lc_name + " " }</span> <span style={{ color: CUSTOMER_PANDING_BAR_COLOR }}>Customer Pending</span> {" for" + " " + productTypeName + " from " + activeMouStartDate + " " + "to" + " " + activeMouEndDate } </h1>
-        
+        <div className="w-full ml-4 mb-6 bg-gray-100 rounded overflow-hidden shadow-lg flex items-center pt-3 pb-3">
+
+        <h1 className="text-2xl font-bold ml-4">
+        <i className="fa-solid fa-handshake-simple mr-3"></i>  
+        {companyName + " - "}<span style={{ color: lc_color }}>{lc_name + " " }</span> <span style={{ color: CUSTOMER_PANDING_BAR_COLOR }}>Customer Pending</span> {" for" + " " + productTypeName} </h1>
+        </div>
 
         <div className="grid grid-cols-2 gap-6">
 

@@ -210,7 +210,9 @@ export default function ConvertToALeadPage() {
   }else{
   return (
     <div className="container mx-auto pt-0">
-      <h1 className="text-2xl font-bold mb-6 ml-4">
+      <div className="w-full ml-4 mb-6 bg-gray-100 rounded overflow-hidden shadow-lg flex items-center pt-3 pb-3">
+      <h1 className="text-2xl font-bold ml-4">
+        <i className="fa-solid fa-handshake-simple mr-3"></i>
         {companyName + " - "}
         <span style={{ color: lc_color }}>{lc_name + " "}</span>
         <span style={{ color: stage === "prospect" ? PROSPECT_BAR_COLOR : LEAD_BAR_COLOR }}>
@@ -218,6 +220,7 @@ export default function ConvertToALeadPage() {
         </span>
         {" for " + productTypeName}
       </h1>
+      </div>
       <div className="grid grid-cols-2 gap-16 pr-6">
         <div className="w-full ml-4 mt-5 pr-6 bg-gray-100 rounded overflow-hidden shadow-lg">
           <div className="px-14 py-14">

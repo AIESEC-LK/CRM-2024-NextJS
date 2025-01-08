@@ -12,6 +12,7 @@ import Image from "next/image";
 import { useSearchParams} from 'next/navigation';
 import { LEAD_BAR_COLOR, LEAD_BAR_WIDTH, CUSTOMER_PANDING_BAR_COLOR, CUSTOMER_PANDING_BAR_WIDTH, PROSPECT_VALUES } from "@/app/lib/values";
 import { formatDate } from "./functions";
+import ListGroup from "@/app/components/ui/list_groups";
 
   interface Product {
     _id: string;
@@ -35,7 +36,7 @@ export default function MakeALeadPage() {
   const [leadMouStartDate, setLeadMouStartDate] = useState("");
   const [leadMouEndDate, setLeadMouEndDate] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
-  //const [activities, setActivities] = useState<string[]>([]);
+  const [activities, setActivities] = useState<string[]>([]);
   const [partnershipType, setPartnershipType] = useState('');
   const [amount, setAmount] = useState('');
   const [id, setId] = useState('');
@@ -50,6 +51,7 @@ export default function MakeALeadPage() {
    const [lc_color, setLc_color] = useState<string>("");
    const [productTypeName, setProductTypeName] = useState<String>("");
   const [stage, setStage] = useState('');
+  const [category, setCategory] = useState('');
 
 
   useEffect(() => {
@@ -78,7 +80,9 @@ export default function MakeALeadPage() {
         setProductTypeName(data.product_type_name || "");
         setLeadMouStartDate(formatDate(data.date_added) || "");
         setLeadMouEndDate(formatDate(data.date_expires) || "");
+        setActivities(data.activities || []);
         setStage("lead");
+        setCategory("Not set")
         } catch (error) {
           console.error('Error fetching prospect details:', error);
         }
@@ -143,6 +147,7 @@ export default function MakeALeadPage() {
         setProgressBarColor(CUSTOMER_PANDING_BAR_COLOR);
         setProgressBarWidth(CUSTOMER_PANDING_BAR_WIDTH);
         setStage("Customer Pending");
+        setCategory("set")
       } else {
         alert(`Error: ${result.error}`);
       }
@@ -176,15 +181,18 @@ export default function MakeALeadPage() {
   return (
 
     <div className="container mx-auto pt-0 pr-4">
-<h1 className="text-2xl font-bold mb-6 ml-4">
-  {companyName + " - "}
-  <span style={{ color: lc_color }}>{lc_name + " "}</span>
-  <span style={{ color: stage === "lead" ? LEAD_BAR_COLOR : CUSTOMER_PANDING_BAR_COLOR }}>
-    {stage}
-  </span>
-  {" for " + productTypeName + " from " + leadMouStartDate + " to " + leadMouEndDate}
-</h1>
-      
+<div className="w-full ml-4 mb-6 bg-gray-100 rounded overflow-hidden shadow-lg flex items-center pt-3 pb-3">
+  <h1 className="text-2xl font-bold ml-4">
+    <i className="fa-solid fa-handshake-simple mr-3"></i>
+    {companyName + " - "}
+    <span style={{ color: lc_color }}>{lc_name + " "}</span>
+    <span style={{ color: stage === "lead" ? LEAD_BAR_COLOR : CUSTOMER_PANDING_BAR_COLOR }}>
+      {stage}
+    </span>
+    {" for " + productTypeName}
+  </h1>
+</div>
+
 
       <div className="grid grid-cols-2 gap-6">
         {/* Left Column */}
@@ -232,8 +240,8 @@ export default function MakeALeadPage() {
             <h1 className="text-2xl font-bold mb-6"><i className="fa-solid fa-fire mr-3"></i>Active Stage</h1>
             <Label htmlFor="category" className="block mb-2">Category:</Label>
             <Input
-              value={partnershipCategoryName}
-              onChange={(e) => setPartnershipCategoryName(e.target.value)}
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
               className="w-full mb-4"
               type="text"
               disabled
@@ -246,11 +254,11 @@ export default function MakeALeadPage() {
           <div className="px-14 py-14">
             <h1 className="text-2xl font-bold mb-6"><i className="fa-solid fa-car-side mr-3"></i>Prospect Stage</h1>
             <Label htmlFor="companyName" className="block mb-2">Activities:</Label>
-            {/*}
+            {
             <ListGroup
               values={activities.length > 0 ? activities : ['No activities recorded']}
               className="mt-4 mb-4"
-            />*/}
+            />}
           </div>
         </div>
 
