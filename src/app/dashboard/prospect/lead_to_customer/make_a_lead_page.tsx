@@ -11,6 +11,7 @@ import ProgressBar from "@/app/components/ui/progress";
 import Image from "next/image";
 import { useSearchParams} from 'next/navigation';
 import { LEAD_BAR_COLOR, LEAD_BAR_WIDTH, CUSTOMER_PANDING_BAR_COLOR, CUSTOMER_PANDING_BAR_WIDTH, PROSPECT_VALUES } from "@/app/lib/values";
+import { formatDate } from "./functions";
 
   interface Product {
     _id: string;
@@ -45,6 +46,11 @@ export default function MakeALeadPage() {
   const [progressBarText, setProgressBarText] = useState(PROSPECT_VALUES[2].label);
   const [progressBarColor, setProgressBarColor] = useState(LEAD_BAR_COLOR);
   const [progressBarWidth, setProgressBarWidth] = useState(LEAD_BAR_WIDTH);
+  const [lc_name, setLc_name] = useState<string>("");
+   const [lc_color, setLc_color] = useState<string>("");
+   const [productTypeName, setProductTypeName] = useState<String>("");
+  const [stage, setStage] = useState('');
+
 
   useEffect(() => {
     const id = searchParams.get('id');
@@ -67,6 +73,12 @@ export default function MakeALeadPage() {
           setProspectDetails(data);
           setCompanyName(data.company_name);
           setSelectedProduct(data.product_type_id);
+          setLc_name(data.lc_name || "");
+        setLc_color(data.lc_color || "");
+        setProductTypeName(data.product_type_name || "");
+        setLeadMouStartDate(formatDate(data.date_added) || "");
+        setLeadMouEndDate(formatDate(data.date_expires) || "");
+        setStage("lead");
         } catch (error) {
           console.error('Error fetching prospect details:', error);
         }
@@ -130,6 +142,7 @@ export default function MakeALeadPage() {
         setProgressBarText(PROSPECT_VALUES[3].label);
         setProgressBarColor(CUSTOMER_PANDING_BAR_COLOR);
         setProgressBarWidth(CUSTOMER_PANDING_BAR_WIDTH);
+        setStage("Customer Pending");
       } else {
         alert(`Error: ${result.error}`);
       }
@@ -163,7 +176,15 @@ export default function MakeALeadPage() {
   return (
 
     <div className="container mx-auto pt-0 pr-4">
-      <h1 className="text-2xl font-bold mb-6 ml-4">Lead to Customer Pending</h1>
+<h1 className="text-2xl font-bold mb-6 ml-4">
+  {companyName + " - "}
+  <span style={{ color: lc_color }}>{lc_name + " "}</span>
+  <span style={{ color: stage === "lead" ? LEAD_BAR_COLOR : CUSTOMER_PANDING_BAR_COLOR }}>
+    {stage}
+  </span>
+  {" for " + productTypeName + " from " + leadMouStartDate + " to " + leadMouEndDate}
+</h1>
+      
 
       <div className="grid grid-cols-2 gap-6">
         {/* Left Column */}

@@ -19,6 +19,11 @@ export default function MakeALeadPage() {
   const [leadMouEndDate, setLeadMouEndDate] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
    const [activities, setActivities] = useState<string[]>([]);
+   const [lc_name, setLc_name] = useState<string>("");
+   const [lc_color, setLc_color] = useState<string>("");
+   const [productTypeName, setProductTypeName] = useState<String>("");
+ 
+
 
   useEffect(() => {
     async function fetchProducts() {
@@ -58,6 +63,9 @@ export default function MakeALeadPage() {
         setpartnershipCategoryName(prospect.partnership_type || "");
         setActivities(prospect.activities || []);
         setpartnershipCategoryName(prospect.amount || "Inkind");
+        setLc_name(prospect.lc_name || "");
+        setLc_color(prospect.lc_color || "");
+        setProductTypeName(prospect.product_type_name || "");
       } catch (error) {
         console.error("Error fetching prospect:", error);
       }
@@ -70,7 +78,7 @@ export default function MakeALeadPage() {
   return (
     <>
       <div className="container mx-auto pt-0 pr-4">
-        <h1 className="text-2xl font-bold mb-6 ml-4">Customer</h1>
+        <h1 className="text-2xl font-bold mb-6 ml-4">{companyName + " - "}<span style={{ color: lc_color }}>{lc_name + " " }</span> <span style={{ color: CUSTOMER_BAR_COLOR }}>Promoter</span> {" for" + " " + productTypeName + " from " + activeMouStartDate + " " + "to" + " " + activeMouEndDate } </h1>
         <div className="grid grid-cols-2 gap-6">
 
         {/* Left Column*/}

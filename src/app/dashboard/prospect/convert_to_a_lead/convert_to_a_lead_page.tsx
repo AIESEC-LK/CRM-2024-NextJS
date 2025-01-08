@@ -43,6 +43,10 @@ export default function ConvertToALeadPage() {
   });
   const [isConverted, setIsConverted] = useState(false);
   const {user} = useAuth();
+  const[lc_name, setLc_name] = useState<string>("");
+  const [lc_color, setLc_color] = useState<string>("");
+   const [productTypeName, setProductTypeName] = useState<String>("");
+  const [stage, setStage] = useState('');
 
   useEffect(() => {
     const id = searchParams.get('id');
@@ -63,6 +67,11 @@ export default function ConvertToALeadPage() {
           setProspectDetails(data);
           setCompanyName(data.company_name);
           setSelectedProduct(data.product_type_id);
+          setLc_name(data.lc_name || "");
+                  setLc_color(data.lc_color || "");
+                  setProductTypeName(data.product_type_name || "");
+                  setStage("prospect");
+
         } catch (error) {
           console.error('Error fetching prospect details:', error);
         }
@@ -188,6 +197,7 @@ export default function ConvertToALeadPage() {
         console.log('Prospect updated successfully');
         setProgressBar({ text: PROSPECT_VALUES[2].label, color: LEAD_BAR_COLOR, width: LEAD_BAR_WIDTH });
         setIsConverted(true); // Mark as converted
+        setStage("lead");
       } else {
         console.error('Failed to update prospect:', result.message || 'Unknown error');
       }
@@ -200,7 +210,14 @@ export default function ConvertToALeadPage() {
   }else{
   return (
     <div className="container mx-auto pt-0">
-      <h1 className="text-2xl font-bold mb-6 ml-4">Lead Conversion</h1>
+      <h1 className="text-2xl font-bold mb-6 ml-4">
+        {companyName + " - "}
+        <span style={{ color: lc_color }}>{lc_name + " "}</span>
+        <span style={{ color: stage === "prospect" ? PROSPECT_BAR_COLOR : LEAD_BAR_COLOR }}>
+          {stage}
+        </span>
+        {" for " + productTypeName}
+      </h1>
       <div className="grid grid-cols-2 gap-16 pr-6">
         <div className="w-full ml-4 mt-5 pr-6 bg-gray-100 rounded overflow-hidden shadow-lg">
           <div className="px-14 py-14">
