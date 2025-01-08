@@ -6,6 +6,8 @@ import { Label } from "@/app/components/ui/label";
 import { Select } from "@/app/components/ui/select";
 import ListGroup from "@/app/components/ui/list_groups";
 import { formatDate, Product } from "./functions";
+import ProgressBar from "@/app/components/ui/progress";
+import { CUSTOMER_BAR_COLOR, CUSTOMER_BAR_WIDTH, PROSPECT_VALUES } from "@/app/lib/values";
 
 export default function MakeALeadPage() {
   const [companyName, setCompanyName] = useState(String);
@@ -68,8 +70,9 @@ export default function MakeALeadPage() {
     <>
       <div className="container mx-auto pt-0 pr-4">
         <h1 className="text-2xl font-bold mb-6 ml-4">Customer</h1>
+        <div className="grid grid-cols-2 gap-6">
 
-        {/* Lead Details Row */}
+        {/* Left Column*/}
         <div className="w-full ml-4 mb-6 bg-gray-100 rounded overflow-hidden shadow-lg">
           <div className="px-14 py-14">
             <h1 className="text-2xl font-bold mb-6">Lead Details</h1>
@@ -94,6 +97,17 @@ export default function MakeALeadPage() {
               disabled={true}
             />
           </div>
+        </div>
+        
+        {/* Right Column */}
+        <div className="w-full ml-4 mb-6 bg-gray-100 rounded overflow-hidden shadow-lg">
+          <div className="px-14 py-14">
+            <h1 className="text-2xl font-bold mb-6">Summery</h1>
+            <Label htmlFor="Status" className="block mb-2">Status:</Label>
+            <ProgressBar text={PROSPECT_VALUES[4].label} color={CUSTOMER_BAR_COLOR} width={CUSTOMER_BAR_WIDTH} />
+          </div>
+        </div>
+
         </div>
 
         {/* Single Row for Stages */}
