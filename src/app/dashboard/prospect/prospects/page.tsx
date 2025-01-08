@@ -262,7 +262,7 @@ const ProspectsPage = () => {
                         onClick={() => router.push(`/dashboard/prospect/convert_to_a_lead?id=${prospect._id}`)}
                         className="bg-yellow-400 hover:bg-yellow-500 text-white"
                       >
-                        Convert to Lead
+                        <i className="fa fa-line-chart mr-3" aria-hidden="true"></i>Upgrade to Lead
                       </Button>
                     )}
                     {prospect.status === "lead" && (
@@ -270,7 +270,7 @@ const ProspectsPage = () => {
                         onClick={() => router.push(`/dashboard/prospect/lead_to_customer?id=${prospect._id}`)}
                         className="bg-cyan-800 hover:bg-cyan-700 text-white"
                       >
-                        Convert to Customer Pending
+                        <i className="fa fa-line-chart mr-3" aria-hidden="true"></i>Upgrade to Customer Pending
                       </Button>
                     )}
 {prospect.status === "customerPendingMoURejected" && (
@@ -278,7 +278,7 @@ const ProspectsPage = () => {
                         onClick={() => router.push(`/dashboard/prospect/lead_to_customer?id=${prospect._id}`)}
                         className="bg-cyan-800 hover:bg-cyan-700 text-white"
                       >
-                        Convert to Customer Pending
+                        <i className="fa fa-line-chart mr-3" aria-hidden="true"></i>Upgrade to Customer Pending
                       </Button>
                     )}
 
@@ -288,7 +288,7 @@ const ProspectsPage = () => {
                         onClick={() => router.push(`/dashboard/prospect/promoter?id=${prospect._id}`)}
                         className="bg-red-800 hover:bg-red-700 text-white"
                       >
-                        View Promoter
+                        <i className="fa fa-eye mr-3" aria-hidden="true"></i>View Promoter
                       </Button>
                     )}
                     {prospect.status === "customerPending" && (
@@ -296,7 +296,7 @@ const ProspectsPage = () => {
                         onClick={() => router.push(`/dashboard/prospect/customer_pending?id=${prospect._id}`)}
                         className="bg-gray-800 hover:bg-gray-700 text-white"
                       >
-                        View Customer Pending
+                        <i className="fa fa-eye mr-3" aria-hidden="true"></i>View Customer Pending
                       </Button>
                     )}
                     {prospect.status === "customer" && (
@@ -304,7 +304,7 @@ const ProspectsPage = () => {
                         onClick={() => router.push(`/dashboard/prospect/customer?id=${prospect._id}`)}
                         className="bg-indigo-800 hover:bg-indigo-700 text-white"
                       >
-                        View Customer
+                        <i className="fa fa-eye mr-3" aria-hidden="true"></i>View Customer
                       </Button>
                     )}
                     
@@ -319,7 +319,7 @@ const ProspectsPage = () => {
                         onClick={() => router.push(`/dashboard/admin_view/Main?id=${prospect._id}`)}
                         className="bg-yellow-400 hover:bg-yellow-500 text-white"
                       >
-                        View
+                        <i className="fa fa-eye mr-3" aria-hidden="true"></i>View
                       </Button>                   
                   </div>
                 )}
