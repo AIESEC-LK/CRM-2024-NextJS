@@ -180,7 +180,7 @@ export default function MakeALeadPage() {
 
   return (
 
-    <div className="container mx-auto pt-0 pr-4">
+    <div className="container mx-auto pt-0 pr-4 pb-20">
 <div className="w-full ml-4 mb-6 bg-gray-100 rounded overflow-hidden shadow-lg flex items-center pt-3 pb-3">
   <h1 className="text-2xl font-bold ml-4">
     <i className="fa-solid fa-handshake-simple mr-3"></i>
