@@ -78,13 +78,13 @@ export default function MakeALeadPage() {
   return (
     <>
       <div className="container mx-auto pt-0 pr-4">
-        <h1 className="text-2xl font-bold mb-6 ml-4">{companyName + " - "}<span style={{ color: lc_color }}>{lc_name + " " }</span> <span style={{ color: CUSTOMER_BAR_COLOR }}>Promoter</span> {" for" + " " + productTypeName + " from " + activeMouStartDate + " " + "to" + " " + activeMouEndDate } </h1>
+        <h1 className="text-2xl font-bold mb-6 ml-4">{companyName + " - "}<span style={{ color: lc_color }}>{lc_name + " " }</span> <span style={{ color: CUSTOMER_BAR_COLOR }}>customer</span> {" for" + " " + productTypeName + " from " + activeMouStartDate + " " + "to" + " " + activeMouEndDate } </h1>
         <div className="grid grid-cols-2 gap-6">
 
         {/* Left Column*/}
         <div className="w-full ml-4 mb-6 bg-gray-100 rounded overflow-hidden shadow-lg">
           <div className="px-14 py-14">
-            <h1 className="text-2xl font-bold mb-6">Lead Details</h1>
+            <h1 className="text-2xl font-bold mb-6"><i className="fa-regular fa-eye mr-3"></i>Lead Details</h1>
             <Label htmlFor="name" className="block mb-2">Company Name:</Label>
             <Input
               placeholder="Company"
@@ -111,7 +111,7 @@ export default function MakeALeadPage() {
         {/* Right Column */}
         <div className="w-full ml-4 mb-6 bg-gray-100 rounded overflow-hidden shadow-lg">
           <div className="px-14 py-14">
-            <h1 className="text-2xl font-bold mb-6">Summery</h1>
+            <h1 className="text-2xl font-bold mb-6"><i className="fa-solid fa-pencil mr-3"></i>Summery</h1>
             <Label htmlFor="Status" className="block mb-2">Status:</Label>
             <ProgressBar text={PROSPECT_VALUES[4].label} color={CUSTOMER_BAR_COLOR} width={CUSTOMER_BAR_WIDTH} />
           </div>
@@ -124,7 +124,7 @@ export default function MakeALeadPage() {
           {/* Active Stage - Customer */}
           <div className="w-full bg-gray-100 rounded overflow-hidden shadow-lg">
             <div className="px-14 py-14">
-              <h1 className="text-2xl font-bold mb-6">Active Stage - Customer</h1>
+              <h1 className="text-2xl font-bold mb-6"><i className="fa-solid fa-fire mr-3"></i>Active Stage - Customer</h1>
               <Label htmlFor="category" className="block mb-2">Category:</Label>
               <Input
                 value={partnershipCategoryName}
@@ -157,7 +157,7 @@ export default function MakeALeadPage() {
           {/* Prospect Stage */}
           <div className="w-full bg-gray-100 rounded overflow-hidden shadow-lg">
             <div className="px-14 py-14">
-              <h1 className="text-2xl font-bold mb-6">Prospect Stage</h1>
+              <h1 className="text-2xl font-bold mb-6"><i className="fa-solid fa-car-side mr-3"></i>Prospect Stage</h1>
               <Label htmlFor="companyName" className="block mb-2">Activities:</Label>
               <ListGroup
                 values={activities.length > 0 ? activities : ['No activities recorded']}
@@ -169,7 +169,7 @@ export default function MakeALeadPage() {
           {/* Lead Stage */}
           <div className="w-full bg-gray-100 rounded overflow-hidden shadow-lg">
             <div className="px-14 py-14">
-              <h1 className="text-2xl font-bold mb-6">Lead Stage</h1>
+              <h1 className="text-2xl font-bold mb-6"><i className="fa-solid fa-chart-gantt mr-3"></i>Lead Stage</h1>
               <Label htmlFor="category" className="block mb-2">Category:</Label>
               <Input
                 value={partnershipCategoryName}

@@ -221,7 +221,7 @@ export default function ConvertToALeadPage() {
       <div className="grid grid-cols-2 gap-16 pr-6">
         <div className="w-full ml-4 mt-5 pr-6 bg-gray-100 rounded overflow-hidden shadow-lg">
           <div className="px-14 py-14">
-            <h1 className="text-2xl font-bold mb-6 ml-4">Convert Lead</h1>
+            <h1 className="text-2xl font-bold mb-6 ml-4"><i className="fa-regular fa-eye mr-3"></i>Convert Lead</h1>
 
             <label htmlFor="company-name" className="ml-4 mr-4">
               Company Name:
@@ -308,7 +308,7 @@ export default function ConvertToALeadPage() {
         </div>
         <div className="w-full ml-4 mt-5 pr-6 bg-gray-100 rounded overflow-hidden shadow-lg">
           <div className="px-14 py-14">
-            <h1 className="text-2xl font-bold mb-6 ml-4">Summary</h1>
+            <h1 className="text-2xl font-bold mb-6 ml-4"><i className="fa-solid fa-pencil mr-3"></i>Summary</h1>
             <div className="pl-4 pr-4">
               <Label htmlFor="status">Status:</Label>
               <ProgressBar

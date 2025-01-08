@@ -190,7 +190,7 @@ export default function MakeALeadPage() {
         {/* Left Column */}
         <div className="w-full ml-4 mb-6 bg-gray-100 rounded overflow-hidden shadow-lg">
           <div className="px-14 py-14">
-            <h1 className="text-2xl font-bold mb-6">Lead Details</h1>
+            <h1 className="text-2xl font-bold mb-6"><i className="fa-regular fa-eye mr-3"></i>Lead Details</h1>
             <Label htmlFor="name" className="block mb-2">Company Name:</Label>
             <Input
               placeholder="Company"
@@ -217,7 +217,7 @@ export default function MakeALeadPage() {
         {/* Right Column */}
         <div className="w-full ml-4 mb-6 bg-gray-100 rounded overflow-hidden shadow-lg">
           <div className="px-14 py-14">
-            <h1 className="text-2xl font-bold mb-6">Summery</h1>
+            <h1 className="text-2xl font-bold mb-6"><i className="fa-solid fa-pencil mr-3"></i>Summery</h1>
             <Label htmlFor="Status" className="block mb-2">Status:</Label>
             <ProgressBar text={progressBarText} color={progressBarColor} width={progressBarWidth} />
           </div>
@@ -229,7 +229,7 @@ export default function MakeALeadPage() {
         {/* Active Stage - Customer */}
         <div className="w-full bg-gray-100 rounded overflow-hidden shadow-lg">
           <div className="px-14 py-14">
-            <h1 className="text-2xl font-bold mb-6">Active Stage</h1>
+            <h1 className="text-2xl font-bold mb-6"><i className="fa-solid fa-fire mr-3"></i>Active Stage</h1>
             <Label htmlFor="category" className="block mb-2">Category:</Label>
             <Input
               value={partnershipCategoryName}
@@ -244,7 +244,7 @@ export default function MakeALeadPage() {
         {/* Prospect Stage */}
         <div className="w-full bg-gray-100 rounded overflow-hidden shadow-lg">
           <div className="px-14 py-14">
-            <h1 className="text-2xl font-bold mb-6">Prospect Stage</h1>
+            <h1 className="text-2xl font-bold mb-6"><i className="fa-solid fa-car-side mr-3"></i>Prospect Stage</h1>
             <Label htmlFor="companyName" className="block mb-2">Activities:</Label>
             {/*}
             <ListGroup
@@ -257,7 +257,7 @@ export default function MakeALeadPage() {
         {/* Lead Stage */}
         <div className="w-full bg-gray-100 rounded overflow-hidden shadow-lg">
           <div className="px-14 py-14">
-            <h1 className="text-2xl font-bold mb-6">Lead Stage</h1>
+            <h1 className="text-2xl font-bold mb-6"><i className="fa-solid fa-chart-gantt mr-3"></i>Lead Stage</h1>
             <Label htmlFor="partnershipType" className="block mb-2">Partnership Type:</Label>
             <Select
               value={partnershipType}
