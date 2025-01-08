@@ -57,6 +57,7 @@ export default function MakeALeadPage() {
         setLeadMouEndDate(formatDate(prospect.date_expires) || "");
         setpartnershipCategoryName(prospect.partnership_type || "");
         setActivities(prospect.activities || []);
+        setpartnershipCategoryName(prospect.amount || "Inkind");
       } catch (error) {
         console.error("Error fetching prospect:", error);
       }
@@ -165,24 +166,6 @@ export default function MakeALeadPage() {
               <Input
                 value={partnershipCategoryName}
                 onChange={(e) => setpartnershipCategoryName(e.target.value)}
-                className="w-full mb-4"
-                type="text"
-                disabled
-              />
-              <Label htmlFor="mouStart" className="block mb-2">MOU Start Date:</Label>
-              <Input
-                placeholder="YYYY/MM/DD"
-                value={leadMouStartDate}
-                onChange={(e) => setLeadMouStartDate(e.target.value)}
-                className="w-full mb-4"
-                type="text"
-                disabled
-              />
-              <Label htmlFor="mouEnd" className="block mb-2">MOU End Date:</Label>
-              <Input
-                placeholder="YYYY/MM/DD"
-                value={leadMouEndDate}
-                onChange={(e) => setLeadMouEndDate(e.target.value)}
                 className="w-full mb-4"
                 type="text"
                 disabled
