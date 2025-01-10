@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
 import axios from 'axios';
 
-const MICROSOFT_CLIENT_ID = 'e9e02814-1dec-4a1b-9674-a29c7f067378'
-const MICROSOFT_TENANT_ID = 'b873c579-6e82-4d42-a7c0-cde7bb250883'
-const MICROSOFT_CLIENT_SECRET = 'C2o8Q~9SqgzgsLT4znfR~DUs0lM3RSg~B0My_cq4'
-
+const MICROSOFT_CLIENT_ID = process.env.AZURE_AD_CLIENT_ID
+const MICROSOFT_TENANT_ID = process.env.AZURE_AD_TENANT_ID
+const MICROSOFT_CLIENT_SECRET = process.env.AZURE_AD_CLIENT_SECRET
 export async function POST() {
   try {
     const tokenEndpoint = `https://login.microsoftonline.com/${MICROSOFT_TENANT_ID}/oauth2/v2.0/token`;
