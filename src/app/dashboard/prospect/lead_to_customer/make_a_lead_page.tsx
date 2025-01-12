@@ -1,6 +1,6 @@
 "use client";
 export const dynamic = "force-dynamic";
-
+import axios from "axios";
 import { useState, useEffect } from "react";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
@@ -9,9 +9,9 @@ import { Select } from "@/app/components/ui/select";
 import ProgressBar from "@/app/components/ui/progress";
 //import ListGroup from "@/app/components/ui/list_groups";
 import Image from "next/image";
-import { useSearchParams} from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { LEAD_BAR_COLOR, LEAD_BAR_WIDTH, CUSTOMER_PANDING_BAR_COLOR, CUSTOMER_PANDING_BAR_WIDTH, PROSPECT_VALUES } from "@/app/lib/values";
-
+import { v4 as uuidv4 } from 'uuid';
   interface Product {
     _id: string;
     productName: string;
@@ -19,7 +19,8 @@ import { LEAD_BAR_COLOR, LEAD_BAR_WIDTH, CUSTOMER_PANDING_BAR_COLOR, CUSTOMER_PA
 }
 
 export default function MakeALeadPage() {
-  const searchParams = useSearchParams()
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [companyName, setCompanyName] = useState(String);
 
   interface ProspectDetails {
@@ -27,8 +28,7 @@ export default function MakeALeadPage() {
     company_name: string;
     product_type_id: string;
   }
-
-
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [selectedProduct, setSelectedProduct] = useState("");
   const [partnershipCategoryName, setPartnershipCategoryName] = useState(String);
   const [leadMouStartDate, setLeadMouStartDate] = useState("");
@@ -41,7 +41,8 @@ export default function MakeALeadPage() {
   //const [file, setFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string | null>(null);
   const [prospectDetails, setProspectDetails] = useState<ProspectDetails | null>(null);
-
+const [uploading, setUploading] = useState(false);
+const [isConverted, setIsConverted] = useState(false);
   const [progressBarText, setProgressBarText] = useState(PROSPECT_VALUES[2].label);
   const [progressBarColor, setProgressBarColor] = useState(LEAD_BAR_COLOR);
   const [progressBarWidth, setProgressBarWidth] = useState(LEAD_BAR_WIDTH);
@@ -104,18 +105,87 @@ export default function MakeALeadPage() {
   };
 
   const handleSubmit = async () => {
-    const data = {
-      id,
-      partnershipCategoryName,
-      leadMouStartDate,
-      leadMouEndDate,
-      partnershipType,
-      status: 'customerPending',
-      mouUrl: './file.tsx', // Hardcoded for now
-      ...(partnershipType === 'monetary' && { amount }),
-    };
 
-    try {
+    setUploading(true);
+
+  try {
+    const tokenResponse = await axios.post('/api_new/fileuploadauth');
+    const accessToken = tokenResponse.data.access_token;
+
+    console.log('Access token obtained');
+
+    const uniqueFileName = `${uuidv4()}-${uploadedFile?.name}`;
+    //file.name = uniqueFileName;
+    // Initialize upload session with site ID
+    const sessionResponse = await axios.post(
+      `https://graph.microsoft.com/v1.0/drive/root:/documents/${uniqueFileName}:/createUploadSession`,
+      {
+        item: {
+          '@microsoft.graph.conflictBehavior': 'replace',
+          name: uniqueFileName,
+          'file': {}
+        },
+      },
+      {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+      }
+    );
+
+    const uploadUrl = sessionResponse.data.uploadUrl;
+    const fileContent = await uploadedFile?.arrayBuffer();
+
+    console.log('Upload URL:', uploadUrl);
+
+    // Upload the file
+    const uploadResponse = await axios.put(
+      uploadUrl,
+      fileContent,
+      {
+        headers: {
+          'Content-Type': 'application/octet-stream',
+          'Content-Length': `${uploadedFile?.size}`,
+          'Content-Range': `bytes 0-${uploadedFile ? uploadedFile.size - 1 : 0}/${uploadedFile ? uploadedFile.size : 0}`
+        },
+      }
+    );
+
+    if (uploadResponse.status >= 200 && uploadResponse.status < 300) {
+      const fileId = uploadResponse.data.id;  // Get the uploaded file's ID
+      console.log('File uploaded:', fileId);
+
+      // Create a shareable link for the file (with view permissions)
+      const linkResponse = await axios.post(
+        `https://graph.microsoft.com/v1.0/drive/items/${fileId}/createLink`,
+        {
+          type: 'view',  // 'view' for read-only access, 'edit' for editable access
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+        }
+      );
+
+      const shareLink = linkResponse.data.link.webUrl;  // The URL of the shareable link
+      //console.log('Shareable Link:', shareLink);
+
+      const data = {
+        id,
+        partnershipCategoryName,
+        leadMouStartDate,
+        leadMouEndDate,
+        partnershipType,
+        status: 'customerPending',
+        mouUrl: shareLink, // Hardcoded for now
+        ...(partnershipType === 'monetary' && { amount }),
+      };
+
       const response = await fetch('/api_new/prospects/update_a_prospect', {
         method: 'PATCH',
         headers: {
@@ -126,21 +196,25 @@ export default function MakeALeadPage() {
 
       const result = await response.json();
       if (response.ok) {
-        alert('Form submitted successfully');
+        console.log('Form submitted successfully');
         setProgressBarText(PROSPECT_VALUES[3].label);
         setProgressBarColor(CUSTOMER_PANDING_BAR_COLOR);
         setProgressBarWidth(CUSTOMER_PANDING_BAR_WIDTH);
       } else {
-        alert(`Error: ${result.error}`);
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        alert(`Error: ${error.message}`);
-      } else {
-        alert('An unknown error occurred');
+        console.log(`Error: ${result.error}`);
       }
     }
-  };
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log(`Error: ${error.message}`);
+    } else {
+      console.log('An unknown error occurred');
+    }
+  }finally{
+    setUploading(false)
+    setIsConverted(true);
+  }
+};
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0] || null;
@@ -152,6 +226,7 @@ export default function MakeALeadPage() {
         setFilePreview(URL.createObjectURL(selectedFile));
       } else if (fileType === 'application/pdf') {
         setFilePreview('/pdf_icon.png');
+        setUploadedFile(selectedFile);
       } else {
         setFilePreview(null);
       }
@@ -292,10 +367,16 @@ export default function MakeALeadPage() {
             />
 
             <Button 
-              className="bg-gray-900 text-white px-4 py-2 rounded-md mb-4"
-              onClick={handleSubmit}
+             
+              onClick={isConverted ? () => router.push('/dashboard/prospect/prospects') :handleSubmit}
+              disabled={uploading}
+              className={`${
+                isConverted ? 'bg-green-500 hover:bg-green-400' : 'bg-blue-500 hover:bg-blue-400'
+              } text-white font-bold py-2 px-4 rounded ml-4 mb-8`}
             >
-              Proceed
+                   {uploading? 'Uploading...':'' }
+              {isConverted ? 'Go Back' : ''}
+              {!uploading && !isConverted ? 'Convert to Customer' : ''}
             </Button>
             <Button 
               className="bg-gray-400 text-gray-900 px-4 py-2 rounded-md ml-4"
@@ -309,3 +390,4 @@ export default function MakeALeadPage() {
     </div>
   );
 }
+
