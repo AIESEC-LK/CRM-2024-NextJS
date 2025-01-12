@@ -8,6 +8,7 @@ import ListGroup from "@/app/components/ui/list_groups";
 import { formatDate, Product } from "./functions";
 import ProgressBar from "@/app/components/ui/progress";
 import { CUSTOMER_BAR_COLOR, CUSTOMER_BAR_WIDTH, PROSPECT_VALUES } from "@/app/lib/values";
+import { set } from "mongoose";
 
 export default function MakeALeadPage() {
   const [companyName, setCompanyName] = useState(String);
@@ -21,7 +22,8 @@ export default function MakeALeadPage() {
    const [activities, setActivities] = useState<string[]>([]);
    const [lc_name, setLc_name] = useState<string>("");
    const [lc_color, setLc_color] = useState<string>("");
-   const [productTypeName, setProductTypeName] = useState<String>("");
+   const [mouUrl, setMouUrl] = useState<string>("");
+   const [productTypeName, setProductTypeName] = useState<string>("");
  
 
 
@@ -66,6 +68,8 @@ export default function MakeALeadPage() {
         setLc_name(prospect.lc_name || "");
         setLc_color(prospect.lc_color || "");
         setProductTypeName(prospect.product_type_name || "");
+        setMouUrl(prospect.mouUrl || "");
+        
       } catch (error) {
         console.error("Error fetching prospect:", error);
       }
@@ -73,7 +77,7 @@ export default function MakeALeadPage() {
 
     fetchProducts();
     fetchProspect();
-  }, []);
+  }, [mouUrl]);
 
   return (
     <>
@@ -130,14 +134,16 @@ export default function MakeALeadPage() {
           <div className="w-full bg-gray-100 rounded overflow-hidden shadow-lg">
             <div className="px-14 py-14">
               <h1 className="text-2xl font-bold mb-6"><i className="fa-solid fa-fire mr-3"></i>Active Stage - Customer</h1>
-              <Label htmlFor="category" className="block mb-2">Category:</Label>
-              <Input
-                value={partnershipCategoryName}
-                onChange={(e) => setpartnershipCategoryName(e.target.value)}
-                className="w-full mb-4"
-                type="text"
-                disabled
-              />
+              <div className="mt-4">
+            <Label>MOU</Label>
+            
+          {mouUrl && (
+            <a href={mouUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 mt-2 bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded mb-2">
+              <img src="/pdf_icon.png" alt="PDF" className="w-6 h-6" />
+              VIEW PDF
+            </a>
+          )}
+          </div>
               <Label htmlFor="mouStart" className="block mb-2">MOU Start Date:</Label>
               <Input
                 placeholder="YYYY/MM/DD"
@@ -183,7 +189,35 @@ export default function MakeALeadPage() {
                 type="text"
                 disabled
               />
-            </div>
+<Label>MOU</Label>
+            
+            {mouUrl && (
+              <a href={mouUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 mt-2 bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded mb-2">
+                <img src="/pdf_icon.png" alt="PDF" className="w-6 h-6" />
+                VIEW PDF
+              </a>
+            )}
+           
+                <Label htmlFor="mouStart" className="block mb-2">MOU Start Date:</Label>
+                <Input
+                  placeholder="YYYY/MM/DD"
+                  value={activeMouStartDate}
+                  onChange={(e) => setActiveMouStartDate(e.target.value)}
+                  className="w-full mb-4"
+                  type="text"
+                  disabled
+                />
+                <Label htmlFor="mouEnd" className="block mb-2">MOU End Date:</Label>
+                <Input
+                  placeholder="YYYY/MM/DD"
+                  value={activeMouEndDate}
+                  onChange={(e) => setActiveMouEndDate(e.target.value)}
+                  className="w-full mb-4"
+                  type="text"
+                  disabled
+                />
+              
+              </div>
           </div>
         </div>
       </div>

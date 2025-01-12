@@ -21,7 +21,7 @@ export default function MakeALeadPage() {
    const [activities, setActivities] = useState<string[]>([]);
    const [lc_name, setLc_name] = useState<string>("");
    const [lc_color, setLc_color] = useState<string>("");
-   const [productTypeName, setProductTypeName] = useState<String>("");
+   const [productTypeName, setProductTypeName] = useState<string>("");
 
   useEffect(() => {
     async function fetchProducts() {
