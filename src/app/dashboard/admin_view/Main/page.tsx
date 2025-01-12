@@ -52,7 +52,7 @@ export default function ApproveCustomer() {
   const [currentStage, setCurrentStage] = useState<string | null>(null);
 const [stages , setStages] = useState<string[]>([]);
 const [proofDocument,setProofDocument] = useState<string | null>(null);
-const [mouUrl,setMouUrl] = useState<Date>();
+const [mouUrl,setMouUrl] = useState<string | null>(null);
 const [amount,setAmount] = useState<number | null>(null); 
 const [mouStartDate,setMouStartDate] = useState<Date>();
 const [mouEndDate,setMouEndDate] = useState<Date>();
@@ -117,6 +117,7 @@ useEffect(() => {
         }
         try {
           const response = await fetch(`/api_new/prospects/get_prospect_in_id?id=${prospectId}`);
+          console.log(prospectId);
           if (!response.ok) {
             throw new Error('Failed to fetch prospect details');
           }
@@ -128,16 +129,21 @@ useEffect(() => {
           SetprospectEntity(data.entity_id)
           setCurrentStage(data.status);
           setActivities(data.activities);
-          setProofDocument(data.lead_proof_url);
-          setMouUrl(data.mouUrl);
+          const newMouUrl = data.mouUrl;
+              setProofDocument(data.lead_proof_url);
+           
+          setMouUrl(newMouUrl);
           setAmount(data.amount);
           setMouStartDate(data.date_added);
           setMouEndDate(data.date_expires);
           setCategory(data.partnershipType);
           setExpiryDate(data.date_expires);
           setDateAdded(data.date_added);
-          
-          
+          console.log(mouUrl)
+          console.log(proofDocument);
+        
+
+
    
 
    
@@ -148,7 +154,7 @@ useEffect(() => {
   
       fetchProspectDetails();
     }
-  }, [prospectId]); 
+  }, [prospectId,mouUrl,proofDocument,amount,mouStartDate,mouEndDate,category,expiryDate,dateAdded]); 
 
 
   
@@ -736,8 +742,8 @@ if (user?.role !== "admin") {
           <div className="mt-4">
             <Label>MOU</Label>
             
-          {proofDocument && (
-            <a href={proofDocument} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 mt-2 bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded ">
+          {mouUrl && (
+            <a href={mouUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 mt-2 bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded ">
               <img src="/pdf_icon.png" alt="PDF" className="w-6 h-6" />
               VIEW PDF
             </a>
@@ -905,7 +911,7 @@ if (user?.role !== "admin") {
             </div>
             <div>
               <Label>Proof Document</Label>
-              {proofDocument && (
+              {/* {proofDocument && (
               proofDocument.endsWith('.pdf') ? (
                 <embed
                   src={proofDocument}
@@ -923,10 +929,17 @@ if (user?.role !== "admin") {
                   height="50%"
                 />
               )
+            )} */}
+            {proofDocument && proofDocument.includes('sharepoint.com') && (
+              <a href={proofDocument} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 mt-2 bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded">
+                <img src="/pdf_icon.png"  alt="SharePoint" className="w-6 h-6" />
+                VIEW DOCUMENT
+              </a>
             )}
             </div>
           </div>
         </div>
+
         )}
 
         {/* Show in Apporve MoU + EditCustomer + EditPromoter */}
@@ -946,8 +959,8 @@ if (user?.role !== "admin") {
           
           <div className="mt-4">
             <Label>MOU</Label>
-            {proofDocument && (
-            <a href={proofDocument} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 mt-2 bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded">
+            {mouUrl && (
+            <a href={mouUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 mt-2 bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded">
               <img src="/pdf_icon.png" alt="PDF" className="w-6 h-6" />
               VIEW PDF
             </a>
