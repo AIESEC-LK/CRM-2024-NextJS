@@ -6,6 +6,8 @@ import { Label } from "@/app/components/ui/label";
 import { Select } from "@/app/components/ui/select";
 import ListGroup from "@/app/components/ui/list_groups";
 import { formatDate, Product } from "./functions";
+import ProgressBar from "@/app/components/ui/progress";
+import { PROMOTER_BAR_COLOR, PROMOTER_BAR_WIDTH, PROSPECT_VALUES } from "@/app/lib/values";
 
 export default function MakeALeadPage() {
   const [companyName, setCompanyName] = useState(String);
@@ -17,6 +19,9 @@ export default function MakeALeadPage() {
   const [leadMouEndDate, setLeadMouEndDate] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
    const [activities, setActivities] = useState<string[]>([]);
+   const [lc_name, setLc_name] = useState<string>("");
+   const [lc_color, setLc_color] = useState<string>("");
+   const [productTypeName, setProductTypeName] = useState<String>("");
 
   useEffect(() => {
     async function fetchProducts() {
@@ -55,6 +60,10 @@ export default function MakeALeadPage() {
         setLeadMouEndDate(formatDate(prospect.date_expires) || "");
         setpartnershipCategoryName(prospect.partnership_type || "");
         setActivities(prospect.activities || []);
+        setpartnershipCategoryName(prospect.amount || "Inkind");
+        setLc_name(prospect.lc_name || "");
+        setLc_color(prospect.lc_color || "");
+        setProductTypeName(prospect.product_type_name || "");
       } catch (error) {
         console.error("Error fetching prospect:", error);
       }
@@ -66,13 +75,18 @@ export default function MakeALeadPage() {
 
   return (
     <>
-      <div className="container mx-auto pt-0 pr-4">
-        <h1 className="text-2xl font-bold mb-6 ml-4">Promoter</h1>
+      <div className="container mx-auto pt-0 pr-4 pb-20">
+        <div className="w-full ml-4 mb-6 bg-gray-100 rounded overflow-hidden shadow-lg flex items-center pt-3 pb-3">
 
-        {/* Lead Details Row */}
+        <h1 className="text-2xl font-bold ml-4">
+          <i className="fa-solid fa-handshake-simple mr-3"></i>
+          {companyName + " - "}<span style={{ color: lc_color }}>{lc_name + " " }</span> <span style={{ color: PROMOTER_BAR_COLOR }}>Promoter</span> {" for" + " " + productTypeName} </h1>
+        </div>
+        <div className="grid grid-cols-2 gap-6">
+        {/* Left Column */}
         <div className="w-full ml-4 mb-6 bg-gray-100 rounded overflow-hidden shadow-lg">
           <div className="px-14 py-14">
-            <h1 className="text-2xl font-bold mb-6">Lead Details</h1>
+            <h1 className="text-2xl font-bold mb-6"><i className="fa-regular fa-eye mr-3"></i>Lead Details</h1>
             <Label htmlFor="name" className="block mb-2">Company Name:</Label>
             <Input
               placeholder="Company"
@@ -96,34 +110,26 @@ export default function MakeALeadPage() {
           </div>
         </div>
 
+        {/* Right Column */}
+        <div className="w-full ml-4 mb-6 bg-gray-100 rounded overflow-hidden shadow-lg">
+          <div className="px-14 py-14">
+            <h1 className="text-2xl font-bold mb-6"><i className="fa-solid fa-pencil mr-3"></i>Summery</h1>
+            <Label htmlFor="Status" className="block mb-2">Status:</Label>
+            <ProgressBar text={PROSPECT_VALUES[5].label} color={PROMOTER_BAR_COLOR} width={PROMOTER_BAR_WIDTH} />
+          </div>
+        </div>
+        </div>
+
         {/* Single Row for Stages */}
         <div className="grid grid-cols-3 gap-6 pl-4">
           {/* Active Stage - Customer */}
           <div className="w-full bg-gray-100 rounded overflow-hidden shadow-lg">
             <div className="px-14 py-14">
-              <h1 className="text-2xl font-bold mb-6">Active Stage - Customer</h1>
+              <h1 className="text-2xl font-bold mb-6"><i className="fa-solid fa-fire mr-3"></i>Active Stage - Customer</h1>
               <Label htmlFor="category" className="block mb-2">Category:</Label>
               <Input
                 value={partnershipCategoryName}
                 onChange={(e) => setpartnershipCategoryName(e.target.value)}
-                className="w-full mb-4"
-                type="text"
-                disabled
-              />
-              <Label htmlFor="mouStart" className="block mb-2">MOU Start Date:</Label>
-              <Input
-                placeholder="YYYY/MM/DD"
-                value={activeMouStartDate}
-                onChange={(e) => setActiveMouStartDate(e.target.value)}
-                className="w-full mb-4"
-                type="text"
-                disabled
-              />
-              <Label htmlFor="mouEnd" className="block mb-2">MOU End Date:</Label>
-              <Input
-                placeholder="YYYY/MM/DD"
-                value={activeMouEndDate}
-                onChange={(e) => setActiveMouEndDate(e.target.value)}
                 className="w-full mb-4"
                 type="text"
                 disabled
@@ -134,7 +140,7 @@ export default function MakeALeadPage() {
           {/* Prospect Stage */}
           <div className="w-full bg-gray-100 rounded overflow-hidden shadow-lg">
             <div className="px-14 py-14">
-              <h1 className="text-2xl font-bold mb-6">Prospect Stage</h1>
+              <h1 className="text-2xl font-bold mb-6"><i className="fa-solid fa-car-side mr-3"></i>Prospect Stage</h1>
               <Label htmlFor="companyName" className="block mb-2">Activities:</Label>
               <ListGroup
                 values={activities.length > 0 ? activities : ['No activities recorded']}
@@ -146,7 +152,7 @@ export default function MakeALeadPage() {
           {/* Lead Stage */}
           <div className="w-full bg-gray-100 rounded overflow-hidden shadow-lg">
             <div className="px-14 py-14">
-              <h1 className="text-2xl font-bold mb-6">Lead Stage</h1>
+              <h1 className="text-2xl font-bold mb-6"><i className="fa-solid fa-chart-gantt mr-3"></i>Lead Stage</h1>
               <Label htmlFor="category" className="block mb-2">Category:</Label>
               <Input
                 value={partnershipCategoryName}

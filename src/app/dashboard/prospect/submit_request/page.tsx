@@ -232,13 +232,17 @@ const Page: React.FC = () => {
 
   return (
     <div className="container mx-auto pt-0">
-      <h1 className="text-2xl font-bold mb-6 ml-4">Prospect Request</h1>
+      <div className="w-full ml-4 mb-6 bg-gray-100 rounded overflow-hidden shadow-lg flex items-center pt-3 pb-3">
+      <h1 className="text-2xl font-bold ml-4"><i className="fa-regular fa-lightbulb mr-4"></i>Prospect Request</h1>
+      </div>
       <Popup isOpen={isPopupOpen} close={closePopup} title={titlePopup} message={messagePopup} />
       <div className="grid grid-cols-2 gap-16 pr-6">
         <div className="w-full ml-4 mt-5 pr-6 bg-gray-100 rounded overflow-hidden shadow-lg">
           <div className="px-14 py-14">
             <form onSubmit={handleSubmit} >
-              <h2 className="text-xl font-semibold mb-6">Add New Prospect Request</h2>
+              <h2 className="text-xl font-semibold mb-6">
+                <i className="fa-solid fa-pencil mr-4"></i>
+                Add New Prospect Request</h2>
 
               <div className="mb-4 relative">
                 <label htmlFor="name" className="block text-sm font-medium mb-1">
@@ -485,7 +489,7 @@ const Page: React.FC = () => {
 
               <button
                 type="submit"
-                className="w-full py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full py-2 bg-gray-900 text-white font-semibold rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-950"
               >
                 Submit Request
               </button>
@@ -495,7 +499,9 @@ const Page: React.FC = () => {
 
         <div className="w-full ml-4 mt-5 pr-6 bg-gray-100 rounded overflow-hidden shadow-lg">
           <div className="px-5 py-14">
-            <h2 className="text-xl font-semibold mb-6">Prospect Request History</h2>
+            <h2 className="text-xl font-semibold mb-6">
+              <i className = "fa-solid fa-note-sticky mr-4"></i>
+              Prospect Request History</h2>
 
             <div className="overflow-x-auto max-h-80" style={{ maxHeight: '800px' }}>  {/* Add max height and horizontal scroll if needed */}
               <table className="min-w-full table-auto">

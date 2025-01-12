@@ -49,6 +49,10 @@ export default function ConvertToALeadPage() {
   const [isConverted, setIsConverted] = useState(false);
 
   const {user} = useAuth();
+  const[lc_name, setLc_name] = useState<string>("");
+  const [lc_color, setLc_color] = useState<string>("");
+   const [productTypeName, setProductTypeName] = useState<String>("");
+  const [stage, setStage] = useState('');
 
   useEffect(() => {
     const id = searchParams.get('id');
@@ -69,6 +73,11 @@ export default function ConvertToALeadPage() {
           setProspectDetails(data);
           setCompanyName(data.company_name);
           setSelectedProduct(data.product_type_id);
+          setLc_name(data.lc_name || "");
+                  setLc_color(data.lc_color || "");
+                  setProductTypeName(data.product_type_name || "");
+                  setStage("prospect");
+
         } catch (error) {
           console.error('Error fetching prospect details:', error);
         }
@@ -285,6 +294,16 @@ export default function ConvertToALeadPage() {
     body: JSON.stringify(payload),
   });
 
+
+      if (response.ok && result.success) {
+        console.log('Prospect updated successfully');
+        setProgressBar({ text: PROSPECT_VALUES[2].label, color: LEAD_BAR_COLOR, width: LEAD_BAR_WIDTH });
+        setIsConverted(true); // Mark as converted
+        setStage("lead");
+      } else {
+        console.error('Failed to update prospect:', result.message || 'Unknown error');
+      }
+
   const result = await response.json();
 
   if (response.ok && result.success) {
@@ -305,6 +324,7 @@ if (isNaN(expireDate.getTime())) {
 }
 
     
+
     } catch (error) {
       console.error('Error updating prospect:', error);
     }finally{
@@ -315,12 +335,22 @@ if (isNaN(expireDate.getTime())) {
     return <div className="container mx-auto p-4">Access Denied</div>;
   }else{
   return (
-    <div className="container mx-auto pt-0">
-      <h1 className="text-2xl font-bold mb-6 ml-4">Lead Conversion</h1>
+    <div className="container mx-auto pt-0 pb-20">
+      <div className="w-full ml-4 mb-6 bg-gray-100 rounded overflow-hidden shadow-lg flex items-center pt-3 pb-3">
+      <h1 className="text-2xl font-bold ml-4">
+        <i className="fa-solid fa-handshake-simple mr-3"></i>
+        {companyName + " - "}
+        <span style={{ color: lc_color }}>{lc_name + " "}</span>
+        <span style={{ color: stage === "prospect" ? PROSPECT_BAR_COLOR : LEAD_BAR_COLOR }}>
+          {stage}
+        </span>
+        {" for " + productTypeName}
+      </h1>
+      </div>
       <div className="grid grid-cols-2 gap-16 pr-6">
         <div className="w-full ml-4 mt-5 pr-6 bg-gray-100 rounded overflow-hidden shadow-lg">
           <div className="px-14 py-14">
-            <h1 className="text-2xl font-bold mb-6 ml-4">Convert Lead</h1>
+            <h1 className="text-2xl font-bold mb-6 ml-4"><i className="fa-regular fa-eye mr-3"></i>Convert Lead</h1>
 
             <label htmlFor="company-name" className="ml-4 mr-4">
               Company Name:
@@ -410,7 +440,7 @@ if (isNaN(expireDate.getTime())) {
         </div>
         <div className="w-full ml-4 mt-5 pr-6 bg-gray-100 rounded overflow-hidden shadow-lg">
           <div className="px-14 py-14">
-            <h1 className="text-2xl font-bold mb-6 ml-4">Summary</h1>
+            <h1 className="text-2xl font-bold mb-6 ml-4"><i className="fa-solid fa-pencil mr-3"></i>Summary</h1>
             <div className="pl-4 pr-4">
               <Label htmlFor="status">Status:</Label>
               <ProgressBar

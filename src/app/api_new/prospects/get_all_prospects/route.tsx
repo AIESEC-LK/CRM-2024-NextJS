@@ -80,7 +80,11 @@ export async function GET() {
             activities: 1,
             lead_proof_url: 1,
             newCompay: 1,
+
+            amount:1,
+
             mouUrl:1
+
           },
         },
         // Sort by date_added in descending order (most recent first)

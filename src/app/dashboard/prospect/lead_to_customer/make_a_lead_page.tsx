@@ -11,7 +11,13 @@ import ProgressBar from "@/app/components/ui/progress";
 import Image from "next/image";
 import { useSearchParams, useRouter } from 'next/navigation';
 import { LEAD_BAR_COLOR, LEAD_BAR_WIDTH, CUSTOMER_PANDING_BAR_COLOR, CUSTOMER_PANDING_BAR_WIDTH, PROSPECT_VALUES } from "@/app/lib/values";
+
+import { formatDate } from "./functions";
+import ListGroup from "@/app/components/ui/list_groups";
+
+
 import { v4 as uuidv4 } from 'uuid';
+
   interface Product {
     _id: string;
     productName: string;
@@ -34,7 +40,7 @@ export default function MakeALeadPage() {
   const [leadMouStartDate, setLeadMouStartDate] = useState("");
   const [leadMouEndDate, setLeadMouEndDate] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
-  //const [activities, setActivities] = useState<string[]>([]);
+  const [activities, setActivities] = useState<string[]>([]);
   const [partnershipType, setPartnershipType] = useState('');
   const [amount, setAmount] = useState('');
   const [id, setId] = useState('');
@@ -46,6 +52,12 @@ const [isConverted, setIsConverted] = useState(false);
   const [progressBarText, setProgressBarText] = useState(PROSPECT_VALUES[2].label);
   const [progressBarColor, setProgressBarColor] = useState(LEAD_BAR_COLOR);
   const [progressBarWidth, setProgressBarWidth] = useState(LEAD_BAR_WIDTH);
+  const [lc_name, setLc_name] = useState<string>("");
+   const [lc_color, setLc_color] = useState<string>("");
+   const [productTypeName, setProductTypeName] = useState<String>("");
+  const [stage, setStage] = useState('');
+  const [category, setCategory] = useState('');
+
 
   useEffect(() => {
     const id = searchParams.get('id');
@@ -68,6 +80,14 @@ const [isConverted, setIsConverted] = useState(false);
           setProspectDetails(data);
           setCompanyName(data.company_name);
           setSelectedProduct(data.product_type_id);
+          setLc_name(data.lc_name || "");
+        setLc_color(data.lc_color || "");
+        setProductTypeName(data.product_type_name || "");
+        setLeadMouStartDate(formatDate(data.date_added) || "");
+        setLeadMouEndDate(formatDate(data.date_expires) || "");
+        setActivities(data.activities || []);
+        setStage("lead");
+        setCategory("Not set")
         } catch (error) {
           console.error('Error fetching prospect details:', error);
         }
@@ -200,6 +220,8 @@ const [isConverted, setIsConverted] = useState(false);
         setProgressBarText(PROSPECT_VALUES[3].label);
         setProgressBarColor(CUSTOMER_PANDING_BAR_COLOR);
         setProgressBarWidth(CUSTOMER_PANDING_BAR_WIDTH);
+        setStage("Customer Pending");
+        setCategory("set")
       } else {
         console.log(`Error: ${result.error}`);
       }
@@ -237,14 +259,25 @@ const [isConverted, setIsConverted] = useState(false);
 
   return (
 
-    <div className="container mx-auto pt-0 pr-4">
-      <h1 className="text-2xl font-bold mb-6 ml-4">Lead to Customer Pending</h1>
+    <div className="container mx-auto pt-0 pr-4 pb-20">
+<div className="w-full ml-4 mb-6 bg-gray-100 rounded overflow-hidden shadow-lg flex items-center pt-3 pb-3">
+  <h1 className="text-2xl font-bold ml-4">
+    <i className="fa-solid fa-handshake-simple mr-3"></i>
+    {companyName + " - "}
+    <span style={{ color: lc_color }}>{lc_name + " "}</span>
+    <span style={{ color: stage === "lead" ? LEAD_BAR_COLOR : CUSTOMER_PANDING_BAR_COLOR }}>
+      {stage}
+    </span>
+    {" for " + productTypeName}
+  </h1>
+</div>
+
 
       <div className="grid grid-cols-2 gap-6">
         {/* Left Column */}
         <div className="w-full ml-4 mb-6 bg-gray-100 rounded overflow-hidden shadow-lg">
           <div className="px-14 py-14">
-            <h1 className="text-2xl font-bold mb-6">Lead Details</h1>
+            <h1 className="text-2xl font-bold mb-6"><i className="fa-regular fa-eye mr-3"></i>Lead Details</h1>
             <Label htmlFor="name" className="block mb-2">Company Name:</Label>
             <Input
               placeholder="Company"
@@ -271,7 +304,7 @@ const [isConverted, setIsConverted] = useState(false);
         {/* Right Column */}
         <div className="w-full ml-4 mb-6 bg-gray-100 rounded overflow-hidden shadow-lg">
           <div className="px-14 py-14">
-            <h1 className="text-2xl font-bold mb-6">Summery</h1>
+            <h1 className="text-2xl font-bold mb-6"><i className="fa-solid fa-pencil mr-3"></i>Summery</h1>
             <Label htmlFor="Status" className="block mb-2">Status:</Label>
             <ProgressBar text={progressBarText} color={progressBarColor} width={progressBarWidth} />
           </div>
@@ -283,11 +316,11 @@ const [isConverted, setIsConverted] = useState(false);
         {/* Active Stage - Customer */}
         <div className="w-full bg-gray-100 rounded overflow-hidden shadow-lg">
           <div className="px-14 py-14">
-            <h1 className="text-2xl font-bold mb-6">Active Stage</h1>
+            <h1 className="text-2xl font-bold mb-6"><i className="fa-solid fa-fire mr-3"></i>Active Stage</h1>
             <Label htmlFor="category" className="block mb-2">Category:</Label>
             <Input
-              value={partnershipCategoryName}
-              onChange={(e) => setPartnershipCategoryName(e.target.value)}
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
               className="w-full mb-4"
               type="text"
               disabled
@@ -298,20 +331,20 @@ const [isConverted, setIsConverted] = useState(false);
         {/* Prospect Stage */}
         <div className="w-full bg-gray-100 rounded overflow-hidden shadow-lg">
           <div className="px-14 py-14">
-            <h1 className="text-2xl font-bold mb-6">Prospect Stage</h1>
+            <h1 className="text-2xl font-bold mb-6"><i className="fa-solid fa-car-side mr-3"></i>Prospect Stage</h1>
             <Label htmlFor="companyName" className="block mb-2">Activities:</Label>
-            {/*}
+            {
             <ListGroup
               values={activities.length > 0 ? activities : ['No activities recorded']}
               className="mt-4 mb-4"
-            />*/}
+            />}
           </div>
         </div>
 
         {/* Lead Stage */}
         <div className="w-full bg-gray-100 rounded overflow-hidden shadow-lg">
           <div className="px-14 py-14">
-            <h1 className="text-2xl font-bold mb-6">Lead Stage</h1>
+            <h1 className="text-2xl font-bold mb-6"><i className="fa-solid fa-chart-gantt mr-3"></i>Lead Stage</h1>
             <Label htmlFor="partnershipType" className="block mb-2">Partnership Type:</Label>
             <Select
               value={partnershipType}

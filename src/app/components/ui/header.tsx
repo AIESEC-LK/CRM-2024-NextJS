@@ -74,10 +74,12 @@ fetchName();
           </div>
         <div className="flex items-center space-x-4">
         <div className="flex items-center gap-2">
+
             <div className="bg-yellow-500 rounded-full w-8 h-8 flex items-center justify-center text-white">
               {name ? name.charAt(0) : ''}
             </div>
             <span>{name}</span>
+
           </div>
           <button className="bg-red-600 px-3 py-1 rounded hover:bg-red-700" onClick={HandleLogOut}>
             Logout
