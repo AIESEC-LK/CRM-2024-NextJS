@@ -51,7 +51,7 @@ export default function ConvertToALeadPage() {
   const {user} = useAuth();
   const[lc_name, setLc_name] = useState<string>("");
   const [lc_color, setLc_color] = useState<string>("");
-   const [productTypeName, setProductTypeName] = useState<String>("");
+   const [productTypeName, setProductTypeName] = useState<string>("");
   const [stage, setStage] = useState('');
 
   useEffect(() => {
@@ -295,16 +295,18 @@ export default function ConvertToALeadPage() {
   });
 
 
-      if (response.ok && result.success) {
-        console.log('Prospect updated successfully');
-        setProgressBar({ text: PROSPECT_VALUES[2].label, color: LEAD_BAR_COLOR, width: LEAD_BAR_WIDTH });
-        setIsConverted(true); // Mark as converted
-        setStage("lead");
-      } else {
-        console.error('Failed to update prospect:', result.message || 'Unknown error');
-      }
+   
 
   const result = await response.json();
+
+  if (response.ok && result.success) {
+    console.log('Prospect updated successfully');
+    setProgressBar({ text: PROSPECT_VALUES[2].label, color: LEAD_BAR_COLOR, width: LEAD_BAR_WIDTH });
+    setIsConverted(true); // Mark as converted
+    setStage("lead");
+  } else {
+    console.error('Failed to update prospect:', result.message || 'Unknown error');
+  }
 
   if (response.ok && result.success) {
     console.log('Prospect updated successfully');

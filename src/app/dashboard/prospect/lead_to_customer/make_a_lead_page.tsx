@@ -54,7 +54,7 @@ const [isConverted, setIsConverted] = useState(false);
   const [progressBarWidth, setProgressBarWidth] = useState(LEAD_BAR_WIDTH);
   const [lc_name, setLc_name] = useState<string>("");
    const [lc_color, setLc_color] = useState<string>("");
-   const [productTypeName, setProductTypeName] = useState<String>("");
+   const [productTypeName, setProductTypeName] = useState<string>("");
   const [stage, setStage] = useState('');
   const [category, setCategory] = useState('');
 

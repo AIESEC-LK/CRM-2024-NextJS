@@ -21,8 +21,8 @@ export default function MakeALeadPage() {
    const [activities, setActivities] = useState<string[]>([]);
    const [lc_name, setLc_name] = useState<string>("");
    const [lc_color, setLc_color] = useState<string>("");
-   const [productTypeName, setProductTypeName] = useState<String>("");
-
+   const [productTypeName, setProductTypeName] = useState<string>("");
+   const [mouUrl, setMouUrl] = useState<string>("");
   useEffect(() => {
     async function fetchProducts() {
       try {
@@ -64,6 +64,7 @@ export default function MakeALeadPage() {
         setLc_name(prospect.lc_name || "");
         setLc_color(prospect.lc_color || "");
         setProductTypeName(prospect.product_type_name || "");
+        setMouUrl(prospect.mouUrl || "");
       } catch (error) {
         console.error("Error fetching prospect:", error);
       }
@@ -71,7 +72,7 @@ export default function MakeALeadPage() {
 
     fetchProducts();
     fetchProspect();
-  }, []);
+  }, [mouUrl]);
 
   return (
     <>
@@ -125,11 +126,31 @@ export default function MakeALeadPage() {
           {/* Active Stage - Customer */}
           <div className="w-full bg-gray-100 rounded overflow-hidden shadow-lg">
             <div className="px-14 py-14">
-              <h1 className="text-2xl font-bold mb-6"><i className="fa-solid fa-fire mr-3"></i>Active Stage - Customer</h1>
-              <Label htmlFor="category" className="block mb-2">Category:</Label>
+              <h1 className="text-2xl font-bold mb-6"><i className="fa-solid fa-fire mr-3"></i>Active Stage - Promoter</h1>
+              <div className="mt-4">
+            <Label>MOU</Label>
+            
+          {mouUrl && (
+            <a href={mouUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 mt-2 bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded mb-2">
+              <img src="/pdf_icon.png" alt="PDF" className="w-6 h-6" />
+              VIEW PDF
+            </a>
+          )}
+          </div>
+              <Label htmlFor="mouStart" className="block mb-2">MoU End Date:</Label>
               <Input
-                value={partnershipCategoryName}
-                onChange={(e) => setpartnershipCategoryName(e.target.value)}
+                placeholder="YYYY/MM/DD"
+                value={activeMouStartDate}
+                onChange={(e) => setActiveMouStartDate(e.target.value)}
+                className="w-full mb-4"
+                type="text"
+                disabled
+              />
+              <Label htmlFor="mouEnd" className="block mb-2">Promoter End Date:</Label>
+              <Input
+                placeholder="YYYY/MM/DD"
+                value={activeMouEndDate}
+                onChange={(e) => setActiveMouEndDate(e.target.value)}
                 className="w-full mb-4"
                 type="text"
                 disabled
@@ -151,7 +172,7 @@ export default function MakeALeadPage() {
 
           {/* Lead Stage */}
           <div className="w-full bg-gray-100 rounded overflow-hidden shadow-lg">
-            <div className="px-14 py-14">
+          <div className="px-14 py-14">
               <h1 className="text-2xl font-bold mb-6"><i className="fa-solid fa-chart-gantt mr-3"></i>Lead Stage</h1>
               <Label htmlFor="category" className="block mb-2">Category:</Label>
               <Input
@@ -161,25 +182,35 @@ export default function MakeALeadPage() {
                 type="text"
                 disabled
               />
-              <Label htmlFor="mouStart" className="block mb-2">MOU Start Date:</Label>
-              <Input
-                placeholder="YYYY/MM/DD"
-                value={leadMouStartDate}
-                onChange={(e) => setLeadMouStartDate(e.target.value)}
-                className="w-full mb-4"
-                type="text"
-                disabled
-              />
-              <Label htmlFor="mouEnd" className="block mb-2">MOU End Date:</Label>
-              <Input
-                placeholder="YYYY/MM/DD"
-                value={leadMouEndDate}
-                onChange={(e) => setLeadMouEndDate(e.target.value)}
-                className="w-full mb-4"
-                type="text"
-                disabled
-              />
-            </div>
+<Label>MOU</Label>
+            
+            {mouUrl && (
+              <a href={mouUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 mt-2 bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded mb-2">
+                <img src="/pdf_icon.png" alt="PDF" className="w-6 h-6" />
+                VIEW PDF
+              </a>
+            )}
+           
+                <Label htmlFor="mouStart" className="block mb-2">MoU End Date:</Label>
+                <Input
+                  placeholder="YYYY/MM/DD"
+                  value={activeMouStartDate}
+                  onChange={(e) => setActiveMouStartDate(e.target.value)}
+                  className="w-full mb-4"
+                  type="text"
+                  disabled
+                />
+                <Label htmlFor="mouEnd" className="block mb-2">Promoter End Date:</Label>
+                <Input
+                  placeholder="YYYY/MM/DD"
+                  value={activeMouEndDate}
+                  onChange={(e) => setActiveMouEndDate(e.target.value)}
+                  className="w-full mb-4"
+                  type="text"
+                  disabled
+                />
+              
+              </div>
           </div>
         </div>
       </div>
