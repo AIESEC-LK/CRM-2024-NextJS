@@ -3,9 +3,11 @@ import React, { createContext, useState, useEffect, ReactNode } from 'react';
 
 // Define types for the user object and context value
 interface User {
+
     email: string;
     role: 'member' | 'admin';
     lcId: string;
+    
 }
 
 interface AuthContextType {

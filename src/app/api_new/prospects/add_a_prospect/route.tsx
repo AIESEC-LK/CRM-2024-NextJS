@@ -113,7 +113,7 @@ export async function POST(req: Request) {
 
   console.log("Last record:", lastRecord);
 
-if (lastRecord.length > 0) {
+if (lastRecord.length > 0 || lastRecord!=null) {
   let shouldBePending = false;
   
   // Use for...of instead of forEach for async operations
@@ -188,10 +188,12 @@ if (lastRecord.length > 0) {
 
           }else{
 
+            console.log("product ID"  +prospect.productId)
+
             if (prospect.productId === "" || prospect.productId === null||prospect.productId === undefined) {
               prospect.productId = prospect.producttype || "";
             }
-
+            console.log("product ID dfsdfsd"  +prospect.productId)
         await db.collection("Prospects").insertOne({
           company_id: prospect.companyId,
           product_type_id: prospect.productId,
@@ -210,6 +212,8 @@ if (lastRecord.length > 0) {
       }
 
       }
+
+
     }else{
       //Create Prospect
       if (prospect.productId === "" || prospect.productId === null||prospect.productId === undefined) {
@@ -226,7 +230,7 @@ if (lastRecord.length > 0) {
         contactPersonName: prospect.contactPersonName,
         contactPersonNumber: prospect.contactPersonNumber,
         contactPersonEmail: prospect.contactPersonEmail,
-        status: createCompany ? PROSPECT_VALUES[7].value : PROSPECT_VALUES[1].value,
+        status: newCompany ? PROSPECT_VALUES[7].value : PROSPECT_VALUES[1].value,
         newCompay: newCompany
       });
 

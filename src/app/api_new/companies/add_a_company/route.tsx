@@ -16,6 +16,7 @@ export async function POST(req: Request) {
       contactPersonEmail: contactPersonEmail,
       comment: comment,
       industry_id: industry_id,
+      approved:true
 
     });
 
