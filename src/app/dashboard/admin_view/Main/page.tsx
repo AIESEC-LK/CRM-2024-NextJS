@@ -9,7 +9,23 @@ import styles from "./styles.module.css"
 import { PROSPECT_BAR_COLOR, PROSPECT_BAR_WIDTH, PROSPECT_VALUES,CUSTOMER_PANDING_BAR_COLOR,CUSTOMER_PANDING_BAR_WIDTH,PROSPECT_EXPIRE_TIME_DURATION ,LEAD_EXPIRE_TIME_DURATION,LEAD_BAR_WIDTH,LEAD_BAR_COLOR ,CUSTOMER_BAR_COLOR,CUSTOMER_BAR_WIDTH ,PROMOTER_BAR_COLOR,PROMOTER_BAR_WIDTH ,CUSTOMER_PENDING_MOU_REJECTED_BAR_COLOR,CUSTOMER_PENDING_MOU_REJECTED_BAR_WIDTH,PARTNERHSIPS_UI_PATH} from '@/app/lib/values';
 import ToastNotification from '@/app/components/ui/toast';
 import { useAuth } from '@/app/context/AuthContext';
+import { useConfirmation } from "@/app/context/ConfirmationContext";
 export default function ApproveCustomer() {
+
+    const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
+    const [titlePopup, setPopupTitle] = useState('This is the default message.');
+    const [messagePopup, setPopupMessage] = useState('This is the default message.');
+  
+    const openPopup = (newMessage: string, newTitle: string): void => {
+      setPopupTitle(newTitle);  // Update the title state dynamically
+      setPopupMessage(newMessage);  // Update the message state dynamically
+      setIsPopupOpen(true);    // Open the popup
+    };
+
+     const { triggerConfirmation } = useConfirmation();
+      const closePopup = (): void => setIsPopupOpen(false);
+
+
   const searchParams = useSearchParams();
   const router = useRouter();
   interface ProspectDetails {
@@ -61,7 +77,11 @@ const [expiryDate,setExpiryDate] = useState<Date>();
 const [dateAdded,setDateAdded] = useState<Date>();
 const [nextStage,SetNextStage] = useState<string|null>(null)
 const [stageDropwDown,setStageDropDown] = useState<string[]>([]);
+const [newStage ,setNewStage] = useState<string | null>(null);
+const [canEntityPartner,setCanEntitypartner]  = useState<boolean >(false);
 const {user} =useAuth();
+
+
     
 useEffect(() => {
   const id = searchParams.get('id');
@@ -90,6 +110,7 @@ useEffect(() => {
 
   useEffect(() => {
 
+
     const fetchstages = async () => {
 
       try {
@@ -107,6 +128,10 @@ useEffect(() => {
 
 
   }, []);
+
+
+
+
 
   useEffect(() => {
     if (true) {
@@ -332,9 +357,9 @@ const handleMouEndDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
 
 const handleStageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-  const newStage = event.target.value;
-  setCurrentStage(newStage);
-  console.log(newStage);
+  const newSelectedStage = event.target.value;
+  setNewStage(newSelectedStage);
+  console.log(newSelectedStage);
 }
 
 const HandleSwapProduct = async () => {
@@ -446,6 +471,8 @@ const loadUpdatedProspect = async()=>{
 const handleOverwriteStage = async () => {
 
   try {
+
+
     const response = await fetch('/api_new/prospects/update_a_prospect', {
       method: 'PATCH',
       headers: {
@@ -453,13 +480,13 @@ const handleOverwriteStage = async () => {
       },
       body: JSON.stringify({
         id:{prospectId},
-        status: currentStage,
+        status: newStage,
       }),
     });
 
     if (response.ok) {
       console.log('Stage updated successfully');
-      setCurrentStage(currentStage);
+      setCurrentStage(newStage);
       ToastNotification({
         message: 'Stage updated successfully',
         onClose: () => {}
@@ -477,10 +504,6 @@ const handleOverwriteStage = async () => {
   } catch (error) {
     console.error('An error occurred while updating the stage:', error);
   }
-
-
-
-
 
 }
 
@@ -609,9 +632,13 @@ const HandleOverwriteDate = async () => {
   }
 }
 
-const DeletePartnership = async () => {
-
+const DeletePartnership = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  e.preventDefault();
+  triggerConfirmation(
+    "Are you sure you want to delete this partnership ?",
+    async () => {
   try {
+
     const response = await fetch(`/api_new/prospects/delete_a_prospect`, {
       method: "DELETE",
       headers: {
@@ -640,7 +667,8 @@ const DeletePartnership = async () => {
     console.error("Error deleting prospect:", error);
     return { success: false || "An unknown error occurred." };
   }
-
+}
+  )
 
 }
 
@@ -702,7 +730,7 @@ if (user?.role !== "admin") {
          {/* EditLead +EditProspect*/}
         {(currentStage === 'prospect' || currentStage === 'lead' ) && (
           <div className="bg-gray-100 rounded-lg shadow-lg p-6 mb-6">
-            <h3 className="text-lg font-medium mb-4">Active Stage - {currentStage}</h3>
+            <h3 className="text-lg font-medium mb-4">Active Stage - {getStageByValue(currentStage)}</h3>
             <ToastNotification
               message={`Due date to go to the ${getNextStage(currentStage)} stage - ${expiryDate ? new Date(expiryDate).toLocaleDateString() : 'N/A'}`}
               onClose={() => {}}

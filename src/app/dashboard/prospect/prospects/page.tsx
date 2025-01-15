@@ -29,7 +29,8 @@ const labelColors: { [key: string]: string } = {
   entityPartner: "bg-teal-600 text-white",
   lead: "bg-yellow-400 text-white",
   customerPending: "bg-gray-800 text-white",
-  customerPendingMoURejected: "bg-red-500 text-white",
+  customerPendingMoURejected: "bg-blue-500 text-white",
+  mcvpap: "bg-blue-400 text-white",
 
 };
 
@@ -59,7 +60,8 @@ const ProspectsPage = () => {
           throw new Error("Failed to fetch prospects");
         }
         const data = await response.json();
-        setProspects(data);
+        const fiterdata: Prospect[] = data.filter((item: Prospect) => item.status !== "pending");
+        setProspects(fiterdata);
         setFilteredProspects(data);
       } catch (error) {
         console.error("Error fetching prospects:", error);
@@ -232,7 +234,8 @@ const ProspectsPage = () => {
                   >
                     {prospect.lc_name}
                     <span className={`absolute top-0 right-0 text-xs font-semibold py-1 px-2 rounded-tl-lg ${labelColors[prospect.status]}`}>
-                      {GetStatusLabel(prospect.status)}
+                      {prospect.status === "mcvpap" ? "MCVAP" : GetStatusLabel(prospect.status)}
+                    
                     </span>
                   </div>
                 )}
@@ -247,7 +250,7 @@ const ProspectsPage = () => {
                   >
                     {prospect.lc_name}
                     <span className={`absolute top-0 right-0 text-xs font-semibold py-1 px-2 rounded-tl-lg ${labelColors[prospect.status]}`}>
-                      {GetStatusLabel(prospect.status)}
+                    {prospect.status === "mcvpap" ? "MCVAP" : GetStatusLabel(prospect.status)}
                     </span>
                   </div>
                 )}

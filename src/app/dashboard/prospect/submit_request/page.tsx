@@ -100,14 +100,7 @@ const Page: React.FC = () => {
       }
     };
 
-    const loadAuthDetails = async () => {
-      if (user) {
-        const userDetails: IUserDetails = { UserId: 256, UserLCId: user.lcId };
-        AuthService.saveUserDetails(userDetails);
-      } else {
-        console.error("User is null");
-      }
-    };
+   
 
 
     //loadAuthDetails();
@@ -195,7 +188,29 @@ const Page: React.FC = () => {
           // If the response is successful, you can check for a status or extract a message from the response
           if (submitResponse.ok) {
             const errorData = await submitResponse.json();
-            openPopup(errorData.error, "Sucessfull");
+            const response = await fetctMyProspectList(user.lcId);
+            setmyProspectList(response);
+            setFormData({
+              company_id: "",
+              companyId: "",
+              companyName: "",
+              companyAddress: "",
+              contactPersonName: "",
+              contactPersonNumber: "",
+              contactPersonEmail: "",
+              producttype: "",
+              productId: "",
+              comment: "",
+              partnership: "",
+              industry_id: "",
+              industryId: "",
+              userLcId: ""
+            });
+            openPopup(errorData.error, "Successful");
+
+          
+        
+            
             //    setErrorMessage(errorData.error);
             //    setErrorMessage(null);
           } else {
