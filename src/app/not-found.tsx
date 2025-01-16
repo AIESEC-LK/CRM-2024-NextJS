@@ -11,7 +11,7 @@ export default function NotFound() {
         <div className="bg-white rounded-lg shadow-md p-8 max-w-md w-full">
           <h2 className="text-3xl font-bold text-[#1c2536] mb-4">Page Not Found</h2>
           <p className="text-gray-600 mb-6">
-            Sorry, the page you are looking for doesn't exist or has been moved. Please check the URL or navigate back to the dashboard.
+             Sorry, the page you are looking for doesn&#39;t exist or has been moved. Please check the URL or navigate back to the dashboard.
           </p>
           <div className="flex flex-col space-y-4">
             
