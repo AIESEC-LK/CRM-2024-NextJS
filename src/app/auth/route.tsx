@@ -5,9 +5,11 @@ import { GetTokenResponse } from "@/app/auth/auth-types";
 import { getUserDetails } from "@/utils/person-utils";
 import clientPromise from "../lib/mongodb";
 
+
 export async function GET(request: NextRequest) {
   const code: string = request.nextUrl.searchParams.get("code") as string;
   const authResponse: GetTokenResponse = await getAccessTokenFromOauth(code);
+
 
   const redirectCookie = cookies().get("redirect_uri");
   const redirect_uri =
@@ -27,9 +29,11 @@ export async function GET(request: NextRequest) {
     if (user) {
       console.log("✅ User found:", user);
     } else {
-      return NextResponse.json(
-        { error: "Unauthorized Access" },
-        { status: 401 }
+
+      //redirect to unauthpage
+      return NextResponse.redirect(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/unauthorized?source=auth_failure`, 
+        { status: 302 }
       );
     }
   } catch (e) {

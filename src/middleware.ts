@@ -16,6 +16,15 @@ export async function middleware(request: NextRequest) {
   //     return NextResponse.redirect(url.toString());
   //   }
 
+
+  //unathurized page redirect middleware logic
+  if (
+    request.nextUrl.pathname === '/unauthorized' && 
+    request.nextUrl.searchParams.get('source') === 'auth_failure'
+  ) {
+    return NextResponse.next();
+  }
+
   if (!isLoggedIn()) {
     const url = new URL(`${process.env.GIS_AUTH_ENDPOINT}/oauth/authorize`);
     url.searchParams.set("response_type", "code");
