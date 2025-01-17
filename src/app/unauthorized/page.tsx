@@ -30,7 +30,7 @@ export default function Unauthorized() {
         <div className="bg-white rounded-lg shadow-md p-8 max-w-md w-full">
           <h2 className="text-3xl font-bold text-[#1c2536] mb-4">Unauthorized Access</h2>
           <p className="text-gray-600 mb-6">
-            Sorry, you don't have permission to access the CRM of AIESEC Sri Lanka. Please log in with appropriate credentials or contact your MCVP.
+            Sorry, you don&apos;t have permission to access the CRM of AIESEC Sri Lanka. Please log in with appropriate credentials or contact your MCVP.
           </p>
           <div className="flex flex-col space-y-4">
             {/* <Button
@@ -54,8 +54,8 @@ export default function Unauthorized() {
 
       {/* Footer */}
       <footer className="bg-[#1c2536] border-t border-gray-800 px-4 py-3 text-center text-white text-sm">
-      <p>© AIESEC Sri Lanka 2024 - 2025</p>
-    <p>Powered by The Dev Team of AIESEC Sri Lanka</p>
+        <p>© AIESEC Sri Lanka 2024 - 2025</p>
+        <p>Powered by The Dev Team of AIESEC Sri Lanka</p>
       </footer>
     </div>
   )
