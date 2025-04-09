@@ -11,7 +11,7 @@ import ListGroup from '@/app/components/ui/list_groups';
 import styles from "./styles.module.css";
 import { v4 as uuidv4 } from 'uuid';
 import { LEAD_BAR_COLOR, LEAD_BAR_WIDTH, LEAD_EXPIRE_TIME_DURATION, PROSPECT_BAR_COLOR, PROSPECT_BAR_WIDTH, PROSPECT_VALUES } from '@/app/lib/values';
-import { useAuth } from '@/app/context/AuthContext';
+//import { useAuth } from '@/app/context/AuthContext';
 import { link } from 'fs';
 
 interface Product {
@@ -48,7 +48,7 @@ export default function ConvertToALeadPage() {
   });
   const [isConverted, setIsConverted] = useState(false);
 
-  const {user} = useAuth();
+  //const {user} = useAuth();
   const[lc_name, setLc_name] = useState<string>("");
   const [lc_color, setLc_color] = useState<string>("");
    const [productTypeName, setProductTypeName] = useState<string>("");
@@ -332,10 +332,10 @@ if (isNaN(expireDate.getTime())) {
     }finally{
       setUploading(false);
     }
-  };
+  };/*
   if (user?.lcId !== prospectDetails?.entity_id) {
     return <div className="container mx-auto p-4">Access Denied</div>;
-  }else{
+  }else{*/
   return (
     <div className="container mx-auto pt-0 pb-20">
       <div className="w-full ml-4 mb-6 bg-gray-100 rounded overflow-hidden shadow-lg flex items-center pt-3 pb-3">
@@ -480,4 +480,4 @@ if (isNaN(expireDate.getTime())) {
     </div>
   );
 }
-}
+//}

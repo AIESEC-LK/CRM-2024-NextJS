@@ -7,12 +7,12 @@ import { Input } from "./components/ui/input";
 import { Button } from "./components/ui/button";
 import { Label } from "./components/ui/label";
 import { PARTNERHSIPS_UI_PATH } from "./lib/values";
-import { useAuth } from "./context/AuthContext";
+//import { useAuth } from "./context/AuthContext";
 import image from "../app/assets/giphy.gif"
 
 const LoginPage = () => {
   const router = useRouter();
-  const { login } = useAuth();
+  //const { login } = useAuth();
   const [email, setEmail] = useState(String);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -21,11 +21,11 @@ const LoginPage = () => {
     router.push(PARTNERHSIPS_UI_PATH);
 
     //Mock user login
-    login("ashanmatheesha@aiesec.net");
+    //login("ashanmatheesha@aiesec.net");
 
   };
 
-
+/*
   useEffect(() => {
     async function setEmail() {
       try {
@@ -49,7 +49,7 @@ const LoginPage = () => {
 
     setEmail();
  
-  }, []);
+  }, []);*/
 
   return (
     <div

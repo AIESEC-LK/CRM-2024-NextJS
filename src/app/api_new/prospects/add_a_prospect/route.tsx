@@ -5,6 +5,8 @@ import { ObjectId } from "mongodb";
 import { error } from "console";
 import { PROSPECT_EXPIRE_TIME_DURATION } from "@/app/lib/values";
 
+
+// Shape of a Prospect Request
 interface IProspectRequest {
   companyId: string;
   companyName: string;
@@ -19,6 +21,7 @@ interface IProspectRequest {
   producttype: string | undefined;
 }
 
+// Shape of a Product
 interface IProspectProduct{
   _id: string;
   productName: string;
@@ -29,26 +32,18 @@ interface IProspectProduct{
 
 export async function POST(req: Request) {
   try {
-    console.log("Request Body", req.body);
     let company = null;
     let newCompany = false;
     
+    // Parse the request body as JSON
     const prospect: IProspectRequest = await req.json();
     const client = await clientPromise;
     const db = client.db(process.env.DB_NAME);
 
-   
-
     let createCompany = false;
-    console.log("product type"  +prospect.producttype)
-    // console.log("product ID"  +prospect.productId)
-
 
     // Map all other Product ID to the SameProduct ID except Event(6734053c308fd8d176381e07)
-    // if (prospect.productId != "6734053c308fd8d176381e07") {
-    //   prospect.productId = "6734054e308fd8d176381e08";
-    // }
-  if (prospect.productId === "" || prospect.productId === null||prospect.productId === undefined) {
+    if (prospect.productId === "" || prospect.productId === null||prospect.productId === undefined) {
         prospect.productId = prospect.producttype || "";
       }
    
@@ -56,18 +51,18 @@ export async function POST(req: Request) {
     // Set current date as the date added
     const dateAdded = new Date();
 
-    /* TODO*/
+
     //Fetch from Auth
     const entity_id = prospect.userLcId;
    
-    // Set date expires to three months from now
+    // Configure the Expire Date
     const dateExpires = new Date();
     dateExpires.setTime(dateAdded.getTime() + PROSPECT_EXPIRE_TIME_DURATION);
-    //correct this
 
     //Check whether the company already exists
     if (prospect.companyId == "" || prospect.companyId == null) {
-      //Create a new company bcz company id is null
+
+      //Create a new company bcz it's a new company
       createCompany = true;
     } else {
       company = await db.collection("Companies").findOne({ _id: new ObjectId(prospect.companyId.toString()) });

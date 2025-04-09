@@ -1,3 +1,5 @@
+/*
+
 import {
     ApolloClient,
     DocumentNode,
@@ -69,3 +71,5 @@ export async function runQueryWithAccessToken(accessToken: string,
 
     return data;
 }
+
+*/

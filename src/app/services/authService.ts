@@ -1,3 +1,5 @@
+/*
+
 export interface IUserDetails {
     UserId: number;
     UserLCId: string;
@@ -37,3 +39,5 @@ export class AuthService {
         localStorage.removeItem(AuthService.USER_KEY);
     }
 }
+
+*/

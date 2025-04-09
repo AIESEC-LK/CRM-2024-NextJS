@@ -8,7 +8,7 @@ import ProgressBar from '@/app/components/ui/progress'
 import styles from "./styles.module.css"
 import { PROSPECT_BAR_COLOR, PROSPECT_BAR_WIDTH, PROSPECT_VALUES,CUSTOMER_PANDING_BAR_COLOR,CUSTOMER_PANDING_BAR_WIDTH,PROSPECT_EXPIRE_TIME_DURATION ,LEAD_EXPIRE_TIME_DURATION,LEAD_BAR_WIDTH,LEAD_BAR_COLOR ,CUSTOMER_BAR_COLOR,CUSTOMER_BAR_WIDTH ,PROMOTER_BAR_COLOR,PROMOTER_BAR_WIDTH ,CUSTOMER_PENDING_MOU_REJECTED_BAR_COLOR,CUSTOMER_PENDING_MOU_REJECTED_BAR_WIDTH,PARTNERHSIPS_UI_PATH} from '@/app/lib/values';
 import ToastNotification from '@/app/components/ui/toast';
-import { useAuth } from '@/app/context/AuthContext';
+//import { useAuth } from '@/app/context/AuthContext';
 import { useConfirmation } from "@/app/context/ConfirmationContext";
 export default function ApproveCustomer() {
 
@@ -79,7 +79,7 @@ const [nextStage,SetNextStage] = useState<string|null>(null)
 const [stageDropwDown,setStageDropDown] = useState<string[]>([]);
 const [newStage ,setNewStage] = useState<string | null>(null);
 const [canEntityPartner,setCanEntitypartner]  = useState<boolean >(false);
-const {user} =useAuth();
+//const {user} =useAuth();
 
 
     
@@ -683,9 +683,9 @@ useEffect(() => {
   }
 }, [currentStage]);
 
-if (user?.role !== "admin") {
+/*if (user?.role !== "admin") {
   return <div className="container mx-auto p-4">Access Denied</div>;
-}else{
+}else{*/
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -1011,5 +1011,5 @@ if (user?.role !== "admin") {
     </div>
   )
 }
-}
+//}
 

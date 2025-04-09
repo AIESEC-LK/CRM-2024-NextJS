@@ -1,3 +1,5 @@
+/*
+
 import { cookies } from "next/headers";
 import { gql } from "@apollo/client";
 import { runQuery, runQueryWithAccessToken } from "@/utils/graphql-utils";
@@ -287,3 +289,5 @@ export async function getAccessibleEntitiesWithNames(): Promise<
     (office, index, self) => index === self.findIndex((t) => t.id === office.id)
   );
 }
+
+*/

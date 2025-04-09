@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "../../../components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/app/components/ui/table";
-import { useAuth } from "@/app/context/AuthContext";
+//import { useAuth } from "@/app/context/AuthContext";
 import { PROSPECT_VALUES } from "@/app/lib/values";
 import { ChevronDown, ChevronRight } from "lucide-react";
 
@@ -39,7 +39,7 @@ const ProspectsPage = () => {
   const [prospects, setProspects] = useState<Prospect[]>([]);
   const [filteredProspects, setFilteredProspects] = useState<Prospect[]>([]);
   const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
-  const { user } = useAuth();
+  //const { user } = useAuth();
 
   // Filter states
   const [companyFilter, setCompanyFilter] = useState("");
@@ -258,7 +258,7 @@ const ProspectsPage = () => {
 
               {/* Actions Column */}
               <div className="flex justify-end">
-                {prospect.entity_id === user?.lcId && user.role === "member" &&(
+                {/*{prospect.entity_id === user?.lcId && user.role === "member" &&(*/}
                   <div>
                     {prospect.status === "prospect" && (
                       <Button
@@ -312,11 +312,11 @@ const ProspectsPage = () => {
                     )}
                     
                   </div>
-                )}
+                {/*})}*/}
 
 
 
-{user?.role === "admin" &&(
+{/*user?.role === "admin" &&(*/}
                   <div>
                     <Button
                         onClick={() => router.push(`/dashboard/admin_view/Main?id=${prospect._id}`)}
@@ -325,7 +325,7 @@ const ProspectsPage = () => {
                         <i className="fa fa-eye mr-3" aria-hidden="true"></i>View
                       </Button>                   
                   </div>
-                )}
+               {/*} )}*/}
                 
               </div>
             </div>

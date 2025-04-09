@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
-import { useAuth } from "@/app/context/AuthContext";
+//import { useAuth } from "@/app/context/AuthContext";
 
 const COLORS = [
   "#FF6B6B",
@@ -25,7 +25,7 @@ export default function AddEntityPage() {
   const [name, setName] = useState("");
   const [color, setColor] = useState(COLORS[0]);
   const router = useRouter();
-const { user } = useAuth();
+//const { user } = useAuth();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -45,9 +45,10 @@ const { user } = useAuth();
     }
   };
 
+  /*
   if (user?.role !== "admin") {
     return <div className="container mx-auto p-4">Access Denied</div>;
-  }else{
+  }else{*/
     return (
       <div className="container mx-auto p-4">
         <h1 className="text-2xl font-bold mb-4">Add New Entity</h1>
@@ -92,4 +93,4 @@ const { user } = useAuth();
   }
 
   
-}
+//}
