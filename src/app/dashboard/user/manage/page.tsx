@@ -1,88 +1,38 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { IUserUpdateRequest, createUser, updateUser, deleteUser, fetctAllUserArray, fetchAllEntity } from "@/app/dashboard/user/manage/functions";
-import ConfirmationModal from "@/app/components/ConfirmationModal";
-import { useConfirmation } from "@/app/context/ConfirmationContext";
-import { useAuth } from "@/app/context/AuthContext";
+import React, { useState } from "react";
 
 type User = {
-    _id: string;
-    userEmail: string;
-    userRole: string;
-    entity: Entity;
-};
-
-type Entity = {
-    _id: string;
-    entityName: string;
+    name: string;
+    email: string;
+    role: string;
+    entity: string;
 };
 
 const UserManagement: React.FC = () => {
-    const [users, setUsers] = useState<User[]>([]);
-    const [entities, setEntities] = useState<Entity[]>([]);
+    const [users, setUsers] = useState<User[]>([
+        { name: "Aasim Naleem", email: "naleemaasim1@gmail.com", role: "member", entity: "Jayewardenepura" },
+        { name: "Adheeb Ahamed", email: "adheebahamed2002@gmail.com", role: "member", entity: "NIBM" },
+        { name: "Akshana Cooray", email: "akshanacooray2002@gmail.com", role: "member", entity: "Jayewardenepura" },
+        { name: "Akshvinth Adrian John", email: "akshvinthjohn@gmail.com", role: "member", entity: "NIBM" },
+    ]);
 
-    const [newUser, setNewUser] = useState({ userEmail: "", userRole: "", userEntityId: "" });
-    const { triggerConfirmation } = useConfirmation();
-    const {user} = useAuth();
+    const [newUser, setNewUser] = useState({ email: "", role: "", entity: "" });
 
-    const handleAddUser = async () => {
-        if (!newUser.userEmail || !newUser.userRole || !newUser.userEntityId) {
-            alert("Please fill in all fields before adding a user.");
-            return;
+    const handleAddUser = () => {
+        if (newUser.email && newUser.role && newUser.entity) {
+            setUsers([...users, { name: "", ...newUser }]);
+            setNewUser({ email: "", role: "", entity: "" });
         }
-        // Use the centralized confirmation modal
-        triggerConfirmation(
-            "Are you sure you want to add this user?",
-            async () => {
-                await createUser(newUser);
-                //setUsers([...users, { ...newUser, _id: "temp-id", entity: entities.find((e) => e._id === newUser.userEntityId)! }]);
-                setNewUser({ userEmail: "", userRole: "", userEntityId: "" });
-            }
-        );
     };
 
-    const handleDeleteUser = async (userId: string) => {
-        // Use the centralized confirmation modal
-        triggerConfirmation("Are you sure you want to delete this user?", async () => {
-            await deleteUser(userId);
-            setUsers(users.filter((user) => user._id !== userId));
-        });
+    const handleDeleteUser = (email: string) => {
+        setUsers(users.filter((user) => user.email !== email));
     };
 
-    const handleRoleChange = async (id: string, email: string, newRole: string) => {
-        const user: IUserUpdateRequest = { _id: id, userEmail: email, userRole: newRole, userEntityId: "" };
-
-        // Optionally use confirmation for role change as well
-        triggerConfirmation(
-            `Are you sure you want to change the role of this user to "${newRole}"?`,
-            async () => {
-                await updateUser(user);
-                setUsers((users) =>
-                    users.map((user) =>
-                        user.userEmail === email ? { ...user, userRole: newRole } : user
-                    )
-                );
-            }
-        );
+    const handleRoleChange = (email: string, newRole: string) => {
+        setUsers(users.map((user) => (user.email === email ? { ...user, role: newRole } : user)));
     };
 
-    useEffect(() => {
-        const fetctAllUsers = async () => {
-            const data = await fetctAllUserArray();
-            setUsers(data);
-        };
-
-        const fetctAllEntity = async () => {
-            const data = await fetchAllEntity();
-            setEntities(data);
-        };
-        fetctAllEntity();
-        fetctAllUsers();
-    }, []);
-
-    if (user?.role !== "admin") {
-        return <div className="container mx-auto p-4">Access Denied</div>;
-      }else{
     return (
         <div className="p-6 mx-auto font-sans">
             {/* Add User Section */}
@@ -91,33 +41,28 @@ const UserManagement: React.FC = () => {
                 <input
                     type="email"
                     placeholder="Email"
-                    value={newUser.userEmail}
-                    onChange={(e) => setNewUser({ ...newUser, userEmail: e.target.value })}
+                    value={newUser.email}
+                    onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
                     className="border border-gray-300 rounded px-3 py-2 flex-1"
                 />
                 <select
-                    value={newUser.userRole}
-                    onChange={(e) => setNewUser({ ...newUser, userRole: e.target.value })}
+                    value={newUser.role}
+                    onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
                     className="border border-gray-300 rounded px-3 py-2"
                 >
                     <option value="">User&apos;s Role</option>
                     <option value="member">Member</option>
                     <option value="admin">Admin</option>
                 </select>
-
                 <select
-                    value={newUser.userEntityId}
-                    onChange={(e) => setNewUser({ ...newUser, userEntityId: e.target.value })}
+                    value={newUser.entity}
+                    onChange={(e) => setNewUser({ ...newUser, entity: e.target.value })}
                     className="border border-gray-300 rounded px-3 py-2"
                 >
                     <option value="">User&apos;s Entity</option>
-                    {entities.map((entity) => (
-                        <option key={entity._id} value={entity._id}>
-                            {entity.entityName}
-                        </option>
-                    ))}
+                    <option value="Jayewardenepura">Jayewardenepura</option>
+                    <option value="NIBM">NIBM</option>
                 </select>
-
                 <button
                     onClick={handleAddUser}
                     className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
@@ -126,39 +71,40 @@ const UserManagement: React.FC = () => {
                 </button>
             </div>
 
-            <hr />
+            <hr/>
+
+            {/* Current Users Section */}
             <h2 className="text-xl font-bold mb-4">Current Users</h2>
             <div className="divide-y divide-gray-200">
                 {users.map((user) => (
-                    <div key={user.userEmail} className="flex items-center justify-between py-3">
+                    <div key={user.email} className="flex items-center justify-between py-3">
                         <div className="flex-1 flex flex-col">
-                            {/*<span className="text-sm text-gray-500">Unnamed User</span>*/}
-                            <span className="font-medium">{user.userEmail}</span>
+                            <span className="font-medium">{user.name || "Unnamed User"}</span>
+                            <span className="text-sm text-gray-500">{user.email}</span>
                         </div>
                         <div className="flex items-center gap-4">
-                            <span>{user.entity.entityName}</span>
+                            <span>{user.entity}</span>
                             <select
-                                value={user.userRole}
-                                onChange={(e) => handleRoleChange(user._id, user.userEmail, e.target.value)}
+                                value={user.role}
+                                onChange={(e) => handleRoleChange(user.email, e.target.value)}
                                 className="border border-gray-300 rounded px-2 py-1"
-                            >
-                                <option value="member">Member</option>
-                                <option value="admin">Admin</option>
-                            </select>
-                            <button
-                                onClick={() => handleDeleteUser(user._id)}
-                                className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
-                            >
-                                Delete
-                            </button>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-    }
-};
-
-export default UserManagement;
+                                >
+                                    <option value="member">Member</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                                <button
+                                    onClick={() => handleDeleteUser(user.email)}
+                                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+                                >
+                                    Delete
+                                </button>
+                                </div>
+                                </div>
+                                ))}
+                                </div>
+                                </div>
+                                );
+                                };
+                                
+                                export default UserManagement;
 

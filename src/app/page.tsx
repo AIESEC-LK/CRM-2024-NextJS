@@ -7,49 +7,15 @@ import { Input } from "./components/ui/input";
 import { Button } from "./components/ui/button";
 import { Label } from "./components/ui/label";
 import { PARTNERHSIPS_UI_PATH } from "./lib/values";
-import { useAuth } from "./context/AuthContext";
-import image from "../app/assets/giphy.gif"
 
 const LoginPage = () => {
   const router = useRouter();
-  const { login } = useAuth();
-  const [email, setEmail] = useState(String);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     // Add login logic here if needed
     router.push(PARTNERHSIPS_UI_PATH);
-
-    //Mock user login
-    login("ashanmatheesha@aiesec.net");
-
   };
-
-
-  useEffect(() => {
-    async function setEmail() {
-      try {
-        const response = await fetch('/api_new/cookie/get_email');
-        const data = await response.json();
-      
-        if (data.email) {
-         
-          login(data.email);
-          console.log(data);
-
-
-            setTimeout(() => {
-            router.push(PARTNERHSIPS_UI_PATH);
-            }, 5000);
-        }
-      } catch (error) {
-        console.error('Error fetching email:', error);
-      }
-    }
-
-    setEmail();
- 
-  }, []);
 
   return (
     <div

@@ -16,12 +16,6 @@ export const PROSPECT_VALUES = [
   {value : "customerPendingMoURejected", label :"Customer Pending - MoU Rejected"}
 ]
 
-export const USER_ROLE_VALUES = [
-  { value: "admin", label: "Administrator" },
-  { value: "user", label: "User" }
-]
-
-
 export const AUTONOMATION_TABLE_ID = "6769349892a256157cb6142c"
 
 export const PROSPECT_EXPIRE_TIME_DURATION = 1000 * 60 * 60 * 24 * 15

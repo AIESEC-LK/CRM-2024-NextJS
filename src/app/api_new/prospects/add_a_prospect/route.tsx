@@ -15,15 +15,6 @@ interface IProspectRequest {
   productId: string;
   comment: string;
   industryId: string;
-  userLcId: string;
-  producttype: string | undefined;
-}
-
-interface IProspectProduct{
-  _id: string;
-  productName: string;
-  abbravation: string;
-  product:boolean
 }
 
 
@@ -58,8 +49,8 @@ export async function POST(req: Request) {
 
     /* TODO*/
     //Fetch from Auth
-    const entity_id = prospect.userLcId;
-   
+    const entity_id = "675dbabf296393f677c5cf21";
+
     // Set date expires to three months from now
     const dateExpires = new Date();
     dateExpires.setTime(dateAdded.getTime() + PROSPECT_EXPIRE_TIME_DURATION);
@@ -178,7 +169,7 @@ if (lastRecord.length > 0 || lastRecord!=null) {
               contactPersonName: prospect.contactPersonName,
               contactPersonNumber: prospect.contactPersonNumber,
               contactPersonEmail: prospect.contactPersonEmail,
-              status: PROSPECT_VALUES[0].value,
+              status: PROSPECT_VALUES[1].value,
             });
             
 
@@ -230,7 +221,7 @@ if (lastRecord.length > 0 || lastRecord!=null) {
         contactPersonName: prospect.contactPersonName,
         contactPersonNumber: prospect.contactPersonNumber,
         contactPersonEmail: prospect.contactPersonEmail,
-        status: newCompany ? PROSPECT_VALUES[7].value : PROSPECT_VALUES[1].value,
+        status: PROSPECT_VALUES[5].value,
         newCompay: newCompany
       });
 

@@ -87,10 +87,6 @@ export async function GET() {
 
           },
         },
-        // Sort by date_added in descending order (most recent first)
-        {
-          $sort: { date_added: -1 },
-        },
       ])
       .toArray();
 
