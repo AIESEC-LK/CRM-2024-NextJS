@@ -18,29 +18,27 @@ import {
 } from "@/app/components/ui/popover";
 
 interface Request {
-  _id: string;
-  entity_id: string;
-  entityName: string;
-  companyName: string;
-  companyAddress: string;
-  contactPersonName: string;
-  contactPersonNumber: string;
-  contactPersonEmail: string;
-  industry: string;
-  producttype: string;
-  status: "pending" | "approved" | "declined";
-  createdAt: string;
-  date_added: string;
-  expireDate: string;
+
+   _id: any,
+    company_id: any,
+    product_type_id: any,
+    entity_id: any,
+    date_added: string,
+    date_expires: string,
+    contactPersonName: string,
+    contactPersonNumber: string,
+    contactPersonEmail: string,
+    status: string,
+    companyName: string,
+    companyAddress: string,
+    productName: string,
+    entityName: string,
+    entityColor: string
 }
 
 export default function ProspectQueue() {
   const [requests, setRequests] = useState<Request[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-
-  function sleep(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
 
   useEffect(() => {
     fetchRequests();
@@ -60,46 +58,6 @@ export default function ProspectQueue() {
     }
   };
 
-  // Automatically clone each request by calling the API
-
-  /*
-useEffect(() => {
-  const cloneRequests = async () => {
-    if (requests.length > 0) {
-      for (const request of requests) {
-        await handleClone(request.companyName);
-        await sleep(1000); // 1 second delay
-      }
-    }
-  };
-
-  cloneRequests();
-}, [requests]);*/
-
-  // Function to call the clone API
-
-  /*
-  const handleClone = async (companyName: string) => {
-    try {
-      const response = await fetch("/api/pending_prospects/clonning", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ companyName }), // Pass companyName to clone the prospect
-      });
-
-      if (!response.ok) {
-        console.error(`Failed to clone prospect for ${companyName}`);
-        return;
-      }
-
-      const data = await response.json();
-      console.log(`Prospect for ${companyName} cloned successfully:`, data);
-    } catch (error) {
-      console.error(`Error cloning prospect for ${companyName}:`, error);
-    }
-  };*/
 const filteredRequests = requests.filter(
   (req) =>
     (req.entity_id && req.entity_id.toLowerCase().includes(searchTerm.toLowerCase())) ||
@@ -120,8 +78,11 @@ const filteredRequests = requests.filter(
 
   return (
     <div className="container mx-auto pt-0">
-      <h1 className="text-2xl font-bold mb-6 ml-4">Prospect Waiting List</h1>
-      <div className="mb-4 relative">
+      <div className="w-full ml-4 mb-6 bg-gray-100 rounded overflow-hidden shadow-lg flex items-center pt-3 pb-3">
+        <h1 className="text-2xl font-bold ml-4"><i className="fa-regular fa-clock mr-4"></i>Prospect Waiting List</h1>
+      </div>
+      <div className="w-full ml-4 bg-gray-100 rounded overflow-hidden shadow-lg flex items-center pt-3 pb-3 pl-3 pr-3">
+      <div className="relative w-full">
         <Input
           type="text"
           placeholder="Search requests..."
@@ -131,6 +92,9 @@ const filteredRequests = requests.filter(
         />
         <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
       </div>
+      </div>
+      <br/>
+      <div className="w-full ml-4 mb-6 bg-gray-100 rounded overflow-hidden shadow-lg flex items-center pt-3 pb-3">
       <Table>
         <TableHeader>
           <TableRow>
@@ -146,7 +110,15 @@ const filteredRequests = requests.filter(
         <TableBody>
           {filteredRequests.map((request) => (
             <TableRow key={request._id}>
-              <TableCell>{request.entityName}</TableCell>
+              <TableCell>
+                                      <div
+                        className="rounded-lg text-gray-900 text-sm font-normal px-2 py-2"
+                        style={{ backgroundColor: request.entityColor }}
+                      >
+                        {request.entityName}
+                        {/* Label for status with dynamic background color */}
+                      </div>
+              </TableCell>
               <TableCell>
                 <div className="flex items-center">
                   {request.companyName}
@@ -202,11 +174,12 @@ const filteredRequests = requests.filter(
                 </span>
               </TableCell>
               <TableCell>{formatDate(request.date_added)}</TableCell>
-              <TableCell>{formatDate(request.date_added + 24 * 60 * 60 * 1000)}</TableCell>
+              <TableCell>{formatDate(request.date_expires)}</TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+    </div>
     </div>
   );
 }

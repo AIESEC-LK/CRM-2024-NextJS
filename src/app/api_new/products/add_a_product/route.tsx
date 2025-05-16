@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const {productName, abbravation} = await req.json();
+    const {productName, abbravation,product} = await req.json();
     const client = await clientPromise;
     const db = client.db(process.env.DB_NAME);
 
@@ -11,6 +11,7 @@ export async function POST(req: Request) {
     const result = await db.collection("Products").insertOne({
       productName: productName,
       abbravation: abbravation,
+      product:product
 
 
     });

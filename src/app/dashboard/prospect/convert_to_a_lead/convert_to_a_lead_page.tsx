@@ -1,6 +1,6 @@
 "use client";
 export const dynamic = "force-dynamic";
-
+import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import ToastNotification from '@/app/components/ui/toast';
@@ -9,7 +9,10 @@ import ProgressBar from '@/app/components/ui/progress';
 import { Input } from '@/app/components/ui/input';
 import ListGroup from '@/app/components/ui/list_groups';
 import styles from "./styles.module.css";
+import { v4 as uuidv4 } from 'uuid';
 import { LEAD_BAR_COLOR, LEAD_BAR_WIDTH, LEAD_EXPIRE_TIME_DURATION, PROSPECT_BAR_COLOR, PROSPECT_BAR_WIDTH, PROSPECT_VALUES } from '@/app/lib/values';
+import { useAuth } from '@/app/context/AuthContext';
+import { link } from 'fs';
 
 interface Product {
   _id: string;
@@ -23,13 +26,18 @@ export default function ConvertToALeadPage() {
     date_expires: string;
     company_name: string;
     product_type_id: string;
+    entity_id: string;
   }
 
   const [prospectDetails, setProspectDetails] = useState<ProspectDetails | null>(null);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [activities, setActivities] = useState<string[]>([]);
+  const [sharedLink, setSharedLink] = useState<string | null>(null);
   const [companyName, setCompanyName] = useState('Example Company');
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [prospectId, setProspectId] = useState<string | null>(null);
@@ -39,6 +47,12 @@ export default function ConvertToALeadPage() {
     width: PROSPECT_BAR_WIDTH,
   });
   const [isConverted, setIsConverted] = useState(false);
+
+  const {user} = useAuth();
+  const[lc_name, setLc_name] = useState<string>("");
+  const [lc_color, setLc_color] = useState<string>("");
+   const [productTypeName, setProductTypeName] = useState<string>("");
+  const [stage, setStage] = useState('');
 
   useEffect(() => {
     const id = searchParams.get('id');
@@ -59,6 +73,11 @@ export default function ConvertToALeadPage() {
           setProspectDetails(data);
           setCompanyName(data.company_name);
           setSelectedProduct(data.product_type_id);
+          setLc_name(data.lc_name || "");
+                  setLc_color(data.lc_color || "");
+                  setProductTypeName(data.product_type_name || "");
+                  setStage("prospect");
+
         } catch (error) {
           console.error('Error fetching prospect details:', error);
         }
@@ -101,7 +120,7 @@ export default function ConvertToALeadPage() {
 };
 
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
   const file = event.target.files?.[0] || null;
   setUploadedFile(file);
 
@@ -120,6 +139,28 @@ export default function ConvertToALeadPage() {
   } else {
     setPreviewUrl(null);
   }
+
+  
+  try {
+    // Get access token
+   
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      setError(`Upload failed: ${err.response?.data?.message || err.message}`);
+      console.error('Upload error:', err.response?.data);
+    } else if (err instanceof Error) {
+      setError(`Upload failed: ${err.message}`);
+      console.error('Upload error:', err);
+    } else {
+      setError('Upload failed: An unknown error occurred.');
+      console.error('Upload error:', err);
+    }
+  } finally {
+    setUploading(false);
+  }
+
+
+
 };
 
   const handleActivityInput = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -133,6 +174,7 @@ export default function ConvertToALeadPage() {
     }
   };
 
+  
   const handleCloseToast = (index: number) => {
     setActivities((prevActivities) => prevActivities.filter((_, i) => i !== index));
   };
@@ -151,53 +193,166 @@ export default function ConvertToALeadPage() {
     if (!prospectId) {
       console.error('Prospect ID is not available for conversion');
       return;
-    }
-
+    }    
+    
+    setUploading(true);
+    
     try {
       const currentDate = new Date();
       const expireDate = new Date(currentDate.getTime() + LEAD_EXPIRE_TIME_DURATION);
 
-      if (isNaN(expireDate.getTime())) {
-        throw new Error('Invalid expiration date calculated');
-      }
 
-      const payload = {
-        id: prospectId,
-        lead_proof_url: '/partnership.jpg',
-        activities: activities.length > 0 ? activities : [],
-        status: 'lead',
-        date_expires: expireDate.toISOString(),
-      };
 
-      const response = await fetch('/api_new/prospects/update_a_prospect', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
+      const tokenResponse = await axios.post('/api_new/fileuploadauth');
+      const accessToken = tokenResponse.data.access_token;
+  
+      console.log('Access token obtained');
+  
+      const uniqueFileName = `${uuidv4()}-${uploadedFile?.name}`;
+      //file.name = uniqueFileName;
+      // Initialize upload session with site ID
+      const sessionResponse = await axios.post(
+  
+  
+        `https://graph.microsoft.com/v1.0/drive/root:/documents/${uniqueFileName}:/createUploadSession`,
+        {
+          item: {
+            '@microsoft.graph.conflictBehavior': 'replace',
+            name: uniqueFileName,
+            'file': {}
+          },
         },
-        body: JSON.stringify(payload),
-      });
+        {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+        }
+      );
+  
+      const uploadUrl = sessionResponse.data.uploadUrl;
+      const fileContent = await uploadedFile?.arrayBuffer();
+  
+      console.log('Upload URL:', uploadUrl);
+  
+      // Upload the file
+      const uploadResponse = await axios.put(
+        uploadUrl,
+        fileContent,
+        {
+          headers: {
+            'Content-Type': 'application/octet-stream',
+            'Content-Length': `${uploadedFile?.size}`,
+            'Content-Range': `bytes 0-${uploadedFile ? uploadedFile.size - 1 : 0}/${uploadedFile ? uploadedFile.size : 0}`
+          },
+        }
+      );
+  
+      if (uploadResponse.status >= 200 && uploadResponse.status < 300) {
+  
+        
+        const fileUrl = uploadResponse.data.webUrl;
+  
+        const fileId = uploadResponse.data.id;  // Get the uploaded file's ID
+        console.log('File uploaded:', fileId);
+  
+        // Create a shareable link for the file (with view permissions)
+        const linkResponse = await axios.post(
+          `https://graph.microsoft.com/v1.0/drive/items/${fileId}/createLink`,
+          {
+            type: 'view',  // 'view' for read-only access, 'edit' for editable access
+          },
+          {
+            headers: {
+              'Authorization': `Bearer ${accessToken}`,
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+          }
+        );
+  
+        const shareLink = linkResponse.data.link.webUrl;  // The URL of the shareable link
+        console.log('Shareable Link:', shareLink);
+  setSharedLink(shareLink);
+  console.log('Shared Link:', shareLink);
+  console.log('Shared Link:', sharedLink);
 
-      const result = await response.json();
-
-      if (response.ok && result.success) {
-        console.log('Prospect updated successfully');
-        setProgressBar({ text: PROSPECT_VALUES[2].label, color: LEAD_BAR_COLOR, width: LEAD_BAR_WIDTH });
-        setIsConverted(true); // Mark as converted
-      } else {
-        console.error('Failed to update prospect:', result.message || 'Unknown error');
-      }
-    } catch (error) {
-      console.error('Error updating prospect:', error);
-    }
+  const payload = {
+    id: prospectId,
+    lead_proof_url: shareLink,
+    activities: activities.length > 0 ? activities : [],
+    status: 'lead',
+    date_expires: expireDate.toISOString(),
   };
 
+  const response = await fetch('/api_new/prospects/update_a_prospect', {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+
+
+   
+
+  const result = await response.json();
+
+  if (response.ok && result.success) {
+    console.log('Prospect updated successfully');
+    setProgressBar({ text: PROSPECT_VALUES[2].label, color: LEAD_BAR_COLOR, width: LEAD_BAR_WIDTH });
+    setIsConverted(true); // Mark as converted
+    setStage("lead");
+  } else {
+    console.error('Failed to update prospect:', result.message || 'Unknown error');
+  }
+
+  if (response.ok && result.success) {
+    console.log('Prospect updated successfully');
+    setProgressBar({ text: PROSPECT_VALUES[2].label, color: LEAD_BAR_COLOR, width: LEAD_BAR_WIDTH });
+    setIsConverted(true); // Mark as converted
+  } else {
+    console.error('Failed to update prospect:', result.message || 'Unknown error');
+  }
+
+  setSuccess('File uploaded successfully!');
+} else {
+  throw new Error(`Upload failed with status: ${uploadResponse.status}`);
+}
+
+if (isNaN(expireDate.getTime())) {
+  throw new Error('Invalid expiration date calculated');
+}
+
+    
+
+    } catch (error) {
+      console.error('Error updating prospect:', error);
+    }finally{
+      setUploading(false);
+    }
+  };
+  if (user?.lcId !== prospectDetails?.entity_id) {
+    return <div className="container mx-auto p-4">Access Denied</div>;
+  }else{
   return (
-    <div className="container mx-auto pt-0">
-      <h1 className="text-2xl font-bold mb-6 ml-4">Lead Conversion</h1>
+    <div className="container mx-auto pt-0 pb-20">
+      <div className="w-full ml-4 mb-6 bg-gray-100 rounded overflow-hidden shadow-lg flex items-center pt-3 pb-3">
+      <h1 className="text-2xl font-bold ml-4">
+        <i className="fa-solid fa-handshake-simple mr-3"></i>
+        {companyName + " - "}
+        <span style={{ color: lc_color }}>{lc_name + " "}</span>
+        <span style={{ color: stage === "prospect" ? PROSPECT_BAR_COLOR : LEAD_BAR_COLOR }}>
+          {stage}
+        </span>
+        {" for " + productTypeName}
+      </h1>
+      </div>
       <div className="grid grid-cols-2 gap-16 pr-6">
         <div className="w-full ml-4 mt-5 pr-6 bg-gray-100 rounded overflow-hidden shadow-lg">
           <div className="px-14 py-14">
-            <h1 className="text-2xl font-bold mb-6 ml-4">Convert Lead</h1>
+            <h1 className="text-2xl font-bold mb-6 ml-4"><i className="fa-regular fa-eye mr-3"></i>Convert Lead</h1>
 
             <label htmlFor="company-name" className="ml-4 mr-4">
               Company Name:
@@ -231,6 +386,7 @@ export default function ConvertToALeadPage() {
               accept="image/*, .pdf"
               onChange={handleFileChange}
               className="w-full ml-4 mt-5 mb-4"
+              disabled={uploading}
             />
 
             {previewUrl && (
@@ -269,7 +425,9 @@ export default function ConvertToALeadPage() {
                 isConverted ? 'bg-green-500 hover:bg-green-400' : 'bg-blue-500 hover:bg-blue-400'
               } text-white font-bold py-2 px-4 rounded ml-4 mb-8`}
             >
-              {isConverted ? 'Go Back' : 'Convert to a Lead'}
+               {uploading? 'Uploading...':'' }
+              {isConverted ? 'Go Back' : ''}
+              {!uploading && !isConverted ? 'Convert to Lead' : ''}
             </button>
 
             {!isConverted && (
@@ -284,7 +442,7 @@ export default function ConvertToALeadPage() {
         </div>
         <div className="w-full ml-4 mt-5 pr-6 bg-gray-100 rounded overflow-hidden shadow-lg">
           <div className="px-14 py-14">
-            <h1 className="text-2xl font-bold mb-6 ml-4">Summary</h1>
+            <h1 className="text-2xl font-bold mb-6 ml-4"><i className="fa-solid fa-pencil mr-3"></i>Summary</h1>
             <div className="pl-4 pr-4">
               <Label htmlFor="status">Status:</Label>
               <ProgressBar
@@ -321,4 +479,5 @@ export default function ConvertToALeadPage() {
       </div>
     </div>
   );
+}
 }
