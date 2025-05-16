@@ -15,7 +15,7 @@ export async function middleware(request: NextRequest) {
   //     const url = new URL(`${process.env.NEXT_PUBLIC_BASE_URL}/my-projects`);
   //     return NextResponse.redirect(url.toString());
   //   }
-
+ //
 
   //unathurized page redirect middleware logic
   if (
