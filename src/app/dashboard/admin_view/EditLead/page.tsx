@@ -1,6 +1,6 @@
 'use client'
 
-import { useSearchParams, useRouter } from 'next/navigation';
+//import { useSearchParams, useRouter } from 'next/navigation';
 import { useState,useEffect } from 'react'
 import { Label } from '@/app/components/ui/label'
 import { Input } from '@/app/components/ui/input'
@@ -12,8 +12,8 @@ import { PROSPECT_BAR_COLOR, PROSPECT_BAR_WIDTH, PROSPECT_VALUES,PROSPECT_EXPIRE
 
 export default function EditLead() {
 
-  const searchParams = useSearchParams();
-  const router = useRouter();
+  //const searchParams = useSearchParams();
+  //const router = useRouter();
   interface ProspectDetails {
     date_expires: string;
     company_name: string;

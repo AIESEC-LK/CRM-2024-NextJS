@@ -1,7 +1,7 @@
 'use client'
 
 import { useState,useEffect } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation';
+//import { useSearchParams, useRouter } from 'next/navigation';
 import { Label } from '@/app/components/ui/label'
 import { Input } from '@/app/components/ui/input'
 import ProgressBar from '@/app/components/ui/progress'
@@ -10,8 +10,8 @@ import { PROSPECT_BAR_COLOR, PROSPECT_BAR_WIDTH, PROSPECT_VALUES,CUSTOMER_PANDIN
 import ToastNotification from '@/app/components/ui/toast';
 
 export default function AdminEditPromoter() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
+  //const searchParams = useSearchParams();
+  //const router = useRouter();
   interface ProspectDetails {
     date_expires: string;
     company_name: string;
