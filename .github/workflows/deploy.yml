@@ -41,7 +41,8 @@ jobs:
       run: |
         ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} 'bash -s' << 'EOF'
           rm -rf ~/crm-2024-without-auth
-          git clone -b dev-without-auth https://github.com/AIESEC-LK/nextjs-test.git ~/crm-2024-without-auth
+          git clone -b dev-without-auth https://github.com/AIESEC-LK/CRM-2024-NextJS.git ~/crm-2024-without-auth
+          
           cd ~/crm-2024-without-auth
 
           echo "DB_USERNAME=${DB_USERNAME}" > .env
