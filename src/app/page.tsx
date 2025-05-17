@@ -64,7 +64,7 @@ const LoginPage = () => {
           width={480}
           height={271}
         />
-        <h3 className="text-white mt-2 text-lg font-semibold">Creating Sustainable Partnerships...</h3>
+        <h3 className="text-white mt-2 text-lg font-semibold">Creating Sustainable Partnerships... edit</h3>
       </div>
 
       {/* <div className="absolute inset-0 bg-gray-900"></div>
