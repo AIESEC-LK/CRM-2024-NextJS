@@ -35,7 +35,7 @@ const LoginPage = () => {
         if (data.email) {
          
           login(data.email);
-          console.log(data);
+          console.log(data);/
 
 
             setTimeout(() => {
