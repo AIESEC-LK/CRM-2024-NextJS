@@ -1,0 +1,74 @@
+name: Deploy to Azure VM
+
+on:
+  push:
+    branches:
+      - dev-without-auth  # make sure branch name is correct (development?)
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up SSH key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+    - name: Deploy via SSH
+      env:
+        DB_USERNAME: ${{ secrets.DB_USERNAME }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        DB_NAME: ${{ secrets.DB_NAME }}
+        CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
+        CLUSTER_IP_ADDRESS: ${{ secrets.CLUSTER_IP_ADDRESS }}
+        ODOO_API_KEY: ${{ secrets.ODOO_API_KEY }}
+        MONGO_PUBLIC_API_KEY: ${{ secrets.MONGO_PUBLIC_API_KEY }}
+        MONGO_PRIVATE_API_KEY: ${{ secrets.MONGO_PRIVATE_API_KEY }}
+        MONGO_ORG_PUBLIC_KEY: ${{ secrets.MONGO_ORG_PUBLIC_KEY }}
+        MONGO_ORG_PRIVATE_KEY: ${{ secrets.MONGO_ORG_PRIVATE_KEY }}
+        CRON_SCHEDULE: ${{ secrets.CRON_SCHEDULE }}
+        NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
+        BASE_URL: ${{ secrets.BASE_URL }}
+        AZURE_AD_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
+        AZURE_AD_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
+        AZURE_AD_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
+      run: |
+        ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} 'bash -s' << 'EOF'
+          rm -rf ~/crm-2024-without-auth
+          git clone -b dev-without-auth https://github.com/AIESEC-LK/nextjs-test.git ~/crm-2024-without-auth
+          cd ~/crm-2024-without-auth
+
+          echo "DB_USERNAME=${DB_USERNAME}" > .env
+          echo "DB_PASSWORD=${DB_PASSWORD}" >> .env
+          echo "DB_NAME=${DB_NAME}" >> .env
+          echo "CONNECTION_STRING=${CONNECTION_STRING}" >> .env
+          echo "CLUSTER_IP_ADDRESS=${CLUSTER_IP_ADDRESS}" >> .env
+          echo "ODOO_API_KEY=${ODOO_API_KEY}" >> .env
+          echo "MONGO_PUBLIC_API_KEY=${MONGO_PUBLIC_API_KEY}" >> .env
+          echo "MONGO_PRIVATE_API_KEY=${MONGO_PRIVATE_API_KEY}" >> .env
+          echo "MONGO_ORG_PUBLIC_KEY=${MONGO_ORG_PUBLIC_KEY}" >> .env
+          echo "MONGO_ORG_PRIVATE_KEY=${MONGO_ORG_PRIVATE_KEY}" >> .env
+          echo "CRON_SCHEDULE=${CRON_SCHEDULE}" >> .env
+          echo "NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL}" >> .env
+          echo "BASE_URL=${BASE_URL}" >> .env
+          echo "AZURE_AD_CLIENT_ID=${AZURE_AD_CLIENT_ID}" >> .env
+          echo "AZURE_AD_CLIENT_SECRET=${AZURE_AD_CLIENT_SECRET}" >> .env
+          echo "AZURE_AD_TENANT_ID=${AZURE_AD_TENANT_ID}" >> .env
+
+          # Stop and remove old containers/images
+          sudo docker stop crm-2024-without-auth || true
+          sudo docker rm stop crm-2024-without-auth || true
+          sudo docker rmi stop crm-2024-without-auth-image || true
+
+          # Build new Docker image
+          sudo docker build -t crm-2024-without-auth-image .
+
+          # Run container with env file
+          sudo docker run -d -p 3000:3000 --name crm-2024-without-auth --env-file .env crm-2024-without-auth-image
+        EOF
