@@ -7,7 +7,7 @@ import { Input } from "./components/ui/input";
 import { Button } from "./components/ui/button";
 import { Label } from "./components/ui/label";
 import { PARTNERHSIPS_UI_PATH } from "./lib/values";
-
+//
 const LoginPage = () => {
   const router = useRouter();
 
