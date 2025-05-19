@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/app/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -45,15 +45,16 @@ interface Industry {
   industryName: string;
 }
 
-export default function ProspectDetails({
-  params,
-}: {
-  params: { id: string };
-}) {
+export default function ProspectDetails(
+  props: {
+    params: Promise<{ id: string }>;
+  }
+) {
+  const params = use(props.params);
   const [prospect, setProspect] = useState<Prospect | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [company, setCompany] = useState<Company | null>(null);
-   const [industry, setIndustry] = useState<Industry[]>([]);
+  const [industry, setIndustry] = useState<Industry[]>([]);
   const router = useRouter();
   const { id } = params;
 
@@ -88,7 +89,7 @@ export default function ProspectDetails({
     fetchProspect();
     fetchIndustry();
   }, [id]);
-  
+
   useEffect(() => {
     const fetchCompany = async (company_id: string) => {
       try {
@@ -107,7 +108,7 @@ export default function ProspectDetails({
       fetchCompany(prospect.company_id);
     }
   }, [prospect]);
-  
+
 
   const GetStatusLabel =(status: string) => {
 
@@ -162,7 +163,7 @@ return item?.label
     return <div>Loading...</div>;
   }
 
-  
+
   const getIndustryName = (industry_id: string) => {
     const industryName = industry.find((ind) => ind._id === industry_id);
     return industryName?.industryName;

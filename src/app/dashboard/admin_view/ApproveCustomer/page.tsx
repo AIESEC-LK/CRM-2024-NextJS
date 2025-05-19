@@ -1,7 +1,7 @@
 'use client'
 
 import { useState,useEffect } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation';
+//import { useSearchParams, useRouter } from 'next/navigation';
 import { Label } from '@/app/components/ui/label'
 import { Input } from '@/app/components/ui/input'
 import ProgressBar from '@/app/components/ui/progress'
@@ -9,8 +9,8 @@ import styles from "./styles.module.css"
 import { PROSPECT_BAR_COLOR, PROSPECT_BAR_WIDTH, PROSPECT_VALUES,CUSTOMER_PANDING_BAR_COLOR,CUSTOMER_PANDING_BAR_WIDTH,PROSPECT_EXPIRE_TIME_DURATION ,LEAD_EXPIRE_TIME_DURATION,LEAD_BAR_WIDTH,LEAD_BAR_COLOR ,CUSTOMER_BAR_COLOR,CUSTOMER_BAR_WIDTH} from '@/app/lib/values';
 import ToastNotification from '@/app/components/ui/toast';
 export default function ApproveCustomer() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
+  //const searchParams = useSearchParams();
+  //const router = useRouter();
   interface ProspectDetails {
     date_expires: string;
     company_name: string;
