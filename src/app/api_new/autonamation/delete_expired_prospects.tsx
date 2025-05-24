@@ -26,6 +26,7 @@ async function getCronScheduleForDeletingExpiredProspects() {
   cron.schedule(cronSchedule, async () => {
     try {
       console.log("Running cron job to detlete PEnding Prospects...");
+      alert("Running cron job to delete Pending Prospects...");
 
       // Connect to the database
       const client = await clientPromise;
@@ -54,11 +55,14 @@ async function getCronScheduleForDeletingExpiredProspects() {
         });
 
         console.log(`Successfully moved and deleted ${deleteResult.deletedCount} expired pending prospects.`);
+        alert(`Successfully moved and deleted ${deleteResult.deletedCount} expired pending prospects.`);
       } else {
         console.log("No expired pending prospects or found.");
+        alert("No expired pending prospects found.");
       }
     } catch (error) {
       console.error("Error in cron job for deleting expired pending prospects:", error);
+      alert("Error in cron job for deleting expired pending prospects: " + error);
     }
   });
 

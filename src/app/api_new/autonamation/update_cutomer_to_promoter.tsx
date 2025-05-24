@@ -27,6 +27,7 @@ async function getCronSchedule() {
   cron.schedule(cronSchedule, async () => {
     try {
       console.log("Running cron job to update customer status to promoter...");
+      alert("Running cron job to update customer status to promoter...");
 
       // Connect to the database
       const client = await clientPromise;
@@ -49,11 +50,14 @@ async function getCronSchedule() {
 
       if (updateResult.modifiedCount > 0) {
         console.log(`${updateResult.modifiedCount} prospects updated to promoter.`);
+        alert(`${updateResult.modifiedCount} prospects updated to promoter.`);
       } else {
         console.log("No prospects were updated.");
+        alert("No prospects were updated.");
       }
     } catch (error) {
       console.error("Error in cron job:", error);
+      alert("Error in cron job: " + error);
     }
   });
 

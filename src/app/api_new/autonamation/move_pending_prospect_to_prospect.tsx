@@ -32,6 +32,7 @@ async function getCronSchedule() {
   cron.schedule(cronSchedule, async () => {
     try {
       console.log("Running cron job to transfer Pending_Prospects to Prospects...");
+      alert("Running cron job to transfer Pending_Prospects to Prospects...");
 
       // Connect to the database
       const client = await clientPromise;
@@ -72,10 +73,12 @@ async function getCronSchedule() {
           await db.collection("Pending_Prospects").deleteOne({ _id: pendingProspect._id });
 
           console.log(`Transferred pending prospect with ID ${pendingProspect._id} to Prospects.`);
+          alert(`Transferred pending prospect with ID ${pendingProspect._id} to Prospects.`);
         }
       }
     } catch (error) {
       console.error("Error in cron job for transferring Pending_Prospects:", error);
+      alert("Error in cron job for transferring Pending_Prospects: " + error);
     }
   });
 
