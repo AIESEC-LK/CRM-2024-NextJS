@@ -224,13 +224,16 @@ const [isConverted, setIsConverted] = useState(false);
         setCategory("set")
       } else {
         console.log(`Error: ${result.error}`);
+        alert(`Response Not OK: ${result.error}`);
       }
     }
   } catch (error) {
     if (error instanceof Error) {
       console.log(`Error: ${error.message}`);
+      alert(`Error: ${error.message}`);
     } else {
       console.log('An unknown error occurred');
+      alert('An unknown error occurred');
     }
   }finally{
     setUploading(false)
