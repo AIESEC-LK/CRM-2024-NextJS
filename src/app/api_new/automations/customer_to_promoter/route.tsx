@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export async function PATCH(req: Request) {
   try {
     const client = await clientPromise;
-    const db = client.db(); // Replace with your DB name if needed
+    const db = client.db(process.env.DB_NAME); // Replace with your DB name if needed
     const prospects = db.collection("Prospects");
 
     const now = new Date(); // Current timestamp
