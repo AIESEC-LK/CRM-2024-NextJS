@@ -1,4 +1,5 @@
 import clientPromise from "@/app/lib/mongodb";
+import { all } from "axios";
 import { NextResponse } from "next/server";
 
 export async function PATCH(req: Request) {
@@ -44,10 +45,23 @@ export async function PATCH(req: Request) {
     );
     */
 
+    /*
+
     return NextResponse.json({
       message: "Prospects updated successfully",
       matchedCount: result.matchedCount,
       modifiedCount: result.modifiedCount,
+    });
+    */
+
+    return NextResponse.json({
+      message: "This endpoint is currently disabled for testing purposes.",
+      allProspectsCount: allProspects.length,
+        allProspects: allProspects.map(p => ({
+            _id: p._id,
+            status: p.status,
+            date_expires: p.date_expires,
+        })),
     });
   } catch (error) {
     console.error("Error updating prospects:", error);
