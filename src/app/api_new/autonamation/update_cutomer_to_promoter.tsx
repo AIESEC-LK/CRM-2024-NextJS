@@ -13,7 +13,7 @@ async function getCronSchedule() {
     const autonomations = await response.json() as { customer_to_promoter_transformation?: string }[];
 
     // Assuming the first document contains the needed transformation value
-    return autonomations[0]?.customer_to_promoter_transformation || "0 0 * * *"; // Default to midnight daily if undefined
+    return autonomations[0]?.customer_to_promoter_transformation || "13 50 * * *"; // Default to midnight daily if undefined
   } catch (error) {
     console.error("Error fetching cron schedule:", error);
     return "0 0 * * *"; // Default fallback schedule
