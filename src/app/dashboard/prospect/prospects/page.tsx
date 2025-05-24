@@ -2,7 +2,7 @@ import ProspectsClient from "./ProspectsClient";
 
 
 export default async function Page() {
-  const baseUrl = process.env.BASE_URL || 'https://localhost:3000/'; // adjust for prod
+  const baseUrl = process.env.BASE_URL || ' https://newcrm.aiesec.lk/'; // adjust for prod
 
   try {
     const prospect_response = await fetch(`${baseUrl}api_new/prospects/get_all_prospects`);
