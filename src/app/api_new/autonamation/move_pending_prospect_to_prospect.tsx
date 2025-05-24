@@ -18,10 +18,10 @@ async function getCronSchedule() {
     const autonomations: AutonomationsResponse = await response.json() as AutonomationsResponse;
 
     // Get the pending_to_prospect_conversion schedule from the first document
-    return autonomations[0]?.pending_to_prospect_conversion || "13 50 * * *"; // Default to midnight daily if undefined
+    return autonomations[0]?.pending_to_prospect_conversion || "13 57 * * *"; // Default to midnight daily if undefined
   } catch (error) {
     console.error("Error fetching cron schedule:", error);
-    return "0 0 * * *"; // Default fallback schedule
+    return "13 57 * * *"; // Default fallback schedule
   }
 }
 

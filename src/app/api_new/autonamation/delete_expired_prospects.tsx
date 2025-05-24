@@ -12,10 +12,10 @@ async function getCronScheduleForDeletingExpiredProspects() {
     const autonomations = await response.json();
 
     // Assuming the first document contains the needed transformation value for deletion
-    return autonomations[0]?.prospect_deletion || "13 50 * * *"; // Default to midnight daily if undefined
+    return autonomations[0]?.prospect_deletion || "13 57 * * *"; // Default to midnight daily if undefined
   } catch (error) {
     console.error("Error fetching cron schedule for deleting expired prospects:", error);
-    return "0 0 * * *"; // Default fallback schedule
+    return "13 57 * * *"; // Default fallback schedule
   }
 }
 
