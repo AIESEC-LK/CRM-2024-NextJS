@@ -177,8 +177,7 @@ const [isConverted, setIsConverted] = useState(false);
       const fileId = uploadResponse.data.id;  // Get the uploaded file's ID
       console.log('File uploaded:', fileId);
 
-      alert('File uploaded successfully!');
-
+      
       // Create a shareable link for the file (with view permissions)
       const linkResponse = await axios.post(
         `https://graph.microsoft.com/v1.0/drive/items/${fileId}/createLink`,
@@ -197,7 +196,7 @@ const [isConverted, setIsConverted] = useState(false);
       const shareLink = linkResponse.data.link.webUrl;  // The URL of the shareable link
       //console.log('Shareable Link:', shareLink);
 
-      alert('Shareable link created successfully!');
+      
 
       const data = {
         id,
@@ -228,16 +227,16 @@ const [isConverted, setIsConverted] = useState(false);
         setCategory("set")
       } else {
         console.log(`Error: ${result.error}`);
-        alert(`Response Not OK: ${result.error}`);
+        
       }
     }
   } catch (error) {
     if (error instanceof Error) {
       console.log(`Error: ${error.message}`);
-      alert(`Error: ${error.message}`);
+      
     } else {
       console.log('An unknown error occurred');
-      alert('An unknown error occurred');
+      
     }
   }finally{
     setUploading(false)
