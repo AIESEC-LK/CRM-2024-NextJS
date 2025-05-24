@@ -15,7 +15,7 @@ export async function PATCH(req: Request) {
     // STEP 1: Fetch all prospects
     const allProspects = await prospects.find().toArray();
 
-    /*
+
     // STEP 2: Filter those to be updated
     const prospectIdsToUpdate = allProspects
       .filter((prospect) => {
@@ -24,6 +24,8 @@ export async function PATCH(req: Request) {
         return prospect.status === "customer" && expiresStr <= todayStr;
       })
       .map((p) => p._id);
+
+      /*
 
     if (prospectIdsToUpdate.length === 0) {
       return NextResponse.json({
@@ -43,8 +45,9 @@ export async function PATCH(req: Request) {
         },
       }
     );
-    */
-
+    
+        */
+    
     /*
 
     return NextResponse.json({
@@ -52,17 +55,22 @@ export async function PATCH(req: Request) {
       matchedCount: result.matchedCount,
       modifiedCount: result.modifiedCount,
     });
+
     */
 
-    return NextResponse.json({
-      message: "This endpoint is currently disabled for testing purposes.",
-      allProspectsCount: allProspects.length,
-        allProspects: allProspects.map(p => ({
-            _id: p._id,
-            status: p.status,
-            date_expires: p.date_expires,
-        })),
-    });
+    if (prospectIdsToUpdate.length === 0) {
+      return NextResponse.json({
+        message: "No matching prospects found for update.",
+        matchedCount: 0,
+        modifiedCount: 0,
+      });
+    } else {
+        return NextResponse.json({
+            message: prospectIdsToUpdate,
+          });
+    }
+    
+
   } catch (error) {
     console.error("Error updating prospects:", error);
     return NextResponse.json(
