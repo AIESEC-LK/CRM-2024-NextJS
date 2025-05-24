@@ -11,7 +11,9 @@ export default async function Page() {
     }
     const prospect_data = await prospect_response.json();
 
-    return <ProspectsClient prospect_list={prospect_data}  />;
+    return <>
+      <p>{prospect_data}</p>
+      </>;
   } catch (error) {
     console.error("Error in fetching data:", error);
     return <div>Error loading prospect data. Please try again later.</div>;
