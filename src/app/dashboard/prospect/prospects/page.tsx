@@ -1,19 +1,28 @@
 import ProspectsClient from "./ProspectsClient";
 
+// ✅ Force this page to be dynamically rendered on the server
+export const dynamic = "force-dynamic";
 
 export default async function Page() {
-  const baseUrl = process.env.BASE_URL || ' https://newcrm.aiesec.lk/'; // adjust for prod
+  const baseUrl = process.env.BASE_URL || 'https://localhost:3000/';
 
   try {
-    const prospect_response = await fetch(`${baseUrl}api_new/prospects/get_all_prospects`);
+    const prospect_response = await fetch(`${baseUrl}api_new/prospects/get_all_prospects`, {
+      // Optionally set caching behavior if needed
+      cache: "no-store", // Optional: disables fetch caching
+    });
+
     if (!prospect_response.ok) {
       throw new Error(`Failed to fetch prospect data: ${prospect_response.statusText}`);
     }
+
     const prospect_data = await prospect_response.json();
 
-    return <>
-      <p>{prospect_data}</p>
-      </>;
+    return (
+      <>
+        <ProspectsClient prospect_list={prospect_data} />
+      </>
+    );
   } catch (error) {
     console.error("Error in fetching data:", error);
     return <div>Error loading prospect data. {String(error)}</div>;
