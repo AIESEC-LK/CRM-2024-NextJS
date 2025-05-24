@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
@@ -94,7 +95,12 @@ export async function GET() {
       ])
       .toArray();
 
-    return NextResponse.json(prospects);
+    return new NextResponse(JSON.stringify(prospects), {
+      headers: {
+        "Cache-Control": "no-store",
+        "Content-Type": "application/json"
+      }
+    });
   } catch (e) {
     console.error("Error fetching requests:", e);
 

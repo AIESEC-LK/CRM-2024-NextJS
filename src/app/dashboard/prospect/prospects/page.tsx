@@ -4,7 +4,7 @@ import ProspectsClient from "./ProspectsClient";
 export const dynamic = "force-dynamic";
 
 export default async function Page() {
-  const baseUrl = process.env.BASE_URL || 'https://localhost:3000/';
+  const baseUrl = process.env.BASE_URL;
 
   try {
     const prospect_response = await fetch(`${baseUrl}api_new/prospects/get_all_prospects`, {
