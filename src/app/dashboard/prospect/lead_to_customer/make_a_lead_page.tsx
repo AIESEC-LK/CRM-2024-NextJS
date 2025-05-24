@@ -177,6 +177,8 @@ const [isConverted, setIsConverted] = useState(false);
       const fileId = uploadResponse.data.id;  // Get the uploaded file's ID
       console.log('File uploaded:', fileId);
 
+      alert('File uploaded successfully!');
+
       // Create a shareable link for the file (with view permissions)
       const linkResponse = await axios.post(
         `https://graph.microsoft.com/v1.0/drive/items/${fileId}/createLink`,
@@ -194,6 +196,8 @@ const [isConverted, setIsConverted] = useState(false);
 
       const shareLink = linkResponse.data.link.webUrl;  // The URL of the shareable link
       //console.log('Shareable Link:', shareLink);
+
+      alert('Shareable link created successfully!');
 
       const data = {
         id,
