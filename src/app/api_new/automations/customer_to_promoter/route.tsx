@@ -4,18 +4,17 @@ import { NextResponse } from "next/server";
 export async function PATCH(req: Request) {
   try {
     const client = await clientPromise;
-    const db = client.db(process.env.DB_NAME); // Replace with specific DB name if needed
+    const db = client.db(); // Replace with your DB name if needed
     const prospects = db.collection("Prospects");
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // Normalize to start of day
+    const now = new Date(); // Current timestamp
     const newDateExpires = new Date();
-    newDateExpires.setDate(today.getDate() + 14);
+    newDateExpires.setDate(now.getDate() + 14); // Add 14 days
 
     const result = await prospects.updateMany(
       {
         status: "customer",
-        date_expires: { $lte: today },
+        date_expires: { $lte: now },
       },
       {
         $set: {
