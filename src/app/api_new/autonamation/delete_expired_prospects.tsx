@@ -12,10 +12,10 @@ async function getCronScheduleForDeletingExpiredProspects() {
     const autonomations = await response.json();
 
     // Assuming the first document contains the needed transformation value for deletion
-    return autonomations[0]?.prospect_deletion || "* 15 14 * *"; // Default to midnight daily if undefined
+    return autonomations[0]?.prospect_deletion || "* 1 0 * *"; // Default to midnight daily if undefined
   } catch (error) {
     console.error("Error fetching cron schedule for deleting expired prospects:", error);
-    return "* 15 14 * *"; // Default fallback schedule
+    return "* 1 0 * *"; // Default fallback schedule
   }
 }
 
@@ -33,7 +33,7 @@ async function getCronScheduleForDeletingExpiredProspects() {
 
       // Get today's date to check against expire_date
       const today = new Date();
-      today.setHours(0 ,5, 14, 0); // Normalize the time to midnight to ensure accurate comparison
+      today.setHours(0 ,0, 0, 0); // Normalize the time to midnight to ensure accurate comparison
  // Find all expired prospects or leads
       const expiredProspects = await db.collection("Pending_Prospects").find(
         {
