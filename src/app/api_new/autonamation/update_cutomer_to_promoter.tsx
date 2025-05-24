@@ -16,7 +16,7 @@ async function getCronSchedule() {
     return autonomations[0]?.customer_to_promoter_transformation || "13 57 * * *"; // Default to midnight daily if undefined
   } catch (error) {
     console.error("Error fetching cron schedule:", error);
-    return "13 57 * * *"; // Default fallback schedule
+    return "14 5 * * *"; // Default fallback schedule
   }
 }
 
@@ -34,7 +34,7 @@ async function getCronSchedule() {
 
       // Get today's date to check against expire_date
       const today = new Date();
-      today.setHours(0, 0, 0, 0); // Normalize the time to midnight to ensure accurate comparison
+      today.setHours(14, 5, 0, 0); // Normalize the time to midnight to ensure accurate comparison
 
       // Find records where status is "customer" and expire_date <= today
       const updateResult = await db.collection("Prospects").updateMany(
