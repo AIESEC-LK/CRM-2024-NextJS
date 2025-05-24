@@ -4,12 +4,20 @@ import { NextResponse } from "next/server";
 export async function PATCH(req: Request) {
   try {
     const client = await clientPromise;
-    const db = client.db(process.env.DB_NAME); // Replace with your DB name if needed
+    const db = client.db(process.env.DB_NAME); // Replace with actual DB name if needed
     const prospects = db.collection("Prospects");
 
-    const now = new Date(); // Current timestamp
-    const newDateExpires = new Date();
-    newDateExpires.setDate(now.getDate() + 14); // Add 14 days
+    const now = new Date();
+    const newDateExpires = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
+
+    console.log("Current time (UTC):", now.toISOString());
+
+    // Optional: Find matching docs first for verification
+    const matchingDocs = await prospects.find({
+      status: "customer",
+      date_expires: { $lte: now },
+    }).toArray();
+    console.log("Matching documents count:", matchingDocs.length);
 
     const result = await prospects.updateMany(
       {
