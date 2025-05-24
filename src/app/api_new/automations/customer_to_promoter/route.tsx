@@ -14,6 +14,7 @@ export async function PATCH(req: Request) {
     // STEP 1: Fetch all prospects
     const allProspects = await prospects.find().toArray();
 
+    /*
     // STEP 2: Filter those to be updated
     const prospectIdsToUpdate = allProspects
       .filter((prospect) => {
@@ -41,6 +42,7 @@ export async function PATCH(req: Request) {
         },
       }
     );
+    */
 
     return NextResponse.json({
       message: "Prospects updated successfully",
