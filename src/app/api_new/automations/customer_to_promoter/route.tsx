@@ -4,26 +4,36 @@ import { NextResponse } from "next/server";
 export async function PATCH(req: Request) {
   try {
     const client = await clientPromise;
-    const db = client.db(process.env.DB_NAME); // Replace with actual DB name if needed
+    const db = client.db(process.env.DB_NAME); // Replace if needed
     const prospects = db.collection("Prospects");
 
     const now = new Date();
+    const todayStr = now.toISOString().split("T")[0]; // e.g., "2025-05-24"
     const newDateExpires = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
 
-    console.log("Current time (UTC):", now.toISOString());
+    // STEP 1: Fetch all prospects
+    const allProspects = await prospects.find().toArray();
 
-    // Optional: Find matching docs first for verification
-    const matchingDocs = await prospects.find({
-      status: "customer",
-      date_expires: { $lte: now },
-    }).toArray();
-    console.log("Matching documents count:", matchingDocs.length);
+    // STEP 2: Filter those to be updated
+    const prospectIdsToUpdate = allProspects
+      .filter((prospect) => {
+        const dateExpires = new Date(prospect.date_expires);
+        const expiresStr = dateExpires.toISOString().split("T")[0]; // e.g., "2025-05-23"
+        return prospect.status === "customer" && expiresStr <= todayStr;
+      })
+      .map((p) => p._id);
 
+    if (prospectIdsToUpdate.length === 0) {
+      return NextResponse.json({
+        message: "No matching prospects found for update.",
+        matchedCount: 0,
+        modifiedCount: 0,
+      });
+    }
+
+    // STEP 3: Update matching prospects
     const result = await prospects.updateMany(
-      {
-        status: "customer",
-        date_expires: { $lte: now },
-      },
+      { _id: { $in: prospectIdsToUpdate } },
       {
         $set: {
           status: "promoter",
