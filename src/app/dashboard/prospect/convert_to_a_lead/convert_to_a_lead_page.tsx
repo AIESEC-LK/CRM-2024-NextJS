@@ -283,7 +283,7 @@ export default function ConvertToALeadPage() {
     lead_proof_url: shareLink,
     activities: activities.length > 0 ? activities : [],
     status: 'lead',
-    date_expires: expireDate.toISOString(),
+    date_expires: new Date(Date.now() + LEAD_EXPIRE_TIME_DURATION).toISOString(),
   };
 
   const response = await fetch('/api_new/prospects/update_a_prospect', {
