@@ -12,6 +12,7 @@ import {
 } from "@/app/components/ui/table";
 import { PROSPECT_VALUES } from "@/app/lib/values";
 import { format } from 'date-fns';
+import CompanySearch from "@/app/components/CompanySearch";
 
 interface Prospect {
   _id: string;
@@ -259,6 +260,7 @@ export default function ProspectRequestClient({
           <ArrowLeft className="mr-2 h-4 w-4" />
         </Button>
         <h1 className="text-2xl font-bold mb-6">Prospect Details</h1>
+        <CompanySearch/>
       </div>
       <div className="bg-white shadow-md rounded-lg overflow-hidden">
         <Table>
