@@ -1,31 +1,53 @@
 import clientPromise from "@/app/lib/mongodb";
 import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
+import { PROMOTER_EVENT_EXPIRE_TIME_DURATION, PROMOTER_PRODUCT_EXPIRE_TIME_DURATION } from "@/app/lib/values";
 
 export async function PATCH(req: Request) {
   try {
     const client = await clientPromise;
-    const db = client.db(process.env.DB_NAME); // Replace with actual DB name
+    const db = client.db(process.env.DB_NAME);
+
     const prospects = db.collection("Prospects");
+    const products = db.collection("Products");
 
     const now = new Date();
-    const todayStr = now.toISOString().split("T")[0]; // "2025-05-24"
-    const newDateExpires = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
+    const todayStr = now.toISOString().split("T")[0]; // e.g., "2025-05-26"
 
-    // Step 1: Fetch all prospects
+    // Fetch the "Event" product
+    const eventProduct = await products.findOne({ productName: "Event" });
+    if (!eventProduct) {
+      return NextResponse.json(
+        { message: "Event product not found" },
+        { status: 404 }
+      );
+    }
+
     const allProspects = await prospects.find().toArray();
 
-    // Step 2: Filter those to be updated
-    const prospectIdsToUpdate = allProspects
+    // Collect prospect IDs that need to be updated, and compute their new expiry dates
+    const updates = allProspects
       .filter((prospect) => {
         if (!prospect.date_expires || prospect.status !== "customer") return false;
         const dateExpires = new Date(prospect.date_expires);
         const expiresStr = dateExpires.toISOString().split("T")[0];
         return expiresStr <= todayStr;
       })
-      .map((p) => new ObjectId(p._id)); // Ensure _id is properly cast
+      .map((prospect) => {
+        const isEventProduct =
+          prospect.product_type_id?.toString() === eventProduct._id.toString();
 
-    if (prospectIdsToUpdate.length === 0) {
+        // Event products have a different expiry duration
+        const timeToAdd = isEventProduct ? PROMOTER_EVENT_EXPIRE_TIME_DURATION : PROMOTER_PRODUCT_EXPIRE_TIME_DURATION;
+        const newExpiry = new Date(now.getTime() + timeToAdd);
+
+        return {
+          _id: new ObjectId(prospect._id),
+          newExpiry,
+        };
+      });
+
+    if (updates.length === 0) {
       return NextResponse.json({
         message: "No matching prospects found for update.",
         matchedCount: 0,
@@ -33,16 +55,20 @@ export async function PATCH(req: Request) {
       });
     }
 
-    // Step 3: Update matching prospects
-    const result = await prospects.updateMany(
-      { _id: { $in: prospectIdsToUpdate } },
-      {
-        $set: {
-          status: "promoter",
-          date_expires: newDateExpires,
+    // Perform bulk update
+    const bulkOps = updates.map(({ _id, newExpiry }) => ({
+      updateOne: {
+        filter: { _id },
+        update: {
+          $set: {
+            status: "promoter",
+            date_expires: newExpiry,
+          },
         },
-      }
-    );
+      },
+    }));
+
+    const result = await prospects.bulkWrite(bulkOps);
 
     return NextResponse.json({
       message: "Prospects updated successfully",
