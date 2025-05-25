@@ -240,7 +240,7 @@ export default function ProspectsClient({ prospect_list }: { prospect_list : any
                       >
                         {prospect.lc_name}
                         <span className={`absolute top-0 right-0 text-xs font-semibold py-1 px-2 rounded-tl-lg ${labelColors[prospect.status]}`}>
-                        {prospect.status === "mcvpap" ? "MCVAP" : GetStatusLabel(prospect.status)}
+                        {prospect.status === "mcvpap" ? "MCVPAP" : GetStatusLabel(prospect.status)}
                         </span>
                       </div>
                     )}
