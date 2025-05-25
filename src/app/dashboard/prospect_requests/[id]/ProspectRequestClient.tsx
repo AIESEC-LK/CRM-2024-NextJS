@@ -141,7 +141,7 @@ export default function ProspectRequestClient({
     <div className="container mx-auto p-3">
 
 <div className="flex flex-col items-center w-screen">
-  <div className="flex w-full">
+  <div className="w-1/2">
     <Button variant="ghost" onClick={() => router.back()} className="mb-1">
       <ArrowLeft className="mr-2 h-4 w-4" />
     </Button>
