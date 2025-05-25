@@ -11,7 +11,6 @@ import {
   TableRow,
 } from "@/app/components/ui/table";
 import { PROSPECT_VALUES } from "@/app/lib/values";
-import { format } from 'date-fns';
 import CompanySearch from "@/app/components/CompanySearch";
 
 interface Prospect {
@@ -51,13 +50,6 @@ interface ProspectRequestClientProps {
   industries: Industry[];
   id: string;
 }
-interface ICompanyQuery {
-  _id: string;
-  companyName: string;
-  dateexpiresEvent:Date;
-  dateexpiresProduct:Date;
-  approved: boolean;
-}
 
 export default function ProspectRequestClient({
   prospect,
@@ -66,8 +58,6 @@ export default function ProspectRequestClient({
   id
 }: ProspectRequestClientProps) {
   const [isProcessing, setIsProcessing] = useState(false);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [searchResults, setSearchResults] = useState<ICompanyQuery[]>([]);
   const router = useRouter();
 
   const getStatusLabel = (status: string) => {
@@ -146,122 +136,21 @@ export default function ProspectRequestClient({
     }
   };
 
-  const fetchCompanyQuery = async (query: string) => {
-    try {
-      const response = await fetch(`/api_new/companies/get_by_query?companyName=${query}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch products');
-      }
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error("Error fetching companies:", error);
-    }
-  };
-
-  const loadsearchResults = async (query: string | null) => {
-    if (query) {
-      const data2 = await fetchCompanyQuery(query);
-      if (data2 && data2.length > 0) {
-        setSearchResults(data2);
-        setShowDropdown(true);
-      } else {
-        console.log("No suggestions found");
-        setShowDropdown(false);
-      }
-    } else {
-      console.log("No suggestions found");
-      setShowDropdown(false);
-    }
-  };
 
   return (
     <div className="container mx-auto p-3">
-      <div className="flex">
-      <div className="mb-4 relative">
-                <label htmlFor="name" className="block text-sm font-medium mb-1">
-                  Company Name
-                </label>
-                <input
-                  autoComplete="off"
-                  id="companyName"
-                  type="text"
-                  name="companyName"
-                  onChange={(e) => { loadsearchResults(e.target.value); }}
-                  
-                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-                {showDropdown && (
-                                  <ul className="absolute bg-white border border-gray-300 rounded-md mt-1 w-full max-h-40 overflow-y-auto">
-                                    {searchResults.map((result) => (
-                                      <li
-                                        key={result._id}
-                                        className="p-2 cursor-pointer hover:bg-blue-500 hover:text-white"
-                                      >
-                                        <div>
-                                          <span className="font-semibold">{result.companyName}</span>
-                                        </div>
-                                        <div className="ml-4 mt-1 text-sm text-gray-500">
-                                          {result.dateexpiresEvent && (
-                                            <div>
-                                              Event Partnership Expires:{" "}
-                                              {format(
-                                                result.dateexpiresEvent,
-                                                "MMMM dd, yyyy hh:mm a"
-                                              )}
-                                            </div>
-                                          )}
-                
-                                          {result.dateexpiresProduct && (
-                                            <div>
-                                              Product Partnership Expires:{" "}
-                                              {format(
-                                                result.dateexpiresProduct,
-                                                "MMMM dd, yyyy hh:mm a"
-                                              )}
-                                            </div>
-                                          )}
-                                        </div>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                )}
-                                {showDropdown && (
-                                  <ul className="absolute bg-white border border-gray-300 rounded-md mt-1 w-full max-h-40 overflow-y-auto">
-                                    {searchResults.map((result) => (
-                                      <li
-                                        key={result._id}
-                                        className="p-2 cursor-pointer hover:bg-blue-500 hover:text-white"
-                                      >
-                                        <div>
-                                          <span className="font-semibold">{result.companyName}</span>
-                                        </div>
-                                        <div className="ml-4 mt-1 text-sm text-gray-500">
-                                          {result.dateexpiresEvent && (
-                                            <div>Product Partnership Expires: {format(result.dateexpiresEvent, "MMMM dd, yyyy hh:mm a")}</div>
-                                          )}
-                
-                                          {result.dateexpiresProduct && (
-                                            <div>EventPartnership Expires: {format(result.dateexpiresProduct, "MMMM dd, yyyy hh:mm a")}</div>
-                                          )}
-                                        </div>
-                                      </li>
-                                    ),) || (<>
-                                      <li>No results found</li>
-                                    </>
-                                      )}
-                                  </ul>
-                                )}
-      </div>
-      </div>
-      <div className="flex">
-        <Button variant="ghost" onClick={() => router.back()} className="mb-1">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-        </Button>
-        <h1 className="text-2xl font-bold mb-6">Prospect Details</h1>
-        <CompanySearch/>
-      </div>
+
+<div className="flex flex-col items-center w-screen">
+  <div className="flex w-full">
+    <Button variant="ghost" onClick={() => router.back()} className="mb-1">
+      <ArrowLeft className="mr-2 h-4 w-4" />
+    </Button>
+    <h1 className="text-2xl font-bold mb-6">Prospect Details</h1>
+  </div>
+  <div className="w-1/2">
+    <CompanySearch />
+  </div>
+</div>
       <div className="bg-white shadow-md rounded-lg overflow-hidden">
         <Table>
           <TableBody>
