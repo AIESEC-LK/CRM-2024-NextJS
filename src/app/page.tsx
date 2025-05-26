@@ -9,7 +9,7 @@ import { Label } from "./components/ui/label";
 import { PARTNERHSIPS_UI_PATH } from "./lib/values";
 import { useAuth } from "./context/AuthContext";
 import image from "../app/assets/giphy.gif"
-
+//
 const LoginPage = () => {
   const router = useRouter();
   const { login } = useAuth();
