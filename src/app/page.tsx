@@ -25,7 +25,7 @@ const LoginPage = () => {
 
   };
 
-
+//
   useEffect(() => {
     async function setEmail() {
       try {
