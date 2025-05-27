@@ -4,14 +4,12 @@ import React, { useEffect, useState } from 'react';
 import {
   fetctMyProspectList,
   IMyProspectList,
-  //fetchCompany, 
   fetchProducts,
   fetchIndustry,
   submitProspect,
   FormData,
   Industry,
   Product,
-  //fetchCompanyQuery, 
   ICompanyQuery
 } from './functions';
 import { format } from 'date-fns';
@@ -31,11 +29,13 @@ const Page: React.FC = () => {
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
   const [titlePopup, setPopupTitle] = useState('This is the default message.');
   const [messagePopup, setPopupMessage] = useState('This is the default message.');
+  const [isPopupError, setIsPopupError] = useState<boolean>(false);
 
-  const openPopup = (newMessage: string, newTitle: string): void => {
+  const openPopup = (newMessage: string, newTitle: string, isError: boolean ): void => {
     setPopupTitle(newTitle);  // Update the title state dynamically
     setPopupMessage(newMessage);  // Update the message state dynamically
     setIsPopupOpen(true);    // Open the popup
+    setIsPopupError(isError);  // Set error state
   };
   const { triggerConfirmation } = useConfirmation();
   const closePopup = (): void => setIsPopupOpen(false);
@@ -44,19 +44,12 @@ const Page: React.FC = () => {
   const [myProspectList, setmyProspectList] = useState<IMyProspectList[]>([]);
 
   const [products, setProducts] = useState<Product[]>([]);
-  //const [productsLoading, setProductsLoading] = useState<boolean>(true);
 
   const [industries, setIndustries] = useState<Industry[]>([]);
-  //const [industriesLoading, setIndustriesLoading] = useState<boolean>(true);
 
   const [searchResults, setSearchResults] = useState<ICompanyQuery[]>([]);
-  //const [searchResultsLoading, setsearchResultsLoading] =
   useState<boolean>(true);
   const [showDropdown, setShowDropdown] = useState(false);
-  //console.log("Dropdown visibility:", showDropdown, "Search results:", searchResults);
-
-  //const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  // const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<FormData>({
     company_id: "",
@@ -77,34 +70,25 @@ const Page: React.FC = () => {
 
   useEffect(() => {
     const loadProducts = async () => {
-      //setProductsLoading(true);
       const data = await fetchProducts();
       setProducts(data);
-      //setProductsLoading(false);
     };
 
     const loadIndustries = async () => {
-      // setIndustriesLoading(true);
       const data2 = await fetchIndustry();
       setIndustries(data2);
-      // setIndustriesLoading(false);
     };
 
 
     const loadMyProspectList = async () => {
       if (user) {
-        const myProspectList = await fetctMyProspectList(user.lcId); //TODO: Entity ID Fetch from Auth
+        const myProspectList = await fetctMyProspectList(user.lcId); 
         setmyProspectList(myProspectList);
       } else {
         console.error("User is null");
       }
     };
 
-   
-
-
-    //loadAuthDetails();
-    //console.log("User Details:", AuthService.getUserLcId());
 
     loadMyProspectList();
     loadProducts();
@@ -206,43 +190,22 @@ const Page: React.FC = () => {
               industryId: "",
               userLcId: ""
             });
-            openPopup(errorData.error, "Successful");
+            openPopup(errorData.error, "Successful", false); // Assuming the response returns a success message
 
-          
-        
-            
-            //    setErrorMessage(errorData.error);
-            //    setErrorMessage(null);
           } else {
             // Handle response failure if you want to extract error message from the response body
             const errorData = await submitResponse.json(); // Assuming the response returns a JSON error message
 
-            openPopup(errorData.error, "Failed");
-            //   setErrorMessage(errorData.error);
+            openPopup("Please fill the form correctly.", "Failed", true);
 
-            console.log("Error data:", errorData);
-            // setSuccessMessage(null);
           }
         } else if (submitResponse instanceof Error) {
           // If an error is thrown, display the error message
-          openPopup(submitResponse.message || "Something went wrong. Please try again.", "Failed");
-          //   setErrorMessage(submitResponse.message || 'Something went wrong. Please try again.');
-          //  setSuccessMessage(null);
+          openPopup(submitResponse.message || "Something went wrong. Please try again.", "Failed", true);
         }
       }
     );
 
-
-    // Validate form data
-    /*
-    const validationError = validateFormData(formData);
-    if (validationError) {
-      setErrorMessage(validationError);
-      setSuccessMessage(null);
-      return;
-    }*/
-
-    // Submit form data
   };
 
   return (
@@ -250,7 +213,7 @@ const Page: React.FC = () => {
       <div className="w-full ml-4 mb-6 bg-gray-100 rounded overflow-hidden shadow-lg flex items-center pt-3 pb-3">
       <h1 className="text-2xl font-bold ml-4"><i className="fa-regular fa-lightbulb mr-4"></i>Prospect Request</h1>
       </div>
-      <Popup isOpen={isPopupOpen} close={closePopup} title={titlePopup} message={messagePopup} />
+      <Popup isOpen={isPopupOpen} close={closePopup} title={titlePopup} message={messagePopup} isError={isPopupError} />
       <div className="grid grid-cols-2 gap-16 pr-6">
         <div className="w-full ml-4 mt-5 pr-6 bg-gray-100 rounded overflow-hidden shadow-lg">
           <div className="px-14 py-14">
@@ -273,21 +236,6 @@ const Page: React.FC = () => {
                   className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
-                {/*
-          {showDropdown && (
-            <ul className="absolute bg-white border border-gray-300 rounded-md mt-1 w-full max-h-40 overflow-y-auto">
-              {searchResults.map((result) => (
-                <li
-                  key={result._id}
-                  onClick={() => handleSelectCompany(result)}
-                  className="p-2 cursor-pointer hover:bg-blue-500 hover:text-white"
-                >
-                  {result.companyName} - Current Partnership:{" "}
-                  {result.partnership || "None"}
-                </li>
-              ))}
-            </ul>
-          )}*/}
 
 
                 {showDropdown && (
@@ -354,11 +302,6 @@ const Page: React.FC = () => {
                   </ul>
                 )}
 
-                {/* {suggestedPartnership && (
-          <p className="text-sm text-gray-600 mt-1">
-            Suggested Partnership: Try a <strong>{suggestedPartnership}</strong> partnership.
-          </p>
-        )} */}
 
               </div>
               <div className="mb-4">
@@ -366,7 +309,7 @@ const Page: React.FC = () => {
                   htmlFor="companyAddress"
                   className="block text-sm font-medium mb-1"
                 >
-                  Company Address<span className="text-red-500">*</span>
+                  Company Address <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   autoComplete="off"
@@ -385,7 +328,7 @@ const Page: React.FC = () => {
                   htmlFor="contactPersonName"
                   className="block text-sm font-medium mb-1"
                 >
-                  Contact Person Name<span className="text-red-500">*</span>
+                  Contact Person Name <span className="text-red-500">*</span>
                 </label>
                 <input
                   id="contactPersonName"
@@ -403,7 +346,7 @@ const Page: React.FC = () => {
                   htmlFor="contactPersonNumber"
                   className="block text-sm font-medium mb-1"
                 >
-                  Contact Person Contact Number<span className="text-red-500">*</span>
+                  Contact Person Contact Number <span className="text-red-500">*</span>
                 </label>
                 <input
                   id="contactPersonNumber"
@@ -421,7 +364,7 @@ const Page: React.FC = () => {
                   htmlFor="contactPersonEmail"
                   className="block text-sm font-medium mb-1"
                 >
-                  Contact Person Email Address<span className="text-red-500">*</span>
+                  Contact Person Email Address <span className="text-red-500">*</span>
                 </label>
                 <input
                   id="contactPersonEmail"
@@ -439,7 +382,7 @@ const Page: React.FC = () => {
                   htmlFor="producttype"
                   className="block text-sm font-medium mb-1"
                 >
-                  Select a Industry<span className="text-red-500">*</span>
+                  Select a Industry <span className="text-red-500">*</span>
                 </label>
 
                 <select
@@ -466,7 +409,7 @@ const Page: React.FC = () => {
                   htmlFor="producttype"
                   className="block text-sm font-medium mb-1"
                 >
-                  Select a Product Type<span className="text-red-500">*</span>
+                  Select a Product Type <span className="text-red-500">*</span>
                 </label>
 
                 <select

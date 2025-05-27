@@ -1,25 +1,40 @@
-import React from 'react';
-import './Popup.css';
+'use client'
+
+import React, { useEffect, useState } from "react";
+import "./Popup.css";
 
 interface PopupProps {
-    isOpen: boolean;
-    close: () => void;
-    title: string;  // New prop for title content
-    message: string;  // New prop for message content
+  isOpen: boolean;
+  close: () => void;
+  title: string;
+  message: string;
+  isError?: boolean;
 }
 
-const Popup: React.FC<PopupProps> = ({ isOpen, close, title,message }) => {
-    if (!isOpen) return null;  // Don't render the modal if it's not open
+const Popup: React.FC<PopupProps> = ({ isOpen, close, title, message, isError = false }) => {
+  const [isVisible, setIsVisible] = useState(false);
 
-    return (
-        <div className="popup-overlay">
-            <div className="popup-content">
-                <h2>{title}</h2>
-                <p>{message}</p> 
-                <button onClick={close}>Close</button>
-            </div>
-        </div>
-    );
+  useEffect(() => {
+    if (isOpen) {
+      setIsVisible(true);
+    } else {
+      setTimeout(() => setIsVisible(false), 300); // Sync with CSS transition time
+    }
+  }, [isOpen]);
+
+  if (!isVisible) return null; // Prevent rendering when closed
+
+  return (
+    <div className={`popup-overlay ${isOpen ? "show" : "hide"}`}>
+      <div className={`popup-content ${isOpen ? "show" : "hide"}`}>
+        <h2>{title}</h2>
+        <p>{message}</p>
+        <button onClick={close} className={isError ? "button-error" : ""}>
+          Close
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default Popup;

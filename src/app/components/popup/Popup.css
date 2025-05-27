@@ -8,6 +8,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
 }
 
 .popup-content {
@@ -16,16 +18,27 @@
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
     text-align: center;
+    transform: scale(0.9);
+    transition: transform 0.3s ease-in, opacity 0.3s ease-in-out;
+    opacity: 0;
 }
 
-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
+/* When popup is open */
+.popup-overlay.show {
+    opacity: 1;
 }
 
-button:hover {
-    background-color: #0056b3;
+.popup-content.show {
+    transform: scale(1);
+    opacity: 1;
+}
+
+/* When popup is closing */
+.popup-overlay.hide {
+    opacity: 0;
+}
+
+.popup-content.hide {
+    transform: scale(0.9);
+    opacity: 0;
 }
