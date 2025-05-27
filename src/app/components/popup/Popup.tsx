@@ -1,7 +1,7 @@
-'use client'
+'use client';
 
-import React, { useEffect, useState } from "react";
-import "./Popup.css";
+import React, { useEffect, useState } from 'react';
+import './Popup.css';
 
 interface PopupProps {
   isOpen: boolean;
@@ -11,25 +11,39 @@ interface PopupProps {
   isError?: boolean;
 }
 
-const Popup: React.FC<PopupProps> = ({ isOpen, close, title, message, isError = false }) => {
-  const [isVisible, setIsVisible] = useState(false);
+const Popup: React.FC<PopupProps> = ({
+  isOpen,
+  close,
+  title,
+  message,
+  isError = false,
+}) => {
+  const [shouldRender, setShouldRender] = useState(false);
+  const [animationClass, setAnimationClass] = useState<'show' | 'hide'>('hide');
 
   useEffect(() => {
     if (isOpen) {
-      setTimeout(() => setIsVisible(true), 500);
+      setShouldRender(true);
+      // Allow rendering before applying show animation
+      requestAnimationFrame(() => {
+        setAnimationClass('show');
+      });
     } else {
-      setTimeout(() => setIsVisible(false), 500); // Sync with CSS transition time
+      setAnimationClass('hide');
+      // Wait for animation before unmounting
+      const timer = setTimeout(() => setShouldRender(false), 300);
+      return () => clearTimeout(timer);
     }
   }, [isOpen]);
 
-  if (!isVisible) return null; // Prevent rendering when closed
+  if (!shouldRender) return null;
 
   return (
-    <div className={`popup-overlay ${isOpen ? "show" : "hide"}`}>
-      <div className={`popup-content ${isOpen ? "show" : "hide"}`}>
+    <div className={`popup-overlay ${animationClass}`}>
+      <div className={`popup-content ${animationClass}`}>
         <h2>{title}</h2>
         <p>{message}</p>
-        <button onClick={close} className={isError ? "button-error" : ""}>
+        <button onClick={close} className={isError ? 'button-error' : ''}>
           Close
         </button>
       </div>

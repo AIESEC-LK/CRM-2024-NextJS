@@ -9,7 +9,18 @@
     justify-content: center;
     align-items: center;
     opacity: 0;
+    pointer-events: none;
     transition: opacity 0.3s ease-in-out;
+}
+
+.popup-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.popup-overlay.hide {
+    opacity: 0;
+    pointer-events: none;
 }
 
 .popup-content {
@@ -19,23 +30,13 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
     text-align: center;
     transform: scale(0.9);
-    transition: transform 0.3s ease-in, opacity 0.3s ease-in-out;
     opacity: 0;
-}
-
-/* When popup is open */
-.popup-overlay.show {
-    opacity: 1;
+    transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .popup-content.show {
     transform: scale(1);
     opacity: 1;
-}
-
-/* When popup is closing */
-.popup-overlay.hide {
-    opacity: 0;
 }
 
 .popup-content.hide {
@@ -47,22 +48,21 @@ button {
     background-color: #007bff;
     color: white;
     border: none;
-    padding: 10px;
+    padding: 10px 20px;
+    margin-top: 15px;
     cursor: pointer;
-}
-
-.button-error {
-    background-color: #dc3545 !important;
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-}
-
-.button-error:hover {
-    background-color: #c82333 !important;
+    border-radius: 4px;
+    font-size: 16px;
 }
 
 button:hover {
     background-color: #0056b3;
+}
+
+.button-error {
+    background-color: #dc3545 !important;
+}
+
+.button-error:hover {
+    background-color: #c82333 !important;
 }
