@@ -261,7 +261,7 @@ const Page: React.FC = () => {
 
               <div className="mb-4 relative">
                 <label htmlFor="name" className="block text-sm font-medium mb-1">
-                  Company Name
+                  Company Name <span className="text-red-500">*</span>
                 </label>
                 <input
                   autoComplete="off"
@@ -366,7 +366,7 @@ const Page: React.FC = () => {
                   htmlFor="companyAddress"
                   className="block text-sm font-medium mb-1"
                 >
-                  Company Address
+                  Company Address<span className="text-red-500">*</span>
                 </label>
                 <textarea
                   autoComplete="off"
@@ -385,7 +385,7 @@ const Page: React.FC = () => {
                   htmlFor="contactPersonName"
                   className="block text-sm font-medium mb-1"
                 >
-                  Contact Person Name
+                  Contact Person Name<span className="text-red-500">*</span>
                 </label>
                 <input
                   id="contactPersonName"
@@ -403,7 +403,7 @@ const Page: React.FC = () => {
                   htmlFor="contactPersonNumber"
                   className="block text-sm font-medium mb-1"
                 >
-                  Contact Person Contact Number
+                  Contact Person Contact Number<span className="text-red-500">*</span>
                 </label>
                 <input
                   id="contactPersonNumber"
@@ -421,7 +421,7 @@ const Page: React.FC = () => {
                   htmlFor="contactPersonEmail"
                   className="block text-sm font-medium mb-1"
                 >
-                  Contact Person Email Address
+                  Contact Person Email Address<span className="text-red-500">*</span>
                 </label>
                 <input
                   id="contactPersonEmail"
@@ -439,7 +439,7 @@ const Page: React.FC = () => {
                   htmlFor="producttype"
                   className="block text-sm font-medium mb-1"
                 >
-                  Select a Industry
+                  Select a Industry<span className="text-red-500">*</span>
                 </label>
 
                 <select
@@ -466,7 +466,7 @@ const Page: React.FC = () => {
                   htmlFor="producttype"
                   className="block text-sm font-medium mb-1"
                 >
-                  Select a Product Type
+                  Select a Product Type<span className="text-red-500">*</span>
                 </label>
 
                 <select
