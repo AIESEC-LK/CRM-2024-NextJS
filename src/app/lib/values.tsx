@@ -71,3 +71,6 @@ export const PROMOTER_BAR_WIDTH = "100%"
 
 export const  CUSTOMER_PENDING_MOU_REJECTED_BAR_COLOR = "red"
 export const  CUSTOMER_PENDING_MOU_REJECTED_BAR_WIDTH = "60%"
+
+
+export const MAX_PROSPECTS = 150; // Maximum number of prospects allowed

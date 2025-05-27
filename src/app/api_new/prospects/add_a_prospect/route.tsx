@@ -54,6 +54,15 @@ export async function POST(req: Request) {
     // Set current date as the date added
     const dateAdded = new Date();
     const entity_id = prospect.userLcId;
+
+    // Call the prospect-status API to check the prospect count
+    const response = await fetch(`/api_new/prospects/count_prospects?userLcId=${entity_id}`);
+    const data = await response.json();
+
+    if (!data.result) {
+      return NextResponse.json({ message: "You exceed the max prospect limit" }, { status: 403 });
+    }
+
    
 
     //Check whether the company already exists
