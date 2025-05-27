@@ -56,7 +56,7 @@ export async function POST(req: Request) {
     const entity_id = prospect.userLcId;
 
     // Call the prospect-status API to check the prospect count
-    const response = await fetch(`/api_new/prospects/count_prospects?userLcId=${entity_id}`);
+    const response = await fetch(`${process.env.BASE_URL}/api_new/prospects/count_prospects?userLcId=${entity_id}`);
     const data = await response.json();
 
     if (!data.result) {
