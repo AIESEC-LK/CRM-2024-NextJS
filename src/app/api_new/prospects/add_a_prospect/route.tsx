@@ -208,7 +208,7 @@ if (lastRecord.length > 0 || lastRecord!=null) {
           newCompay: newCompany
         });
 
-        return NextResponse.json({ success: true });
+        return NextResponse.json({ success: true, error: "Prospect Request Added Successfully" });
 
       }
 
@@ -235,7 +235,7 @@ if (lastRecord.length > 0 || lastRecord!=null) {
         newCompay: newCompany
       });
 
-      return NextResponse.json({ success: true });
+      return NextResponse.json({ success: true, error: "Prospect Request Added Successfully" });
       
     }
   }
