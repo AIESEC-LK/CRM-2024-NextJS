@@ -536,10 +536,14 @@ const Page: React.FC = () => {
                       <tr key={item._id}>
                         <td className="px-4 py-2">{item.company_name}</td>
                         <td className="px-4 py-2">{getLabelByValue(item.status)}</td>
-                        <td className="px-4 py-2">{new Date(item.date_added).toLocaleDateString()}</td>
+                        <td className="px-4 py-2">
+                          {item.date_added
+                            ? new Date(item.date_added).toLocaleDateString("en-GB")
+                            : "N/A"}
+                        </td>
                         <td className="px-4 py-2">
                           {item.date_expires
-                            ? new Date(item.date_expires).toLocaleDateString()
+                            ? new Date(item.date_expires).toLocaleDateString("en-GB")
                             : "N/A"}
                         </td>
                         <td className="px-4 py-2">{item.product_type_name}</td>
