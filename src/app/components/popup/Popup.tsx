@@ -16,9 +16,9 @@ const Popup: React.FC<PopupProps> = ({ isOpen, close, title, message, isError = 
 
   useEffect(() => {
     if (isOpen) {
-      setTimeout(() => setIsVisible(true), 300);
+      setTimeout(() => setIsVisible(true), 500);
     } else {
-      setTimeout(() => setIsVisible(false), 300); // Sync with CSS transition time
+      setTimeout(() => setIsVisible(false), 500); // Sync with CSS transition time
     }
   }, [isOpen]);
 
