@@ -42,3 +42,27 @@
     transform: scale(0.9);
     opacity: 0;
 }
+
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.button-error {
+    background-color: #dc3545 !important;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.button-error:hover {
+    background-color: #c82333 !important;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
