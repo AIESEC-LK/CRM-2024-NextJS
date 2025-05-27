@@ -61,8 +61,8 @@ const LoginPage = () => {
           src={image}
           alt="Loading"
           className="m-auto"
-          width={480}
-          height={271}
+          width={240}
+          height={135}
         />
         <h3 className="text-white mt-2 text-lg font-semibold">Creating Sustainable Partnerships...</h3>
       </div>
