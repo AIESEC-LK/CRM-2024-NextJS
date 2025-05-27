@@ -40,7 +40,7 @@ const SideNav = () => {
             Waiting List (Admin)
           </span>
         </li>
-{user?.role !== "admin" && (
+{user?.role === "admin" && (
   <li>
     <Link
       href="/dashboard/admin"
