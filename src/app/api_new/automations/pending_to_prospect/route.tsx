@@ -1,4 +1,5 @@
 import clientPromise from "@/app/lib/mongodb";
+import { PROSPECT_EXPIRE_TIME_DURATION } from "@/app/lib/values";
 import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 
@@ -78,7 +79,8 @@ export async function PATCH(req: Request) {
       // Step 4: Move to Prospects collection
       await prospectsCollection.insertOne({
         ...pending,
-        status: "promoter", // Update status
+        status: "prospect", // Update status
+        date_expires: new Date(Date.now() + PROSPECT_EXPIRE_TIME_DURATION),
       });
 
       // Step 5: Delete from Pending_Prospects
