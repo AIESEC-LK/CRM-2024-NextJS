@@ -94,7 +94,7 @@ const filteredRequests = requests.filter(
       </div>
       </div>
       <br/>
-      <div className="w-full ml-4 mb-6 bg-gray-100 rounded overflow-hidden shadow-lg flex items-center pt-3 pb-3">
+      <div className="w-full ml-4 bg-gray-100 rounded overflow-hidden shadow-lg flex items-center pt-3 pb-3">
       <Table>
         <TableHeader>
           <TableRow>
@@ -179,7 +179,7 @@ const filteredRequests = requests.filter(
           ))}
         </TableBody>
       </Table>
-    </div>
+      </div>
     </div>
   );
 }
