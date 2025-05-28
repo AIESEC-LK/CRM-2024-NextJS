@@ -65,7 +65,7 @@ export async function PATCH(req: Request) {
 
       // Step 3: Check if max prospect limit is reached for entity_id
       const countRes = await fetch(
-        `${process.env. BASE_URL}/api_new/prospects/count_prospects?userLcId=${entity_id}`
+        `${process.env.BASE_URL}/api_new/prospects/count_prospects?userLcId=${entity_id}`
       );
       const countData = await countRes.json();
 
@@ -77,16 +77,18 @@ export async function PATCH(req: Request) {
       }
 
       // Step 4: Move to Prospects collection
+      const { _id: pendingId, ...pendingData } = pending;
+
       await prospectsCollection.insertOne({
-        ...pending,
-        status: "prospect", // Update status
+        ...pendingData,
+        status: "prospect",
         date_expires: new Date(Date.now() + PROSPECT_EXPIRE_TIME_DURATION),
       });
 
       // Step 5: Delete from Pending_Prospects
-      await pendingCollection.deleteOne({ _id: new ObjectId(_id) });
+      await pendingCollection.deleteOne({ _id: new ObjectId(pendingId) });
 
-      console.log(`Moved pending prospect (ID: ${_id}) to Prospects.`);
+      console.log(`Moved pending prospect (ID: ${pendingId}) to Prospects.`);
     }
 
     return NextResponse.json({ message: "Processing completed successfully." });
