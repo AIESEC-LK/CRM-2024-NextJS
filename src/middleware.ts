@@ -92,15 +92,14 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Match all regular non-excluded pages
-    "/((?!auth|_next/static|_next/image|favicon.ico).*)",
-
-    // ✅ Include only authorized api_new routes
-    "/api_new/companies/:path*",
-    "/api_new/entities/:path*",
-    "/api_new/industries/:path*",
-    "/api_new/pending_prospects/:path*",
-    "/api_new/products/:path*",
-    "/api_new/prospects/:path*",
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - auth (authentication routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    "/((?!api_new|auth|_next/static|_next/image|favicon.ico).*)",
   ],
 };
