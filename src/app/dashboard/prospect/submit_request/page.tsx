@@ -219,18 +219,7 @@ const Page: React.FC = () => {
       setIndustries(data2);
     };
 
-
-    const loadMyProspectList = async () => {
-      if (user) {
-        const myProspectList = await fetctMyProspectList(user.lcId); 
-        setmyProspectList(myProspectList);
-      } else {
-        console.error("User is null");
-      }
-    };
-
-
-    loadMyProspectList();
+    fetctMyProspectList(user?.lcId || "")
     loadProducts();
     loadIndustries();
   }, []);
