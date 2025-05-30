@@ -9,7 +9,7 @@ export default async function Page() {
   try {
     const prospect_response = await fetch(`${baseUrl}api_new/prospects/get_all_prospects`, {
       headers: {
-        "x-internal-auth": process.env.INTERNAL_API_SECRET!, // internal secret
+        "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
         "cache-control": "no-store"
       },
     });
