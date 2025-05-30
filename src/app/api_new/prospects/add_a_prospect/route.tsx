@@ -33,6 +33,16 @@ interface IProspectProduct{
 
 export async function POST(req: Request) {
   try {
+
+        const internalAuth = req.headers.get("x-internal-auth");
+
+    // ✅ Allow internal fetches (server-to-server) if they include a valid secret
+    if (internalAuth !== process.env.INTERNAL_AUTH_SECRET) {
+    return NextResponse.json(
+      { error: "Unauthorized" },
+      { status: 401 }
+    );
+    }
     //console.log("Request Body", req.body);
 
     let company = null;

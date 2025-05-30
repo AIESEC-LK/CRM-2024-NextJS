@@ -22,7 +22,22 @@ const ALLOWED_FIELDS = [
 ];
 
 export async function PATCH(req: Request) {
+
+
   try {
+    
+
+    const internalAuth = req.headers.get("x-internal-auth");
+
+    // ✅ Allow internal fetches (server-to-server) if they include a valid secret
+    if (internalAuth !== process.env.INTERNAL_AUTH_SECRET) {
+    return NextResponse.json(
+      { error: "Unauthorized" },
+      { status: 401 }
+    );
+    }
+
+
     const { id, ...updates } = await req.json();
 
     if (!id) {
