@@ -57,7 +57,7 @@ const fetchCompanyQuery = async (query: string) => {
     }
 };*/
 
-
+/*
 const fetctMyProspectList = async (entity_id: string) => {
     try {
         const response = await fetch(`/api_new/prospects/get_all_my_prospects?entity_id=${entity_id}`, 
@@ -76,7 +76,7 @@ const fetctMyProspectList = async (entity_id: string) => {
         console.error("Error fetching prospect list:", error);
     }
 };
-
+*/
 
 /*
 const fetchCompany = async (company_id: string) => {
@@ -164,6 +164,6 @@ const submitProspect = async (data: FormData): Promise<Response | Error> => {
     }
 
 
-export { fetctMyProspectList,fetchIndustry, fetchProducts, submitProspect, /*fetchCompanyQuery/*,fetchCompany*/ };
+export { /*fetctMyProspectList,*/fetchIndustry, fetchProducts, submitProspect, /*fetchCompanyQuery/*,fetchCompany*/ };
 
 
