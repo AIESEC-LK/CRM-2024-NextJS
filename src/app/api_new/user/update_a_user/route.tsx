@@ -1,5 +1,5 @@
 import clientPromise from "@/app/lib/mongodb";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 
 interface IUserUpdateRequest {
@@ -9,7 +9,7 @@ interface IUserUpdateRequest {
     userEntityId?: string;
 }
 
-export async function PUT(req: Request) {
+export async function PUT(req: NextRequest) {
     try {
 
         const internalAuth = req.headers.get("x-internal-auth");

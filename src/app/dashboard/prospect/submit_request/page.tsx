@@ -97,11 +97,6 @@ const Page: React.FC = () => {
   const fetchCompanyQuery = async (query: string) => {
     try {
       const response = await fetch(`/api_new/companies/get_by_query?companyName=${query}`, 
-        {
-          headers: {
-            "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
-          },
-        }
       );
       if (!response.ok) {
         throw new Error('Failed to fetch products');

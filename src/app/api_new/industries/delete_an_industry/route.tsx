@@ -1,8 +1,8 @@
 import clientPromise from "@/app/lib/mongodb";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 
-export async function DELETE(req: Request) {
+export async function DELETE(req: NextRequest) {
   try {
 
         const internalAuth = req.headers.get("x-internal-auth");

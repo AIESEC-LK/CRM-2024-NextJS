@@ -1,6 +1,6 @@
 import clientPromise from "@/app/lib/mongodb";
 import { PROSPECT_VALUES, QUEUE_TIME_DURATION } from "@/app/lib/values";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import { error } from "console";
 import { PROSPECT_EXPIRE_TIME_DURATION, LEAD_EXPIRE_TIME_DURATION, PENDING_TIME_DURATION, PROMOTER_EVENT_EXPIRE_TIME_DURATION, PROMOTER_PRODUCT_EXPIRE_TIME_DURATION } from "@/app/lib/values";
@@ -31,7 +31,7 @@ interface IProspectProduct{
 }
 
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
 
         const internalAuth = req.headers.get("x-internal-auth");

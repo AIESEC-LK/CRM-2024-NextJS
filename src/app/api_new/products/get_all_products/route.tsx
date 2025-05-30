@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
 export const dynamic = "force-dynamic";
 
-export async function GET(req:Request) {
+export async function GET(req:NextRequest) {
   try {
         const internalAuth = req.headers.get("x-internal-auth");
 

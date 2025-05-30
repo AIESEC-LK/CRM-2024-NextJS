@@ -1,5 +1,5 @@
 import clientPromise from "@/app/lib/mongodb";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 
 const ALLOWED_FIELDS = [
@@ -21,7 +21,7 @@ const ALLOWED_FIELDS = [
   "newCompay"
 ];
 
-export async function PATCH(req: Request) {
+export async function PATCH(req: NextRequest) {
 
 
   try {
