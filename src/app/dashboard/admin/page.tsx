@@ -54,7 +54,13 @@ export default function AdminView() {
 
   const fetchRequests = async () => {
     try {
-      const response = await fetch("/api_new/prospects/get_all_prospects");
+      const response = await fetch("/api_new/prospects/get_all_prospects",
+        {
+          headers: {
+            "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+          },
+        }
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch requests");
       }
@@ -70,7 +76,11 @@ export default function AdminView() {
 
   const fetchIndustry = async () => {
     try {
-        const response = await fetch("/api_new/industries/get_all_industries");
+        const response = await fetch("/api_new/industries/get_all_industries", {
+          headers: {
+            "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+          },
+        });
         if (!response.ok) {
             throw new Error('Failed to fetch products');
         }

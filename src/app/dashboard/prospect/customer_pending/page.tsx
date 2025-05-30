@@ -8,6 +8,7 @@ import ListGroup from "@/app/components/ui/list_groups";
 import { formatDate, Product } from "./functions";
 import ProgressBar from "@/app/components/ui/progress";
 import { CUSTOMER_PANDING_BAR_COLOR, CUSTOMER_PANDING_BAR_WIDTH, PROSPECT_VALUES } from "@/app/lib/values";
+import { headers } from "next/headers";
 
 export default function MakeALeadPage() {
   const [companyName, setCompanyName] = useState(String);
@@ -26,7 +27,11 @@ export default function MakeALeadPage() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const response = await fetch("/api_new/products/get_all_products");
+        const response = await fetch("/api_new/products/get_all_products", {
+          headers: {
+            "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+          }
+        });
         if (!response.ok) {
           throw new Error("Failed to fetch products");
         }

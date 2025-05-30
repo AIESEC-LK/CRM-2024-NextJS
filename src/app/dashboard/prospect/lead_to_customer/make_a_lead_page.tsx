@@ -72,7 +72,11 @@ const [isConverted, setIsConverted] = useState(false);
     if (id) {
       const fetchProspectDetails = async () => {
         try {
-          const response = await fetch(`/api_new/prospects/get_prospect_in_id?id=${id}`);
+          const response = await fetch(`/api_new/prospects/get_prospect_in_id?id=${id}`, {
+            headers: {
+              "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+            },
+          });
           if (!response.ok) {
             throw new Error('Failed to fetch prospect details');
           }
@@ -102,7 +106,11 @@ const [isConverted, setIsConverted] = useState(false);
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const response = await fetch("/api_new/products/get_all_products");
+        const response = await fetch("/api_new/products/get_all_products", {
+          headers: {
+            "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+          },
+        });
         if (!response.ok) {
           throw new Error("Failed to fetch products");
         }
@@ -213,6 +221,7 @@ const [isConverted, setIsConverted] = useState(false);
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
+          "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
         },
         body: JSON.stringify(data),
       });

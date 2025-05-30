@@ -1,12 +1,11 @@
 'use client';
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { Button } from "../../../components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/app/components/ui/table";
 import { useAuth } from "@/app/context/AuthContext";
 import { PROSPECT_VALUES } from "@/app/lib/values";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Button } from "../../../components/ui/button";
 
 interface Prospect {
 

@@ -47,7 +47,11 @@ export default function ProspectQueue() {
   // Fetch pending prospects from API
   const fetchRequests = async () => {
     try {
-      const response = await fetch("/api_new/pending_prospects/get_all_pending_prospects");
+      const response = await fetch("/api_new/pending_prospects/get_all_pending_prospects", {
+        headers: {
+          "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+        },
+      });
       if (!response.ok) {
         throw new Error("Failed to fetch requests");
       }

@@ -94,7 +94,13 @@ useEffect(() => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('/api_new/products/get_all_products');
+        const response = await fetch('/api_new/products/get_all_products', 
+          {
+            headers: {
+              "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+            },
+          }
+        );
         if (!response.ok) {
           throw new Error('Failed to fetch products');
         }
@@ -114,7 +120,12 @@ useEffect(() => {
     const fetchstages = async () => {
 
       try {
-        const response = await fetch('/api_new/stages/get_all_stages');
+        const response = await fetch('/api_new/stages/get_all_stages', 
+          {
+            headers: {
+              "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+            },
+          });
         if (!response.ok) {
           throw new Error('Failed to fetch stages');
         }
@@ -141,7 +152,12 @@ useEffect(() => {
           return;
         }
         try {
-          const response = await fetch(`/api_new/prospects/get_prospect_in_id?id=${prospectId}`);
+          const response = await fetch(`/api_new/prospects/get_prospect_in_id?id=${prospectId}`, 
+            {
+              headers: {
+                "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+              },
+            });
           console.log(prospectId);
           if (!response.ok) {
             throw new Error('Failed to fetch prospect details');
@@ -186,7 +202,12 @@ useEffect(() => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('/api_new/products/get_all_products');
+        const response = await fetch('/api_new/products/get_all_products', 
+          {
+            headers: {
+              "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+            },
+          });
         if (!response.ok) {
           throw new Error('Failed to fetch products');
         }
@@ -207,7 +228,12 @@ useEffect(() => {
 
 
       try {
-        const response = await fetch('/api_new/entities/get_all_entities');
+        const response = await fetch('/api_new/entities/get_all_entities', 
+          {
+            headers: {
+              "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+            },
+          });
         if (!response.ok) {
           throw new Error('Failed to fetch entities');
         }
@@ -225,7 +251,12 @@ useEffect(() => {
 
     const fetchAllCompanies = async () => {
       try {
-        const response = await fetch('/api_new/companies/get_all_companies');
+        const response = await fetch('/api_new/companies/get_all_companies', 
+          {
+            headers: {
+              "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+            },
+          });
         if (!response.ok) {
           throw new Error('Failed to fetch companies');
         }
@@ -368,6 +399,8 @@ const HandleSwapProduct = async () => {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
+        "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+
       },
       body: JSON.stringify({
         id: {prospectId},
@@ -399,6 +432,8 @@ const HandleOverwriteMoUDate = async () => {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
+        "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+
       },
       body: JSON.stringify({
         id: {prospectId},
@@ -432,7 +467,12 @@ const loadUpdatedProspect = async()=>{
     return;
   }
   try {
-    const response = await fetch(`/api_new/prospects/get_prospect_in_id?id=${prospectId}`);
+    const response = await fetch(`/api_new/prospects/get_prospect_in_id?id=${prospectId}`, {
+      headers: {
+        "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+        "cache-control": "no-store"
+      },
+    });
     if (!response.ok) {
       throw new Error('Failed to fetch prospect details');
     }
@@ -477,6 +517,8 @@ const handleOverwriteStage = async () => {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
+        "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+
       },
       body: JSON.stringify({
         id:{prospectId},
@@ -515,6 +557,8 @@ const HandleAprooveMou = async () => {
       method: 'PATCH',
       headers: {
       'Content-Type': 'application/json',
+      "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+
       },
       body: JSON.stringify({
       id: prospectId,
@@ -552,6 +596,8 @@ const HandleRejectAprooveMou = async () => {
       method: 'PATCH',
       headers: {
       'Content-Type': 'application/json',
+      "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+
       },
       body: JSON.stringify({
       id: prospectId,
@@ -608,6 +654,8 @@ const HandleOverwriteDate = async () => {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
+        "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+
       },
       body: JSON.stringify({
         id: {prospectId},
@@ -643,6 +691,8 @@ const DeletePartnership = async (e: React.MouseEvent<HTMLButtonElement>) => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
+        "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+
       },
       body: JSON.stringify({ id:prospectId}),
 

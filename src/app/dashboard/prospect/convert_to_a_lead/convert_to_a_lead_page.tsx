@@ -65,7 +65,11 @@ export default function ConvertToALeadPage() {
     if (prospectId) {
       const fetchProspectDetails = async () => {
         try {
-          const response = await fetch(`/api_new/prospects/get_prospect_in_id?id=${prospectId}`);
+          const response = await fetch(`/api_new/prospects/get_prospect_in_id?id=${prospectId}`, {
+            headers: {
+              "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+            },
+          });
           if (!response.ok) {
             throw new Error('Failed to fetch prospect details');
           }
@@ -92,7 +96,11 @@ export default function ConvertToALeadPage() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('/api_new/products/get_all_products');
+        const response = await fetch('/api_new/products/get_all_products', {
+          headers: {
+            "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+          },
+        });
         if (!response.ok) {
           throw new Error('Failed to fetch products');
         }
@@ -290,6 +298,7 @@ export default function ConvertToALeadPage() {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
+      "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!
     },
     body: JSON.stringify(payload),
   });

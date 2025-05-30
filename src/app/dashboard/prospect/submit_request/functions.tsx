@@ -1,3 +1,5 @@
+import { headers } from "next/headers";
+
 export interface FormData {
     [x: string]: string | undefined;
     companyId: string;
@@ -58,7 +60,12 @@ const fetchCompanyQuery = async (query: string) => {
 
 const fetctMyProspectList = async (entity_id: string) => {
     try {
-        const response = await fetch(`/api_new/prospects/get_all_my_prospects?entity_id=${entity_id}`);
+        const response = await fetch(`/api_new/prospects/get_all_my_prospects?entity_id=${entity_id}`, 
+            {
+              headers: {
+                "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+              }
+            });
         if (!response.ok) {
             throw new Error('Failed to fetch prospect list');
         }
@@ -88,7 +95,11 @@ const fetchCompany = async (company_id: string) => {
 
 const fetchProducts = async () => {
     try {
-        const response = await fetch("/api_new/products/get_all_products");
+        const response = await fetch("/api_new/products/get_all_products", {
+            headers: {
+              "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+            },
+        });
         if (!response.ok) {
             throw new Error('Failed to fetch products');
         }
@@ -102,7 +113,12 @@ const fetchProducts = async () => {
 
 const fetchIndustry = async () => {
     try {
-        const response = await fetch("/api_new/industries/get_all_industries");
+        const response = await fetch("/api_new/industries/get_all_industries", {
+            headers: {
+              "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+            },
+            
+        });
         if (!response.ok) {
             throw new Error('Failed to fetch products');
         }
@@ -122,6 +138,8 @@ const submitProspect = async (data: FormData): Promise<Response | Error> => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+
             },
             body: JSON.stringify(data),
         });

@@ -64,7 +64,13 @@ const [promoterEndDate,setPromoterEndDate] = useState<Date>();
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('/api_new/products/get_all_products');
+        const response = await fetch('/api_new/products/get_all_products',
+          {
+            headers: {
+              "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+            },
+          }
+        );
         if (!response.ok) {
           throw new Error('Failed to fetch products');
         }
@@ -83,7 +89,13 @@ const [promoterEndDate,setPromoterEndDate] = useState<Date>();
     const fetchstages = async () => {
 
       try {
-        const response = await fetch('/api_new/stages/get_all_stages');
+        const response = await fetch('/api_new/stages/get_all_stages',
+          {
+            headers: {
+              "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+            },
+          }
+        );
         if (!response.ok) {
           throw new Error('Failed to fetch stages');
         }
@@ -102,7 +114,13 @@ const [promoterEndDate,setPromoterEndDate] = useState<Date>();
     if (true) {
       const fetchProspectDetails = async () => {
         try {
-          const response = await fetch(`/api_new/prospects/get_prospect_in_id?id=676acc88389730e12e76c9ce`);
+          const response = await fetch(`/api_new/prospects/get_prospect_in_id?id=676acc88389730e12e76c9ce`,
+            {
+              headers: {
+                "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+              },
+            }
+          );
           if (!response.ok) {
             throw new Error('Failed to fetch prospect details');
           }
@@ -138,7 +156,13 @@ const [promoterEndDate,setPromoterEndDate] = useState<Date>();
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('/api_new/products/get_all_products');
+        const response = await fetch('/api_new/products/get_all_products',
+          {
+            headers: {
+              "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+            },
+          }
+        );
         if (!response.ok) {
           throw new Error('Failed to fetch products');
         }
@@ -159,7 +183,13 @@ const [promoterEndDate,setPromoterEndDate] = useState<Date>();
 
 
       try {
-        const response = await fetch('/api_new/entities/get_all_entities');
+        const response = await fetch('/api_new/entities/get_all_entities',
+          {
+            headers: {
+              "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+            },
+          }
+        );
         if (!response.ok) {
           throw new Error('Failed to fetch entities');
         }
@@ -177,7 +207,13 @@ const [promoterEndDate,setPromoterEndDate] = useState<Date>();
 
     const fetchAllCompanies = async () => {
       try {
-        const response = await fetch('/api_new/companies/get_all_companies');
+        const response = await fetch('/api_new/companies/get_all_companies',
+          {
+            headers: {
+              "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+            },
+          }
+        );
         if (!response.ok) {
           throw new Error('Failed to fetch companies');
         }

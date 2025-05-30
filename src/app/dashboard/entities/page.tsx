@@ -33,7 +33,13 @@ export default function EntitiesPage() {
 
   const fetchEntities = async () => {
     try {
-      const response = await fetch("/api_new/entities/get_all_entities");
+      const response = await fetch("/api_new/entities/get_all_entities",
+        {
+          headers: {
+            "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+          },
+        }
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch entities");
       }
@@ -57,6 +63,7 @@ export default function EntitiesPage() {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
+          "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
         },
         body: JSON.stringify({ id: entityToDelete._id }),
       });
