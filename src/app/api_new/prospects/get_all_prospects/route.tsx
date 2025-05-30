@@ -1,9 +1,14 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(request : NextRequest) {
   try {
+    const internalAuth = request.headers.get("x-internal-auth");
+
+    if (internalAuth !== process.env.INTERNAL_API_SECRET) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
     const client = await clientPromise;
 
     const db = client.db(process.env.DB_NAME);

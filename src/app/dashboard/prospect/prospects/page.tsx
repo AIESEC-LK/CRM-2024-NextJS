@@ -9,7 +9,10 @@ export default async function Page() {
   try {
     const prospect_response = await fetch(`${baseUrl}api_new/prospects/get_all_prospects`, {
       // Optionally set caching behavior if needed
-      cache: "no-store", // Optional: disables fetch caching
+      headers: {
+        "x-internal-auth": process.env.INTERNAL_API_SECRET!,
+        cache: "no-store", // Optional: disables fetch caching
+      },
     });
 
     if (!prospect_response.ok) {
