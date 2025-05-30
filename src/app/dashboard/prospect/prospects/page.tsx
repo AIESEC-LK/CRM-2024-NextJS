@@ -8,9 +8,10 @@ export default async function Page() {
 
   try {
     const prospect_response = await fetch(`${baseUrl}api_new/prospects/get_all_prospects`, {
+      // Optionally set caching behavior if needed
       headers: {
-        "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
-        "cache-control": "no-store"
+        "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!,
+        cache: "no-store", // Optional: disables fetch caching
       },
     });
 
