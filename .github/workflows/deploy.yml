@@ -52,6 +52,7 @@ jobs:
         AUTH_CLIENT_SECRET=${{ secrets.AUTH_CLIENT_SECRET }}
         AUTH_REDIRECT_URI=${{ secrets.AUTH_REDIRECT_URI }}
         NEXT_PUBLIC_EXPA_URL=${{ secrets.NEXT_PUBLIC_EXPA_URL }}
+        INTERNAL_AUTH_SECRET=${{ secrets.INTERNAL_AUTH_SECRET }}
         EOF
           
           # Debug: Check if .env file was created and show its contents (INCLUDING SECRETS - REMOVE AFTER DEBUGGING)

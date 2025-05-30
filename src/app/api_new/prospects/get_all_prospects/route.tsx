@@ -6,7 +6,7 @@ export async function GET(request : NextRequest) {
   try {
     const internalAuth = request.headers.get("x-internal-auth");
 
-    if (internalAuth !== process.env.INTERNAL_API_SECRET) {
+    if (internalAuth !== process.env.INTERNAL_AUTH_SECRET) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
     const client = await clientPromise;
