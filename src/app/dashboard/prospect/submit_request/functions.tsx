@@ -97,7 +97,7 @@ const fetchProducts = async () => {
     try {
         const response = await fetch("/api_new/products/get_all_products", {
             headers: {
-              "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+              "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
             },
         });
         if (!response.ok) {
@@ -115,7 +115,7 @@ const fetchIndustry = async () => {
     try {
         const response = await fetch("/api_new/industries/get_all_industries", {
             headers: {
-              "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+              "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
             },
             
         });
@@ -138,7 +138,7 @@ const submitProspect = async (data: FormData): Promise<Response | Error> => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+                "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
 
             },
             body: JSON.stringify(data),
