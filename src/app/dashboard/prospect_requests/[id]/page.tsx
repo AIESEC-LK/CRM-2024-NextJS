@@ -5,10 +5,17 @@ import type { InferGetServerSidePropsType } from 'next'; // for pages router (no
 
 export default async function Page({ params }: { params: { id: string } }) {
   const { id } = params;
-  const baseUrl = process.env.BASE_URL || 'https://localhost:3000';
+  const baseUrl = process.env.BASE_URL!;
 
   try {
-    const prospectResponse = await fetch(`${baseUrl}/api_new/prospects/get_all_prospects/${id}`);
+    const prospectResponse = await fetch(
+      `${baseUrl}/api_new/prospects/get_all_prospects/${id}`,
+      {
+        headers: {
+          'x-internal-auth': process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!,
+        },
+      }
+    );
     if (!prospectResponse.ok) throw new Error("Failed to fetch prospect data");
     const prospectData = await prospectResponse.json();
 
