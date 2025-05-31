@@ -66,7 +66,12 @@ export async function POST(req: NextRequest) {
     const entity_id = prospect.userLcId;
 
     // Call the prospect-status API to check the prospect count
-    const response = await fetch(`${process.env.BASE_URL}/api_new/prospects/count_prospects?userLcId=${entity_id}`);
+    const response = await fetch(`${process.env.BASE_URL}/api_new/prospects/count_prospects?userLcId=${entity_id}`,
+      {
+        headers: {
+          "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+        }
+      });
     const data = await response.json();
 
     if (!data.result) {
