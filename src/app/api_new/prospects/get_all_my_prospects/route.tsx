@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     if (internalAuth !== process.env.INTERNAL_AUTH_SECRET) {
     return NextResponse.json(
       { error: "Unauthorized" },
-      { status: 401 }
+      { status: 401 }   
     );
     }
 

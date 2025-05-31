@@ -18,7 +18,9 @@ export interface IUserUpdateRequest {
 
 const fetctAllUserArray = async () => {
     try {
-        const response = await fetch(`/api_new/user/get_all_users`);
+        const response = await fetch(`/api_new/user/get_all_users`,
+            {headers: { 'x-internal-auth': process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET! } }
+        );
         if (!response.ok) {
             throw new Error('Failed to fetch All users');
         }
@@ -32,7 +34,9 @@ const fetctAllUserArray = async () => {
 
 const fetchAllEntity = async () => {
     try {
-        const response = await fetch("/api_new/entities/get_all_entities");
+        const response = await fetch("/api_new/entities/get_all_entities",
+            {headers: { 'x-internal-auth': process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET! } }
+        );
         if (!response.ok) {
             throw new Error('Failed to fetch All Entity');
         }
@@ -51,6 +55,7 @@ const createUser = async (createUser: IUserCreateRequest): Promise<Response | Er
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'x-internal-auth': process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!,
             },
             body: JSON.stringify(createUser),
         });
@@ -76,6 +81,7 @@ const updateUser = async (updateUser: IUserUpdateRequest): Promise<Response | Er
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
+                'x-internal-auth': process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!,
             },
             body: JSON.stringify(updateUser),
         });
@@ -101,6 +107,7 @@ const deleteUser = async (userId: string): Promise<Response | Error> => {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
+                'x-internal-auth': process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!,
             },
         });
 
