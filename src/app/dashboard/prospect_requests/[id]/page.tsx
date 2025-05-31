@@ -1,3 +1,4 @@
+import { headers } from 'next/headers';
 import ProspectRequestClient from './ProspectRequestClient';
 import type { InferGetServerSidePropsType } from 'next'; // for pages router (not app router)
 
@@ -17,7 +18,14 @@ export default async function Page({ params }: { params: { id: string } }) {
 
     let companyData = null;
     if (prospectData?.company_id) {
-      const companyResponse = await fetch(`${baseUrl}/api_new/companies/get_by_id?company_id=${prospectData.company_id}`);
+      const companyResponse = await fetch(
+        `${baseUrl}/api_new/companies/get_by_id?company_id=${prospectData.company_id}`,
+        {
+          headers: {
+            'x-internal-auth': process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!,
+          },
+        }
+      );
       if (companyResponse.ok) companyData = await companyResponse.json();
     }
 
