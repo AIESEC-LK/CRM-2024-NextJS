@@ -80,8 +80,9 @@ const Page: React.FC = () => {
             throw new Error('Failed to fetch prospect list');
         }
         const data = await response.json();
-        return data;
         setmyProspectList(data);
+        return data;
+        
 
     } catch (error) {
         console.error("Error fetching prospect list:", error);
