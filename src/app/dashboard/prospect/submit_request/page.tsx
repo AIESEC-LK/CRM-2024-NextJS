@@ -81,6 +81,7 @@ const Page: React.FC = () => {
         }
         const data = await response.json();
         return data;
+        setmyProspectList(data);
 
     } catch (error) {
         console.error("Error fetching prospect list:", error);
@@ -95,7 +96,6 @@ const Page: React.FC = () => {
         throw new Error('Failed to fetch products');
       }
       const data = await response.json();
-      setmyProspectList(data);
       console.log("Company query data: ", data);
       return data;
     } catch (error) {
