@@ -57,7 +57,7 @@ export default function AdminView() {
       const response = await fetch("/api_new/prospects/get_all_prospects",
         {
           headers: {
-            "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+            "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
           },
         }
       );
@@ -78,7 +78,7 @@ export default function AdminView() {
     try {
         const response = await fetch("/api_new/industries/get_all_industries", {
           headers: {
-            "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+            "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
           },
         });
         if (!response.ok) {

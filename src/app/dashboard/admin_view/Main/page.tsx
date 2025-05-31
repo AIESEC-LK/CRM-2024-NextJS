@@ -97,7 +97,7 @@ useEffect(() => {
         const response = await fetch('/api_new/products/get_all_products', 
           {
             headers: {
-              "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+              "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
             },
           }
         );
@@ -123,7 +123,7 @@ useEffect(() => {
         const response = await fetch('/api_new/stages/get_all_stages', 
           {
             headers: {
-              "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+              "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
             },
           });
         if (!response.ok) {
@@ -155,7 +155,7 @@ useEffect(() => {
           const response = await fetch(`/api_new/prospects/get_prospect_in_id?id=${prospectId}`, 
             {
               headers: {
-                "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+                "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
               },
             });
           console.log(prospectId);
@@ -205,7 +205,7 @@ useEffect(() => {
         const response = await fetch('/api_new/products/get_all_products', 
           {
             headers: {
-              "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+              "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
             },
           });
         if (!response.ok) {
@@ -231,7 +231,7 @@ useEffect(() => {
         const response = await fetch('/api_new/entities/get_all_entities', 
           {
             headers: {
-              "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+              "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
             },
           });
         if (!response.ok) {
@@ -254,7 +254,7 @@ useEffect(() => {
         const response = await fetch('/api_new/companies/get_all_companies', 
           {
             headers: {
-              "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+              "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
             },
           });
         if (!response.ok) {
@@ -399,7 +399,7 @@ const HandleSwapProduct = async () => {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
-        "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+        "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
 
       },
       body: JSON.stringify({
@@ -432,7 +432,7 @@ const HandleOverwriteMoUDate = async () => {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
-        "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+        "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
 
       },
       body: JSON.stringify({
@@ -469,7 +469,7 @@ const loadUpdatedProspect = async()=>{
   try {
     const response = await fetch(`/api_new/prospects/get_prospect_in_id?id=${prospectId}`, {
       headers: {
-        "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+        "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
         "cache-control": "no-store"
       },
     });
@@ -517,7 +517,7 @@ const handleOverwriteStage = async () => {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
-        "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+        "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
 
       },
       body: JSON.stringify({
@@ -557,7 +557,7 @@ const HandleAprooveMou = async () => {
       method: 'PATCH',
       headers: {
       'Content-Type': 'application/json',
-      "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+      "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
 
       },
       body: JSON.stringify({
@@ -596,7 +596,7 @@ const HandleRejectAprooveMou = async () => {
       method: 'PATCH',
       headers: {
       'Content-Type': 'application/json',
-      "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+      "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
 
       },
       body: JSON.stringify({
@@ -654,7 +654,7 @@ const HandleOverwriteDate = async () => {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
-        "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+        "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
 
       },
       body: JSON.stringify({
@@ -691,7 +691,7 @@ const DeletePartnership = async (e: React.MouseEvent<HTMLButtonElement>) => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+        "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
 
       },
       body: JSON.stringify({ id:prospectId}),

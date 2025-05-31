@@ -49,7 +49,7 @@ export default function ProspectQueue() {
     try {
       const response = await fetch("/api_new/pending_prospects/get_all_pending_prospects", {
         headers: {
-          "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+          "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
         },
       });
       if (!response.ok) {

@@ -29,7 +29,7 @@ export default function MakeALeadPage() {
       try {
         const response = await fetch("/api_new/products/get_all_products", {
           headers: {
-            "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+            "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
           },
         });
         if (!response.ok) {
@@ -54,7 +54,7 @@ export default function MakeALeadPage() {
       try {
         const response = await fetch(`/api_new/prospects/get_prospect_in_id?id=${id}`, {
           headers: {
-            "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+            "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
           }
         });
         if (!response.ok) {

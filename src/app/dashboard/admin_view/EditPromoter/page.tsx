@@ -67,7 +67,7 @@ const [promoterEndDate,setPromoterEndDate] = useState<Date>();
         const response = await fetch('/api_new/products/get_all_products',
           {
             headers: {
-              "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+              "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
             },
           }
         );
@@ -92,7 +92,7 @@ const [promoterEndDate,setPromoterEndDate] = useState<Date>();
         const response = await fetch('/api_new/stages/get_all_stages',
           {
             headers: {
-              "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+              "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
             },
           }
         );
@@ -117,7 +117,7 @@ const [promoterEndDate,setPromoterEndDate] = useState<Date>();
           const response = await fetch(`/api_new/prospects/get_prospect_in_id?id=676acc88389730e12e76c9ce`,
             {
               headers: {
-                "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+                "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
               },
             }
           );
@@ -159,7 +159,7 @@ const [promoterEndDate,setPromoterEndDate] = useState<Date>();
         const response = await fetch('/api_new/products/get_all_products',
           {
             headers: {
-              "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+              "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
             },
           }
         );
@@ -186,7 +186,7 @@ const [promoterEndDate,setPromoterEndDate] = useState<Date>();
         const response = await fetch('/api_new/entities/get_all_entities',
           {
             headers: {
-              "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+              "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
             },
           }
         );
@@ -210,7 +210,7 @@ const [promoterEndDate,setPromoterEndDate] = useState<Date>();
         const response = await fetch('/api_new/companies/get_all_companies',
           {
             headers: {
-              "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+              "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
             },
           }
         );

@@ -77,7 +77,7 @@ export default function ProspectRequestClient({
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+          "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
 
         },
         body: JSON.stringify({ id: prospect._id, newCompay: false, status: "prospect" }),
@@ -87,7 +87,7 @@ export default function ProspectRequestClient({
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+          "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
 
         },
         body: JSON.stringify({ 
@@ -122,7 +122,7 @@ export default function ProspectRequestClient({
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+          "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
 
         },
         body: JSON.stringify({ id: prospect._id }),

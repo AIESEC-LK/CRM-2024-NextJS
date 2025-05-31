@@ -67,7 +67,7 @@ export default function ConvertToALeadPage() {
         try {
           const response = await fetch(`/api_new/prospects/get_prospect_in_id?id=${prospectId}`, {
             headers: {
-              "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+              "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
             },
           });
           if (!response.ok) {
@@ -98,7 +98,7 @@ export default function ConvertToALeadPage() {
       try {
         const response = await fetch('/api_new/products/get_all_products', {
           headers: {
-            "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+            "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
           },
         });
         if (!response.ok) {
@@ -298,7 +298,7 @@ export default function ConvertToALeadPage() {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
-      "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!
+      "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!
     },
     body: JSON.stringify(payload),
   });
