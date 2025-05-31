@@ -73,7 +73,7 @@ const Page: React.FC = () => {
         const response = await fetch(`/api_new/prospects/get_all_my_prospects?entity_id=${entity_id}`, 
             {
               headers: {
-                "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+                "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
               }
             });
         if (!response.ok) {
@@ -121,7 +121,7 @@ const Page: React.FC = () => {
       const response = await fetch(`/api_new/companies/get_by_id?company_id=${company_id}`, 
         {
           headers: {
-            "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+            "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
           },
         }
       );
