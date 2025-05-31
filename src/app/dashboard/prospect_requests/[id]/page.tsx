@@ -19,7 +19,13 @@ export default async function Page({ params }: { params: { id: string } }) {
     if (!prospectResponse.ok) throw new Error("Failed to fetch prospect data");
     const prospectData = await prospectResponse.json();
 
-    const industriesResponse = await fetch(`${baseUrl}/api_new/industries/get_all_industries`);
+    const industriesResponse = await fetch(`${baseUrl}/api_new/industries/get_all_industries`,
+      {
+        headers: {
+          'x-internal-auth': process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!,
+        },
+      }
+    );
     if (!industriesResponse.ok) throw new Error("Failed to fetch industries");
     const industriesData = await industriesResponse.json();
 
