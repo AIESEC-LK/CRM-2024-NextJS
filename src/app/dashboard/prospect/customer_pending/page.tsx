@@ -52,7 +52,11 @@ export default function MakeALeadPage() {
       }
 
       try {
-        const response = await fetch(`/api_new/prospects/get_prospect_in_id?id=${id}`);
+        const response = await fetch(`/api_new/prospects/get_prospect_in_id?id=${id}`,{
+          headers: {
+            "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
+          }
+        });
         if (!response.ok) {
           throw new Error("Failed to fetch prospect");
         }
