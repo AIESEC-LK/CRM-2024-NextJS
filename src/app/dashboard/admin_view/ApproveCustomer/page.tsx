@@ -133,7 +133,11 @@ const [category,setCategory] = useState<string | null>(null);
           setProofDocument(data.lead_proof_url);
           setMouUrl(data.mouUrl);
           setAmount(data.amount);
-          setMouStartDate(data.date_added);
+          setMouStartDate(
+              mouStartDate === null || mouStartDate === undefined 
+              ? data.date_added 
+              : mouStartDate
+            );
           setMouEndDate(data.date_expires);
           setCategory(data.partnershipType);
    
@@ -323,7 +327,7 @@ const HandleSwapProduct = async () => {
         "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
       },
       body: JSON.stringify({
-        id: "676964f5855d970eb0dd3717",
+        id: prospectId,
         product_type_id: newProduct,
       }),
     });

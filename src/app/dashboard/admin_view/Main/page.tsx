@@ -175,11 +175,25 @@ useEffect(() => {
            
           setMouUrl(newMouUrl);
           setAmount(data.amount);
-          setMouStartDate(data.date_added);
-          setMouEndDate(data.date_expires);
+          setMouStartDate(
+            mouStartDate === null || mouStartDate === undefined 
+            ? data.date_added 
+            : mouStartDate
+          );
+          setMouEndDate(
+            mouEndDate === null || mouEndDate === undefined 
+            ? data.date_expires 
+            : mouEndDate
+          );
           setCategory(data.partnershipType);
-          setExpiryDate(data.date_expires);
-          setDateAdded(data.date_added);
+          setExpiryDate( expiryDate === null || expiryDate === undefined 
+            ? data.date_expires 
+            : expiryDate
+          );
+          setDateAdded( dateAdded === null || dateAdded === undefined 
+            ? data.date_added 
+            : dateAdded
+          );
           console.log(mouUrl)
           console.log(proofDocument);
         
