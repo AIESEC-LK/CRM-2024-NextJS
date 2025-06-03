@@ -66,6 +66,18 @@ const SideNav = () => {
   User Management (Admin)
   </span>
 </li>
+<li>
+  <Link
+    href="/dashboard/entities"
+    className={`flex items-center justify-center p-4 rounded ${isActive("/dashboard/entities") ? "bg-gray-600" : "hover:bg-gray-700"
+      }`}
+  >
+    Entities
+  </Link>
+  <span className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-max bg-gray-700 text-white text-sm p-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-100">
+  Entities (Admin)
+  </span>
+</li>
 </>
   
 )}
