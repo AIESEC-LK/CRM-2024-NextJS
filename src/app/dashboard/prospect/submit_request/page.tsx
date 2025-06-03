@@ -97,7 +97,7 @@ const Page: React.FC = () => {
         throw new Error('Failed to fetch products');
       }
 
-      ///
+      
       const data = await response.json();
       console.log("Company query data: ", data);
       return data;
