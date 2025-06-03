@@ -417,7 +417,7 @@ const HandleSwapProduct = async () => {
 
       },
       body: JSON.stringify({
-        id: {prospectId},
+        id: prospectId,
         product_type_id: newProduct,
       }),
     });
@@ -450,7 +450,7 @@ const HandleOverwriteMoUDate = async () => {
 
       },
       body: JSON.stringify({
-        id: {prospectId},
+        id: prospectId,
         date_added: mouStartDate,
         date_expires: mouEndDate,
       }),
@@ -535,7 +535,7 @@ const handleOverwriteStage = async () => {
 
       },
       body: JSON.stringify({
-        id:{prospectId},
+        id:prospectId,
         status: newStage,
       }),
     });
@@ -672,7 +672,7 @@ const HandleOverwriteDate = async () => {
 
       },
       body: JSON.stringify({
-        id: {prospectId},
+        id: prospectId,
         date_expires: expiryDate,
       }),
     });
