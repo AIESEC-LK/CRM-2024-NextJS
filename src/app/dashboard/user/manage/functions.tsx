@@ -18,8 +18,11 @@ export interface IUserUpdateRequest {
 
 const fetctAllUserArray = async () => {
     try {
-        const response = await fetch(`/api_new/user/get_all_users`,
-            {headers: { 'x-internal-auth': process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET! } }
+        const response = await fetch(`/api_new/user/get_all_users`, {
+            headers: { 
+                'x-internal-auth': process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET! 
+            } 
+        }
         );
         if (!response.ok) {
             throw new Error('Failed to fetch All users');
@@ -34,9 +37,12 @@ const fetctAllUserArray = async () => {
 
 const fetchAllEntity = async () => {
     try {
-        const response = await fetch("/api_new/entities/get_all_entities",
-            {headers: { 'x-internal-auth': process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET! } }
-        );
+        const response = await fetch("/api_new/entities/get_all_entities", {
+            headers: { 
+                'x-internal-auth': process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET! 
+            } 
+        }
+    );
         if (!response.ok) {
             throw new Error('Failed to fetch All Entity');
         }
