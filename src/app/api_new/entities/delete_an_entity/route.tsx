@@ -18,20 +18,23 @@ export async function DELETE(req: NextRequest) {
     const client = await clientPromise;
     const db = client.db(process.env.DB_NAME);
     const entityObjectId = new ObjectId(id);
+    const collectionsToCheck = [
+      "Prospect",
+      "Pending_Prospects",
+      "Deleted_Prospects",
+      "Users"
+    ];
 
-    // Check if entity is referenced in other collections
-    const isReferenced = await Promise.all([
-      db.collection("Prospect").findOne({ entity_id: entityObjectId }),
-      db.collection("Pending_Prospects").findOne({ entity_id: entityObjectId }),
-      db.collection("Deleted_Prospects").findOne({ entity_id: entityObjectId }),
-      db.collection("Users").findOne({ entity_id: entityObjectId }),
-    ]);
-
-    if (isReferenced.some(ref => ref !== null)) {
-      return NextResponse.json({
-        success: false,
-        message: "Entity is referenced in another collection, cannot delete.",
-      });
+    for (const collection of collectionsToCheck) {
+      const reference = await db.collection(collection).findOne(
+        collection === "Users" ? { userEntityId: entityObjectId } : { entity_id: entityObjectId }
+      );
+      if (reference) {
+        return NextResponse.json({
+          error: `Entity is referenced in ${collection}, cannot delete.`,
+          status: 402,
+        });
+      }
     }
 
     // Proceed with deletion
