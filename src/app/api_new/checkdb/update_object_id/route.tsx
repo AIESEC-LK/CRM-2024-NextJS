@@ -27,20 +27,30 @@ export async function PATCH(req: NextRequest) {
     const db = client.db(process.env.DB_NAME);
     const collection = db.collection(collectionName);
 
-    const result = await collection.updateOne(
-      { _id: new ObjectId(id) },
-      {
-        $set: {
-          objectId: new ObjectId(newObjectId),
-        }
-      }
-    );
+    // Find the document to copy data
+    const existingDoc = await collection.findOne({ _id: new ObjectId(id) });
 
-    if (result.modifiedCount > 0) {
-      return NextResponse.json({ success: true });
+    if (!existingDoc) {
+      return NextResponse.json({ error: "Document not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ success: false, message: "No records updated" });
+    // Remove the `_id` field from the copied document
+    delete (existingDoc as { _id?: any })._id;
+
+    // Insert a new document with the updated `_id`
+    const newDoc = await collection.insertOne({
+      ...existingDoc,
+      _id: new ObjectId(newObjectId),
+    });
+
+    if (!newDoc.insertedId) {
+      return NextResponse.json({ error: "Failed to create new document" }, { status: 500 });
+    }
+
+    // Delete the old document
+    await collection.deleteOne({ _id: new ObjectId(id) });
+
+    return NextResponse.json({ success: true, newId: newObjectId });
   } catch (e) {
     console.error("Error updating document:", e);
     return NextResponse.json({ error: "Failed to update document" }, { status: 500 });
