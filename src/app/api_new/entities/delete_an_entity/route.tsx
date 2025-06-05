@@ -90,7 +90,7 @@ export async function DELETE(req: NextRequest) {
     }
 
     // Check if the users exist
-    const usersResponse = await fetch(process.env.BASE_URL + `/users/get_users_in_entity_id?entity_id=${id}`, {
+    const usersResponse = await fetch(process.env.BASE_URL + `/users/get_user_by_entity_id?entity_id=${id}`, {
       headers: {
         "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET ?? "",
       },
