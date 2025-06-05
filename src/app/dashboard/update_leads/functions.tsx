@@ -18,6 +18,8 @@ export async function upload_leads_to_mongo(company_list: { id: string }[]) {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
+
           },
           body: JSON.stringify(company),
         });

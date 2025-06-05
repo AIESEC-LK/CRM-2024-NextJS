@@ -21,7 +21,7 @@ export class AuthService {
 
     static getUserDetails(): IUserDetails | null {
         const userDetails = localStorage.getItem(AuthService.USER_KEY);
-        return userDetails ? JSON.parse(userDetails) : '';
+        return userDetails ? JSON.parse(userDetails) : null;
     }
 
     static getUserLcId(): string {

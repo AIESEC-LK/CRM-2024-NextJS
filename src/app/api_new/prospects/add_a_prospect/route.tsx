@@ -1,10 +1,12 @@
 import clientPromise from "@/app/lib/mongodb";
-import { PROSPECT_VALUES } from "@/app/lib/values";
-import { NextResponse } from "next/server";
+import { PROSPECT_VALUES, QUEUE_TIME_DURATION } from "@/app/lib/values";
+import { NextRequest, NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import { error } from "console";
-import { PROSPECT_EXPIRE_TIME_DURATION } from "@/app/lib/values";
+import { PROSPECT_EXPIRE_TIME_DURATION, LEAD_EXPIRE_TIME_DURATION, PENDING_TIME_DURATION, PROMOTER_EVENT_EXPIRE_TIME_DURATION, PROMOTER_PRODUCT_EXPIRE_TIME_DURATION } from "@/app/lib/values";
 
+
+// Interface for a Prospect Request
 interface IProspectRequest {
   companyId: string;
   companyName: string;
@@ -19,6 +21,8 @@ interface IProspectRequest {
   producttype: string | undefined;
 }
 
+
+// Interface for a Prospect Product
 interface IProspectProduct{
   _id: string;
   productName: string;
@@ -27,9 +31,20 @@ interface IProspectProduct{
 }
 
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
-    console.log("Request Body", req.body);
+
+        const internalAuth = req.headers.get("x-internal-auth");
+
+    // ✅ Allow internal fetches (server-to-server) if they include a valid secret
+    if (internalAuth !== process.env.INTERNAL_AUTH_SECRET) {
+    return NextResponse.json(
+      { error: "Unauthorized" },
+      { status: 401 }
+    );
+    }
+    //console.log("Request Body", req.body);
+
     let company = null;
     let newCompany = false;
     
@@ -37,17 +52,10 @@ export async function POST(req: Request) {
     const client = await clientPromise;
     const db = client.db(process.env.DB_NAME);
 
-   
-
     let createCompany = false;
+
     console.log("product type"  +prospect.producttype)
-    // console.log("product ID"  +prospect.productId)
 
-
-    // Map all other Product ID to the SameProduct ID except Event(6734053c308fd8d176381e07)
-    // if (prospect.productId != "6734053c308fd8d176381e07") {
-    //   prospect.productId = "6734054e308fd8d176381e08";
-    // }
   if (prospect.productId === "" || prospect.productId === null||prospect.productId === undefined) {
         prospect.productId = prospect.producttype || "";
       }
@@ -55,15 +63,22 @@ export async function POST(req: Request) {
 
     // Set current date as the date added
     const dateAdded = new Date();
-
-    /* TODO*/
-    //Fetch from Auth
     const entity_id = prospect.userLcId;
+
+    // Call the prospect-status API to check the prospect count
+    const response = await fetch(`${process.env.BASE_URL}/api_new/prospects/count_prospects?userLcId=${entity_id}`,
+      {
+        headers: {
+          "x-internal-auth": process.env.INTERNAL_AUTH_SECRET!, // internal secret
+        }
+      });
+    const data = await response.json();
+
+    if (!data.result) {
+      return NextResponse.json({ message: "You exceed the max prospect limit" }, { status: 403 });
+    }
+
    
-    // Set date expires to three months from now
-    const dateExpires = new Date();
-    dateExpires.setTime(dateAdded.getTime() + PROSPECT_EXPIRE_TIME_DURATION);
-    //correct this
 
     //Check whether the company already exists
     if (prospect.companyId == "" || prospect.companyId == null) {
@@ -107,11 +122,11 @@ export async function POST(req: Request) {
       if (!newCompany) {
 
         const lastRecord = await db.collection("Prospects")
-  .find({ company_id: prospect.companyId.toString() })
-  .sort({ _id: -1 })
-  .toArray();
+            .find({ company_id: prospect.companyId.toString() })
+            .sort({ _id: -1 })
+            .toArray();
 
-  console.log("Last record:", lastRecord);
+        console.log("Last record:", lastRecord);
 
 if (lastRecord.length > 0 || lastRecord!=null) {
   let shouldBePending = false;
@@ -175,6 +190,7 @@ if (lastRecord.length > 0 || lastRecord!=null) {
               product_type_id: prospect.productId,
               entity_id: entity_id,
               date_added: dateAdded,
+              date_expires: new Date(dateAdded.getTime() + QUEUE_TIME_DURATION),
               contactPersonName: prospect.contactPersonName,
               contactPersonNumber: prospect.contactPersonNumber,
               contactPersonEmail: prospect.contactPersonEmail,
@@ -199,7 +215,7 @@ if (lastRecord.length > 0 || lastRecord!=null) {
           product_type_id: prospect.productId,
           entity_id: entity_id,
           date_added: dateAdded,
-          date_expires: dateExpires,
+          date_expires: new Date(dateAdded.getTime() + PROSPECT_EXPIRE_TIME_DURATION),
           contactPersonName: prospect.contactPersonName,
           contactPersonNumber: prospect.contactPersonNumber,
           contactPersonEmail: prospect.contactPersonEmail,
@@ -207,7 +223,7 @@ if (lastRecord.length > 0 || lastRecord!=null) {
           newCompay: newCompany
         });
 
-        return NextResponse.json({ success: true });
+        return NextResponse.json({ success: true, error: "Prospect Request Added Successfully" });
 
       }
 
@@ -226,7 +242,7 @@ if (lastRecord.length > 0 || lastRecord!=null) {
         product_type_id: prospect.productId,
         entity_id: entity_id,
         date_added: dateAdded,
-        date_expires: dateExpires,
+        date_expires: new Date(dateAdded.getTime() + PROSPECT_EXPIRE_TIME_DURATION),
         contactPersonName: prospect.contactPersonName,
         contactPersonNumber: prospect.contactPersonNumber,
         contactPersonEmail: prospect.contactPersonEmail,
@@ -234,7 +250,7 @@ if (lastRecord.length > 0 || lastRecord!=null) {
         newCompay: newCompany
       });
 
-      return NextResponse.json({ success: true });
+      return NextResponse.json({ success: true, error: "Prospect Request Added Successfully" });
       
     }
   }

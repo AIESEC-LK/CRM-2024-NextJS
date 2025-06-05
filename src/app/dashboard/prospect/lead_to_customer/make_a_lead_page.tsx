@@ -72,7 +72,11 @@ const [isConverted, setIsConverted] = useState(false);
     if (id) {
       const fetchProspectDetails = async () => {
         try {
-          const response = await fetch(`/api_new/prospects/get_prospect_in_id?id=${id}`);
+          const response = await fetch(`/api_new/prospects/get_prospect_in_id?id=${id}`, {
+            headers: {
+              "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
+            },
+          });
           if (!response.ok) {
             throw new Error('Failed to fetch prospect details');
           }
@@ -102,7 +106,11 @@ const [isConverted, setIsConverted] = useState(false);
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const response = await fetch("/api_new/products/get_all_products");
+        const response = await fetch("/api_new/products/get_all_products", {
+          headers: {
+            "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
+          },
+        });
         if (!response.ok) {
           throw new Error("Failed to fetch products");
         }
@@ -177,6 +185,7 @@ const [isConverted, setIsConverted] = useState(false);
       const fileId = uploadResponse.data.id;  // Get the uploaded file's ID
       console.log('File uploaded:', fileId);
 
+      
       // Create a shareable link for the file (with view permissions)
       const linkResponse = await axios.post(
         `https://graph.microsoft.com/v1.0/drive/items/${fileId}/createLink`,
@@ -195,6 +204,8 @@ const [isConverted, setIsConverted] = useState(false);
       const shareLink = linkResponse.data.link.webUrl;  // The URL of the shareable link
       //console.log('Shareable Link:', shareLink);
 
+      
+
       const data = {
         id,
         partnershipCategoryName,
@@ -210,6 +221,7 @@ const [isConverted, setIsConverted] = useState(false);
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
+          "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
         },
         body: JSON.stringify(data),
       });
@@ -224,13 +236,16 @@ const [isConverted, setIsConverted] = useState(false);
         setCategory("set")
       } else {
         console.log(`Error: ${result.error}`);
+        
       }
     }
   } catch (error) {
     if (error instanceof Error) {
       console.log(`Error: ${error.message}`);
+      
     } else {
       console.log('An unknown error occurred');
+      
     }
   }finally{
     setUploading(false)

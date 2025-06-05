@@ -1,9 +1,21 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
 import { ObjectId } from "mongodb";
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   try {
+
+      const internalAuth = req.headers.get("x-internal-auth");
+
+    // ✅ Allow internal fetches (server-to-server) if they include a valid secret
+    if (internalAuth !== process.env.INTERNAL_AUTH_SECRET) {
+    return NextResponse.json(
+      { error: "Unauthorized" },
+      { status: 401 }
+    );
+    }
+
+
     const url = new URL(req.url);
     const id = url.pathname.split("/").pop();
 

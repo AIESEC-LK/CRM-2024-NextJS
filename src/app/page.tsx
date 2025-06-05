@@ -9,7 +9,7 @@ import { Label } from "./components/ui/label";
 import { PARTNERHSIPS_UI_PATH } from "./lib/values";
 import { useAuth } from "./context/AuthContext";
 import image from "../app/assets/giphy.gif"
-
+//
 const LoginPage = () => {
   const router = useRouter();
   const { login } = useAuth();
@@ -25,7 +25,7 @@ const LoginPage = () => {
 
   };
 
-
+//
   useEffect(() => {
     async function setEmail() {
       try {
@@ -61,8 +61,8 @@ const LoginPage = () => {
           src={image}
           alt="Loading"
           className="m-auto"
-          width={480}
-          height={271}
+          width={240}
+          height={135}
         />
         <h3 className="text-white mt-2 text-lg font-semibold">Creating Sustainable Partnerships...</h3>
       </div>

@@ -33,7 +33,13 @@ export default function EntitiesPage() {
 
   const fetchEntities = async () => {
     try {
-      const response = await fetch("/api_new/entities/get_all_entities");
+      const response = await fetch("/api_new/entities/get_all_entities",
+        {
+          headers: {
+            "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
+          },
+        }
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch entities");
       }
@@ -57,6 +63,7 @@ export default function EntitiesPage() {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
+          "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
         },
         body: JSON.stringify({ id: entityToDelete._id }),
       });
@@ -121,12 +128,13 @@ export default function EntitiesPage() {
                 <Button
                   variant="destructive"
                   size="sm"
-                  onClick={() => handleDelete(entity)}
+                  onClick={() => handleDelete(entity)}  // Comment this line when first production release
                   className="bg-red-500 hover:bg-red-400"
                 >
                   <Trash2 className="h-4 w-4 mr-2" />
                   Delete
                 </Button>
+                {/*Coming soon*/}
               </TableCell>
             </TableRow>
           ))}

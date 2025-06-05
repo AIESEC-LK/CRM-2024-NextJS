@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
 import { ObjectId } from "mongodb";
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const id = searchParams.get("id");
 
@@ -11,6 +11,16 @@ export async function GET(request: Request) {
   }
 
   try {
+
+            const internalAuth = request.headers.get("x-internal-auth");
+
+    // ✅ Allow internal fetches (server-to-server) if they include a valid secret
+    if (internalAuth !== process.env.INTERNAL_AUTH_SECRET) {
+    return NextResponse.json(
+      { error: "Unauthorized" },
+      { status: 401 }
+    );
+    }
     const client = await clientPromise;
     const db = client.db(process.env.DB_NAME);
 

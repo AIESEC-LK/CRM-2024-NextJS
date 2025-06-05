@@ -47,7 +47,11 @@ export default function ProspectQueue() {
   // Fetch pending prospects from API
   const fetchRequests = async () => {
     try {
-      const response = await fetch("/api_new/pending_prospects/get_all_pending_prospects");
+      const response = await fetch("/api_new/pending_prospects/get_all_pending_prospects", {
+        headers: {
+          "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
+        },
+      });
       if (!response.ok) {
         throw new Error("Failed to fetch requests");
       }
@@ -94,7 +98,7 @@ const filteredRequests = requests.filter(
       </div>
       </div>
       <br/>
-      <div className="w-full ml-4 mb-6 bg-gray-100 rounded overflow-hidden shadow-lg flex items-center pt-3 pb-3">
+      <div className="w-full ml-4 bg-gray-100 rounded overflow-hidden shadow-lg flex items-center pt-3 pb-3">
       <Table>
         <TableHeader>
           <TableRow>
@@ -179,7 +183,7 @@ const filteredRequests = requests.filter(
           ))}
         </TableBody>
       </Table>
-    </div>
+      </div>
     </div>
   );
 }

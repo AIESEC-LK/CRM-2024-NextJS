@@ -33,6 +33,8 @@ const { user } = useAuth();
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
+
         },
         body: JSON.stringify({ entityName: name, color: color }),
       });

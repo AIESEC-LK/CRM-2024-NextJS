@@ -65,7 +65,11 @@ export default function ConvertToALeadPage() {
     if (prospectId) {
       const fetchProspectDetails = async () => {
         try {
-          const response = await fetch(`/api_new/prospects/get_prospect_in_id?id=${prospectId}`);
+          const response = await fetch(`/api_new/prospects/get_prospect_in_id?id=${prospectId}`, {
+            headers: {
+              "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
+            },
+          });
           if (!response.ok) {
             throw new Error('Failed to fetch prospect details');
           }
@@ -92,7 +96,11 @@ export default function ConvertToALeadPage() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('/api_new/products/get_all_products');
+        const response = await fetch('/api_new/products/get_all_products', {
+          headers: {
+            "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!, // internal secret
+          },
+        });
         if (!response.ok) {
           throw new Error('Failed to fetch products');
         }
@@ -283,13 +291,14 @@ export default function ConvertToALeadPage() {
     lead_proof_url: shareLink,
     activities: activities.length > 0 ? activities : [],
     status: 'lead',
-    date_expires: expireDate.toISOString(),
+    date_expires: new Date(Date.now() + LEAD_EXPIRE_TIME_DURATION).toISOString(),
   };
 
   const response = await fetch('/api_new/prospects/update_a_prospect', {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
+      "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!
     },
     body: JSON.stringify(payload),
   });

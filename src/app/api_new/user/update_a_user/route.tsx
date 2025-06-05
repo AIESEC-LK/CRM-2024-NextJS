@@ -1,5 +1,5 @@
 import clientPromise from "@/app/lib/mongodb";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 
 interface IUserUpdateRequest {
@@ -9,8 +9,20 @@ interface IUserUpdateRequest {
     userEntityId?: string;
 }
 
-export async function PUT(req: Request) {
+export async function PUT(req: NextRequest) {
     try {
+
+        const internalAuth = req.headers.get("x-internal-auth");
+
+    // ✅ Allow internal fetches (server-to-server) if they include a valid secret
+    if (internalAuth !== process.env.INTERNAL_AUTH_SECRET) {
+    return NextResponse.json(
+      { error: "Unauthorized" },
+      { status: 401 }
+    );
+    }
+
+
         const userUpdateRequest: IUserUpdateRequest = await req.json();
         const client = await clientPromise;
         const db = client.db(process.env.DB_NAME);

@@ -1,4 +1,5 @@
 "use client";
+import { headers } from 'next/headers';
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 
 // Define types for the user object and context value
@@ -31,7 +32,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     const fetchUserByEmail = async (email: string): Promise<User | null> => {
         try {
-            const response = await fetch(`/api_new/user/get_user_by_email?email=${email}`);
+            const response = await fetch(`/api_new/user/get_user_by_email?email=${email}`, {
+                headers: {
+                    'x-internal-auth': process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET!,
+                },
+            });
             if (!response.ok) {
                 console.error("Error fetching user by email:", response.statusText);
                 return null;

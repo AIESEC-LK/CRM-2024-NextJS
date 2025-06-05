@@ -1,8 +1,14 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
+export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(request : NextRequest) {
   try {
+    const internalAuth = request.headers.get("x-internal-auth");
+
+    if (internalAuth !== process.env.INTERNAL_AUTH_SECRET) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
     const client = await clientPromise;
 
     const db = client.db(process.env.DB_NAME);
@@ -94,7 +100,12 @@ export async function GET() {
       ])
       .toArray();
 
-    return NextResponse.json(prospects);
+    return new NextResponse(JSON.stringify(prospects), {
+      headers: {
+        "Cache-Control": "no-store",
+        "Content-Type": "application/json"
+      }
+    });
   } catch (e) {
     console.error("Error fetching requests:", e);
 
