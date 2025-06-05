@@ -125,7 +125,7 @@ export default function EntitiesPage() {
               </TableCell>
               <TableCell>{entity.entityName}</TableCell>
               <TableCell className="text-right">
-                {/*<Button
+                <Button
                   variant="destructive"
                   size="sm"
                   onClick={() => handleDelete(entity)}  // Comment this line when first production release
@@ -133,8 +133,8 @@ export default function EntitiesPage() {
                 >
                   <Trash2 className="h-4 w-4 mr-2" />
                   Delete
-                </Button>*/}
-                Coming soon
+                </Button>
+                {/*Coming soon*/}
               </TableCell>
             </TableRow>
           ))}
