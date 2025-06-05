@@ -20,7 +20,7 @@ export async function DELETE(req: NextRequest) {
     const entityObjectId = new ObjectId(id);
 
     // Check if there are prospects associated with this entity
-    const prospectsResponse = await fetch(process.env.BASE_URL + `/prospects/get_prospect_in_entity_id?entity_id=${id}`, {
+    const prospectsResponse = await fetch(process.env.BASE_URL + `/api_new/prospects/get_prospect_in_entity_id?entity_id=${id}`, {
       headers: {
         "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET ?? "",
       },
@@ -44,7 +44,7 @@ export async function DELETE(req: NextRequest) {
     }
 
     // Check if there are pending prospects associated with this entity
-    const pendingProspectsResponse = await fetch(process.env.BASE_URL + `/prospects/get_pending_prospect_in_entity_id?entity_id=${id}`, {
+    const pendingProspectsResponse = await fetch(process.env.BASE_URL + `/api_new/prospects/get_pending_prospect_in_entity_id?entity_id=${id}`, {
       headers: {
         "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET ?? "",
       },
@@ -68,7 +68,7 @@ export async function DELETE(req: NextRequest) {
     }
 
     // Check if there are deleted prospects associated with this entity
-    const deletedProspectsResponse = await fetch(process.env.BASE_URL + `/prospects/get_deleted_prospect_in_entity_id?entity_id=${id}`, {
+    const deletedProspectsResponse = await fetch(process.env.BASE_URL + `/api_new/prospects/get_deleted_prospect_in_entity_id?entity_id=${id}`, {
       headers: {
         "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET ?? "",
       },
@@ -90,7 +90,7 @@ export async function DELETE(req: NextRequest) {
     }
 
     // Check if the users exist
-    const usersResponse = await fetch(process.env.BASE_URL + `/user/get_user_by_entity_id?entity_id=${id}`, {
+    const usersResponse = await fetch(process.env.BASE_URL + `/api_new/user/get_user_by_entity_id?entity_id=${id}`, {
       headers: {
         "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET ?? "",
       },
