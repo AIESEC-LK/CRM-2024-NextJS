@@ -125,15 +125,16 @@ export default function EntitiesPage() {
               </TableCell>
               <TableCell>{entity.entityName}</TableCell>
               <TableCell className="text-right">
-                <Button
+                {/*<Button
                   variant="destructive"
                   size="sm"
-                  onClick={() => handleDelete(entity)}
+                  onClick={() => handleDelete(entity)}  // Comment this line when first production release
                   className="bg-red-500 hover:bg-red-400"
                 >
                   <Trash2 className="h-4 w-4 mr-2" />
                   Delete
-                </Button>
+                </Button>*/}
+                Coming soon
               </TableCell>
             </TableRow>
           ))}

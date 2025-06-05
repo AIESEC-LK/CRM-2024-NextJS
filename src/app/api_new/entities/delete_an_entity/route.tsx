@@ -19,7 +19,7 @@ export async function DELETE(req: NextRequest) {
     const db = client.db(process.env.DB_NAME);
     const entityObjectId = new ObjectId(id);
     const collectionsToCheck = [
-      "Prospect",
+      "Prospects",
       "Pending_Prospects",
       "Deleted_Prospects",
       "Users"
