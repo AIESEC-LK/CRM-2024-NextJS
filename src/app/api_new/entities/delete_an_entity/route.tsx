@@ -21,11 +21,11 @@ export async function DELETE(req: NextRequest) {
         label: "Prospects",
       },
       {
-        url: `/api_new/prospects/get_pending_prospect_in_entity_id?entity_id=${id}`,
+        url: `/api_new/pending_prospects/get_pending_prospect_in_entity_id?entity_id=${id}`,
         label: "Pending Prospects",
       },
       {
-        url: `/api_new/prospects/get_deleted_prospect_in_entity_id?entity_id=${id}`,
+        url: `/api_new/deleted_prospects/get_deleted_prospect_in_entity_id?entity_id=${id}`,
         label: "Deleted Prospects",
       },
     ];
