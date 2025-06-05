@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
       const user = await collection.findOne({userEntityId : entity_id });
   
       if (!user) {
-        return NextResponse.json({ error: "User not found" }, { status: 404 });
+        return NextResponse.json({ response: "User not found" }, { status: 200 });
       }
   
       return NextResponse.json(user);

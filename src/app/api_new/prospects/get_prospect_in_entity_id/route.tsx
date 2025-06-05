@@ -26,11 +26,10 @@ export async function GET(request: NextRequest) {
   
       const prospect = await collection.findOne({ entity_id });
   
-      if (!prospect) {
-        return NextResponse.json({ error: "Prospect not found" }, { status: 404 });
-      }
-  
-      return NextResponse.json(prospect);
+    if (!prospect) {
+      return NextResponse.json({ response: "Prospect not found" }, { status: 200 });
+    }
+    return NextResponse.json(prospect);
     } catch (error) {
       return NextResponse.json(
         { 
