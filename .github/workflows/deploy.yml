@@ -54,6 +54,7 @@ jobs:
           NEXT_PUBLIC_EXPA_URL=${{ secrets.NEXT_PUBLIC_EXPA_URL }}
           INTERNAL_AUTH_SECRET=${{ secrets.INTERNAL_AUTH_SECRET }}
           NEXT_PUBLIC_INTERNAL_AUTH_SECRET=${{ secrets.INTERNAL_AUTH_SECRET }}
+          CONNECTION_STRING_TEST=${{ secrets.CONNECTION_STRING_TEST }}
           EOF
             
             # Debug: Check if .env file was created and show its contents (INCLUDING SECRETS - REMOVE AFTER DEBUGGING)

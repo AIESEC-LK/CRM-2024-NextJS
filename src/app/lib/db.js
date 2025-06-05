@@ -13,7 +13,7 @@ export async function dbConnect() {/*
         return global.mongoose.conn;
     }*/
 
-    const conString = process.env.CONNECTION_STRING;
+    const conString = process.env.CONNECTION_STRING_TEST;
 
     try {
         const promise = mongoose.connect(conString, {

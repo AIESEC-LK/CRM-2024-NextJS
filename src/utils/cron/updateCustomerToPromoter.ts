@@ -3,7 +3,7 @@
 import mongoose from 'mongoose';
 import cron from 'node-cron';
 
-const CONNECTION_STRING = process.env.CONNECTION_STRING!;
+const CONNECTION_STRING = process.env.CONNECTION_STRING_TEST!;
 const DB_NAME = process.env.DB_NAME!;
 
 const prospectSchema = new mongoose.Schema({
