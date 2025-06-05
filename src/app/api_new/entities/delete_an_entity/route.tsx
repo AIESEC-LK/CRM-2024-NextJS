@@ -6,12 +6,8 @@ export async function DELETE(req: NextRequest) {
   try {
     const internalAuth = req.headers.get("x-internal-auth");
 
-    // ✅ Allow internal fetches (server-to-server) if they include a valid secret
     if (internalAuth !== process.env.INTERNAL_AUTH_SECRET) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { id } = await req.json();
@@ -19,99 +15,70 @@ export async function DELETE(req: NextRequest) {
     const db = client.db(process.env.DB_NAME);
     const entityObjectId = new ObjectId(id);
 
-    // Check if there are prospects associated with this entity
-    const prospectsResponse = await fetch(process.env.BASE_URL + `/api_new/prospects/get_prospect_in_entity_id?entity_id=${id}`, {
+    const checkEndpoints = [
+      {
+        url: `/api_new/prospects/get_prospect_in_entity_id?entity_id=${id}`,
+        label: "Prospects",
+      },
+      {
+        url: `/api_new/prospects/get_pending_prospect_in_entity_id?entity_id=${id}`,
+        label: "Pending Prospects",
+      },
+      {
+        url: `/api_new/prospects/get_deleted_prospect_in_entity_id?entity_id=${id}`,
+        label: "Deleted Prospects",
+      },
+    ];
+
+    for (const { url, label } of checkEndpoints) {
+      const res = await fetch(process.env.BASE_URL + url, {
+        headers: {
+          "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET ?? "",
+        },
+      });
+
+      if (!res.ok) {
+        return NextResponse.json(
+          { error: `Failed to fetch ${label}`, details: res.statusText },
+          { status: res.status }
+        );
+      }
+
+      const data = await res.json();
+
+      // ❗Only block deletion if actual data is present (not "not found" string)
+      if (data && !data.response) {
+        return NextResponse.json(
+          { error: `${label} found for entity ${id}, cannot delete.` },
+          { status: 402 }
+        );
+      }
+    }
+
+    // 🔍 Check for Users (this can return an array)
+    const usersRes = await fetch(process.env.BASE_URL + `/api_new/user/get_user_by_entity_id?entity_id=${id}`, {
       headers: {
         "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET ?? "",
       },
     });
 
-    if (!prospectsResponse.ok) {
+    if (!usersRes.ok) {
       return NextResponse.json(
-        { error: "Failed to fetch prospects", details: prospectsResponse.statusText },
-        { status: prospectsResponse.status }
+        { error: "Failed to fetch users", details: usersRes.statusText },
+        { status: usersRes.status }
       );
     }
 
-    const prospectsData = await prospectsResponse.json();
+    const usersData = await usersRes.json();
 
-    // If prospects exist, prevent deletion
-    if (prospectsData) {
-      return NextResponse.json(
-        { error: `Prospects found for entity ${id}, cannot delete.` },
-        { status: 402 }
-      );
-    }
-
-    // Check if there are pending prospects associated with this entity
-    const pendingProspectsResponse = await fetch(process.env.BASE_URL + `/api_new/prospects/get_pending_prospect_in_entity_id?entity_id=${id}`, {
-      headers: {
-        "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET ?? "",
-      },
-    });
-
-    if (!pendingProspectsResponse.ok) {
-      return NextResponse.json(
-        { error: "Failed to fetch prospects", details: pendingProspectsResponse.statusText },
-        { status: pendingProspectsResponse.status }
-      );
-    }
-
-    const pendingProspectsData = await pendingProspectsResponse.json();
-
-    // If pending prospects exist, prevent deletion
-    if (pendingProspectsData) {
-      return NextResponse.json(
-        { error: `Pending Prospects found for entity ${id}, cannot delete.` },
-        { status: 402 }
-      );
-    }
-
-    // Check if there are deleted prospects associated with this entity
-    const deletedProspectsResponse = await fetch(process.env.BASE_URL + `/api_new/prospects/get_deleted_prospect_in_entity_id?entity_id=${id}`, {
-      headers: {
-        "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET ?? "",
-      },
-    });
-
-    if (!deletedProspectsResponse.ok) {
-      return NextResponse.json(
-        { error: "Failed to fetch prospects", details: deletedProspectsResponse.statusText },
-        { status: deletedProspectsResponse.status }
-      );
-    }
-    const deletedProspectsData = await deletedProspectsResponse.json();
-    // If deleted prospects exist, prevent deletion
-    if (deletedProspectsData) {
-      return NextResponse.json(
-        { error: `Deleted Prospects found for entity ${id}, cannot delete.` },
-        { status: 402 }
-      );
-    }
-
-    // Check if the users exist
-    const usersResponse = await fetch(process.env.BASE_URL + `/api_new/user/get_user_by_entity_id?entity_id=${id}`, {
-      headers: {
-        "x-internal-auth": process.env.NEXT_PUBLIC_INTERNAL_AUTH_SECRET ?? "",
-      },
-    });
-
-    if (!usersResponse.ok) {
-      return NextResponse.json(
-        { error: "Failed to fetch users", details: usersResponse.statusText },
-        { status: usersResponse.status }
-      );
-    }
-    const usersData = await usersResponse.json();
-    // If users exist, prevent deletion
-    if (usersData && usersData.length > 0) {
+    if (usersData && !usersData.response) {
       return NextResponse.json(
         { error: `Users found for entity ${id}, cannot delete.` },
         { status: 402 }
       );
     }
 
-    // Proceed with deletion
+    // ✅ Proceed with deletion
     const result = await db.collection("Entities").deleteOne({ _id: entityObjectId });
 
     if (result.deletedCount > 0) {
